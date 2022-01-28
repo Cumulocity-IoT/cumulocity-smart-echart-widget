@@ -1,0 +1,17 @@
+{
+  "name": "Smart eChart Runtime Widget",
+  "contextPath": "smart-echart-runtime-widget",
+  "key": "smart-echart-runtime-widget-application-key",
+  "contentSecurityPolicy": "default-src 'self'",
+  "icon": {
+    "class": "fa fa-overview"
+  },
+  "manifest": {
+    "noAppSwitcher": true,
+    "requiredPlatformVersion": ">=1011.0.0",
+    "version":"2.0.0",
+    "author":"Software AG, Global Presales",
+    "description":"This is an Angular 8 widget, which is designed to display the current process state based on the latest event.",
+    "license": "Apache 2.0"
+  }
+}
