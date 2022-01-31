@@ -1393,7 +1393,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         return acc;
       }, {});
       this.serviceData[userInput.listName].map((item) => {
-        Object.keys(item).forEach((value,key) => {
+        Object.keys(item).forEach(key => {
           if (dimensionRecord[key]) {
             dimensionRecord[key].push(item[key])
           }
@@ -1686,7 +1686,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
     }, {});
     if (userInput.listName in this.serviceData) {
       this.serviceData[userInput.listName].map((item) => {
-        Object.keys(item).forEach((value,key) => {
+        Object.keys(item).forEach(key => {
           if (dimensionRecord[key]) {
             dimensionRecord[key].push(item[key])
           }
