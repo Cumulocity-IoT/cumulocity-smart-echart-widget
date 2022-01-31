@@ -89,7 +89,7 @@ export declare class Legend {
     icon?: string | '';
     selector?: boolean | '';
     top?: string | '';
-    width?: Number | '';
+    width?: number | '';
 }
 export declare class Toolbox {
     show?: boolean | '';

@@ -1,7 +1,7 @@
 import * as i1 from '@angular/common/http';
-import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import * as i0 from '@angular/core';
-import { Injectable, Component, Input, EventEmitter, Output, NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Injectable, isDevMode, Component, ViewChild, Input, EventEmitter, Output, NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { __awaiter } from 'tslib';
 import * as echarts from 'echarts';
 import * as simpleTransform from 'echarts-simple-transform';
@@ -29,26 +29,9 @@ import { NgxEchartsModule } from 'ngx-echarts';
 class GpSmartEchartWidgetService {
     constructor(http) {
         this.http = http;
-        this.httpHeaders = new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        });
-        this.options = {
-            headers: this.httpHeaders,
-        };
-        this.token = 'bmVlcnUuYXJvcmFAc29mdHdhcmVhZy5jb206TWFuYWdlQDA5ODc=';
-        this.httpHeaders.append("Authorization", "Bearer " + this.token);
     }
     getAPIData(apiUrl) {
-        console.log('options', this.options);
-        // if(apiUrl.indexOf('smart-equipment.eu-latest.cumulocity.com')!=-1){
-        //   return this.http.get(apiUrl,this.options);
-        // } else {
         return this.http.get(apiUrl);
-        // }
-        // const response = await this.fetchClient.fetch('service/datahub/dremio/api/v3/job/1e1826e5-0e7d-f38c-61b7-ce059c715700/results');
-        // const data = await response.json();
-        // return this.fetchClient.fetch('service/datahub/dremio/api/v3/job/1e1826e5-0e7d-f38c-61b7-ce059c715700/results');
     }
 }
 GpSmartEchartWidgetService.ɵprov = i0.ɵɵdefineInjectable({ factory: function GpSmartEchartWidgetService_Factory() { return new GpSmartEchartWidgetService(i0.ɵɵinject(i1.HttpClient)); }, token: GpSmartEchartWidgetService, providedIn: "root" });
@@ -61,13 +44,30 @@ GpSmartEchartWidgetService.ctorParameters = () => [
     { type: HttpClient }
 ];
 
+/**
+ * Copyright (c) 2021 Software AG, Darmstadt, Germany and/or its licensors
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 function isObject(obj) {
     return Object.prototype.toString.call(obj) === '[object Object]';
 }
 function extractValueFromJSON(keyArr, parent) {
-    let keysArray = Array.isArray(keyArr) ? keyArr : [keyArr];
-    let resultArray = [];
-    for (let keyStr of keysArray) {
+    const keysArray = Array.isArray(keyArr) ? keyArr : [keyArr];
+    const resultArray = [];
+    for (const keyStr of keysArray) {
         const keys = keyStr.split('.');
         let parentRef = parent;
         if (keys.length === 1) {
@@ -105,33 +105,32 @@ class GpSmartEchartWidgetComponent {
         this.isDatahubPostCall = false;
     }
     ngOnInit() {
-        // this.createChart(this.config);
-        // this.createChart();
+        this.chartDiv = this.mapDivRef.nativeElement;
+        this.createChart(this.config);
     }
     dataFromUser(userInput) {
         this.createChart(userInput);
     } // end of dataFromUser()
-    //create variables for all ChartConfig like value type, apidata from url etc to store the data from user
+    // create variables for all ChartConfig like value type, apidata from url etc to store the data from user
     // create chart
     reloadData(userInput) {
         this.createChart(userInput);
     }
-    //createChart function is used to create chart with the help of echart library
+    // createChart function is used to create chart with the help of echart library
     createChart(userInput) {
         return __awaiter(this, void 0, void 0, function* () {
-            let chartDom = document.getElementById('chart-container');
-            let myChart = echarts.init(chartDom);
+            // const chartDom = document.getElementById('chart-container');
+            // const myChart = echarts.init(chartDom);
+            const myChart = echarts.init(this.chartDiv);
             myChart.showLoading();
-            // let d = this.realtTimeMeasurements(6889031);
-            // const response = await this.fetchClient.fetch('service/datahub/dremio/api/v3/job/1e1826e5-0e7d-f38c-61b7-ce059c715700/results');
             if (userInput.showApiInput) {
                 this.serviceData = yield this.chartService.getAPIData(userInput.apiUrl).toPromise();
             }
             else if (userInput.showDatahubInput) {
                 const sqlReqObject = {
-                    "sql": userInput.sqlQuery,
-                    "limit": 100,
-                    "format": "PANDAS"
+                    sql: userInput.sqlQuery,
+                    limit: 100,
+                    format: 'PANDAS'
                 };
                 const response = yield this.fetchClient.fetch(userInput.apiUrl, {
                     body: JSON.stringify(sqlReqObject),
@@ -141,44 +140,38 @@ class GpSmartEchartWidgetComponent {
                 this.isDatahubPostCall = true;
             }
             else {
-                console.log('No Datasource selected');
+                if (isDevMode()) {
+                    console.log('No Datasource selected');
+                }
             }
             if (this.serviceData) {
-                console.log('data from API', this.serviceData);
-                console.log('datahub post', this.isDatahubPostCall);
-                // }
-                // this.chartService.getAPIData(userInput.apiUrl).subscribe((response) => {
                 myChart.hideLoading();
-                // this.serviceData = response;
-                // this.serviceData = data;
-                console.log('userInput', userInput);
                 if (userInput.aggrList.length === 0 && !this.isDatahubPostCall) {
-                    //calls for API without Aggregation
+                    // calls for API without Aggregation
                     if (userInput.type === 'pie') {
                         this.seriesData = this.getPieChartSeriesData(userInput);
                         this.chartOption = {
                             title: {
-                                text: userInput.title
+                                text: userInput.title,
+                                left: 'center',
                             },
                             legend: {
                                 icon: userInput.legend.icon,
                                 width: 330,
                                 top: '10%',
                                 type: 'scroll',
-                                formatter: function (name) {
-                                    let test = name.split('.').slice(-1);
-                                    let a = 
-                                    // name.split(/(?=[A-Z])/).join(' ');
-                                    test[0].replace(/([A-Z])/g, ' $1')
+                                formatter(name) {
+                                    const test = name.split('.').slice(-1);
+                                    const a = test[0].replace(/([A-Z])/g, ' $1')
                                         // uppercase the first character
-                                        .replace(/^./, function (str) { return str.toUpperCase(); });
+                                        .replace(/^./, (str) => { return str.toUpperCase(); });
                                     a.trim();
                                     return a;
                                 },
                             },
                             xAxis: {
                                 show: false,
-                                data: this.serviceData[userInput.listName].map(function (item) {
+                                data: this.serviceData[userInput.listName].map((item) => {
                                     return item[userInput.xAxisDimension];
                                 }),
                             },
@@ -195,27 +188,28 @@ class GpSmartEchartWidgetComponent {
                                 }
                             }
                         };
-                        console.log('pie without aggr', this.chartOption);
+                        if (isDevMode()) {
+                            console.log('Pie Chart For API', this.chartOption);
+                        }
                     }
                     // End of piechart for API
                     else if (userInput.type === 'polar') {
                         this.seriesData = this.getPolarChartSeriesData(userInput);
                         this.chartOption = {
                             title: {
-                                text: userInput.title
+                                text: userInput.title,
+                                left: 'center',
                             },
                             legend: {
                                 icon: userInput.legend.icon,
                                 width: 330,
                                 top: '10%',
                                 type: 'scroll',
-                                formatter: function (name) {
-                                    let test = name.split('.').slice(-1);
-                                    let a = 
-                                    // name.split(/(?=[A-Z])/).join(' ');
-                                    test[0].replace(/([A-Z])/g, ' $1')
+                                formatter(name) {
+                                    const test = name.split('.').slice(-1);
+                                    const a = test[0].replace(/([A-Z])/g, ' $1')
                                         // uppercase the first character
-                                        .replace(/^./, function (str) { return str.toUpperCase(); });
+                                        .replace(/^./, (str) => { return str.toUpperCase(); });
                                     a.trim();
                                     return a;
                                 },
@@ -249,11 +243,14 @@ class GpSmartEchartWidgetComponent {
                                 }
                             }
                         };
-                        // console.log("NORMAL POLAR CHart Option ", this.chartOption)
+                        if (isDevMode()) {
+                            console.log('Polar Chart For API', this.chartOption);
+                        }
                     }
                     // End of Polar CHart for API
                     else if (userInput.type === 'scatter') {
-                        let xAxisObject, yAxisObject;
+                        let xAxisObject;
+                        let yAxisObject;
                         if (userInput.layout === 'horizontalScatter') {
                             xAxisObject = {
                                 name: this.getFormattedName(userInput.xAxisDimension),
@@ -265,7 +262,7 @@ class GpSmartEchartWidgetComponent {
                                 name: this.getFormattedName(userInput.yAxisDimension),
                                 nameLocation: 'middle',
                                 nameGap: 70,
-                                data: this.serviceData[userInput.listName].map(function (item) {
+                                data: this.serviceData[userInput.listName].map((item) => {
                                     return item[userInput.yAxisDimension];
                                 }),
                                 type: this.getYAxisType(userInput)
@@ -276,7 +273,7 @@ class GpSmartEchartWidgetComponent {
                                 name: this.getFormattedName(userInput.xAxisDimension),
                                 nameLocation: 'middle',
                                 nameGap: 30,
-                                data: this.serviceData[userInput.listName].map(function (item) {
+                                data: this.serviceData[userInput.listName].map((item) => {
                                     return item[userInput.xAxisDimension];
                                 }),
                                 type: this.getXAxisType(userInput)
@@ -291,7 +288,8 @@ class GpSmartEchartWidgetComponent {
                         this.seriesData = this.getScatterChartSeriesData(userInput);
                         this.chartOption = {
                             title: {
-                                text: userInput.title
+                                text: userInput.title,
+                                left: 'center',
                             },
                             grid: {
                                 left: '10%',
@@ -323,13 +321,11 @@ class GpSmartEchartWidgetComponent {
                                 width: 330,
                                 top: '10%',
                                 type: 'scroll',
-                                formatter: function (name) {
-                                    let test = name.split('.').slice(-1);
-                                    let a = 
-                                    // name.split(/(?=[A-Z])/).join(' ');
-                                    test[0].replace(/([A-Z])/g, ' $1')
+                                formatter(name) {
+                                    const test = name.split('.').slice(-1);
+                                    const a = test[0].replace(/([A-Z])/g, ' $1')
                                         // uppercase the first character
-                                        .replace(/^./, function (str) { return str.toUpperCase(); });
+                                        .replace(/^./, (str) => { return str.toUpperCase(); });
                                     a.trim();
                                     return a;
                                 },
@@ -337,29 +333,34 @@ class GpSmartEchartWidgetComponent {
                             dataZoom: this.showZoomFeature(userInput.sliderZoom),
                             series: this.seriesData
                         };
-                        console.log('scatter option', this.chartOption);
-                    } //End of Scatter Chart for API
+                        if (isDevMode()) {
+                            console.log('Scatter chart for API', this.chartOption);
+                        }
+                    } // End of Scatter Chart for API
                     else if (userInput.type === 'radar') {
                         this.seriesData = this.getRadarSeriesData(userInput);
                         this.chartOption = {
+                            title: {
+                                text: userInput.title,
+                                left: 'center'
+                            },
                             legend: {
                                 icon: userInput.legend.icon,
                                 width: 330,
                                 top: '10%',
                                 type: 'scroll',
-                                formatter: function (name) {
-                                    let test = name.split('.').slice(-1);
-                                    let a = 
-                                    // name.split(/(?=[A-Z])/).join(' ');
-                                    test[0].replace(/([A-Z])/g, ' $1')
+                                formatter(name) {
+                                    const test = name.split('.').slice(-1);
+                                    const a = test[0].replace(/([A-Z])/g, ' $1')
                                         // uppercase the first character
-                                        .replace(/^./, function (str) { return str.toUpperCase(); });
+                                        .replace(/^./, (str) => { return str.toUpperCase(); });
                                     a.trim();
                                     return a;
                                 },
                             },
                             tooltip: {
                                 trigger: 'item',
+                                confine: true
                             },
                             grid: {
                                 left: '10%',
@@ -369,9 +370,10 @@ class GpSmartEchartWidgetComponent {
                                 containLabel: true
                             },
                             radar: {
-                                indicator: this.serviceData[userInput.listName].map(function (item) {
+                                indicator: this.serviceData[userInput.listName].map((item) => {
                                     return { name: item[userInput.xAxisDimension] };
                                 }),
+                                radius: 100
                             },
                             series: this.seriesData,
                             toolbox: {
@@ -380,11 +382,15 @@ class GpSmartEchartWidgetComponent {
                                 }
                             }
                         };
-                        console.log(this.chartOption);
+                        if (isDevMode()) {
+                            console.log('Radar chart for API', this.chartOption);
+                        }
                     } // End of Radar CHart for API
-                    else if ((userInput.type === 'line' || userInput.type === 'bar') && (userInput.layout != 'simpleHorizontalBar' && userInput.layout != 'stackedHorizontalBar')) {
+                    else if ((userInput.type === 'line' || userInput.type === 'bar')
+                        && (userInput.layout !== 'simpleHorizontalBar' && userInput.layout !== 'stackedHorizontalBar')) {
                         this.seriesData = this.getSeriesData(userInput);
-                        let xAxisName, yAxisName;
+                        let xAxisName;
+                        let yAxisName;
                         if (userInput.xAxisDimension.split(',').length > 1) {
                             xAxisName = '';
                         }
@@ -400,19 +406,18 @@ class GpSmartEchartWidgetComponent {
                         this.chartOption = {
                             title: {
                                 text: userInput.title,
+                                left: 'center',
                             },
                             legend: {
                                 icon: userInput.legend.icon,
                                 width: 330,
                                 top: '10%',
                                 type: 'scroll',
-                                formatter: function (name) {
-                                    let test = name.split('.').slice(-1);
-                                    let a = 
-                                    // name.split(/(?=[A-Z])/).join(' ');
-                                    test[0].replace(/([A-Z])/g, ' $1')
+                                formatter(name) {
+                                    const test = name.split('.').slice(-1);
+                                    const a = test[0].replace(/([A-Z])/g, ' $1')
                                         // uppercase the first character
-                                        .replace(/^./, function (str) { return str.toUpperCase(); });
+                                        .replace(/^./, (str) => { return str.toUpperCase(); });
                                     a.trim();
                                     return a;
                                 },
@@ -433,15 +438,13 @@ class GpSmartEchartWidgetComponent {
                                 containLabel: true
                             },
                             xAxis: {
-                                data: this.serviceData[userInput.listName].map(function (item) {
+                                data: this.serviceData[userInput.listName].map((item) => {
                                     return item[userInput.xAxisDimension];
                                 }),
                                 type: this.getXAxisType(userInput),
-                                name: xAxisName
                             },
                             yAxis: {
                                 type: this.getYAxisType(userInput),
-                                name: yAxisName
                             },
                             series: this.seriesData,
                             toolbox: {
@@ -455,12 +458,14 @@ class GpSmartEchartWidgetComponent {
                                 }
                             }
                         };
-                        console.log('Simple bar or line', this.chartOption);
+                        if (isDevMode()) {
+                            console.log('Simple bar or line chart for API', this.chartOption);
+                        }
                     }
                     // End of Simple Line,Simple Bar,Stacked Line And Stacked Bar for API
                     else if (userInput.type === 'bar' && (userInput.layout === 'simpleHorizontalBar' || userInput.layout === 'stackedHorizontalBar')) {
-                        console.log('horizontal chart chosen!!', userInput.aggrList.length);
-                        let xAxisName, yAxisName;
+                        let xAxisName;
+                        let yAxisName;
                         if (userInput.xAxisDimension.split(',').length > 1) {
                             xAxisName = '';
                         }
@@ -495,30 +500,24 @@ class GpSmartEchartWidgetComponent {
                                     icon: userInput.legend.icon,
                                     orient: 'horizontal',
                                     top: '10%',
-                                    formatter: function (name) {
-                                        let test = name.split('.').slice(-1);
-                                        let a = 
-                                        // name.split(/(?=[A-Z])/).join(' ');
-                                        test[0].replace(/([A-Z])/g, ' $1')
+                                    formatter(name) {
+                                        const test = name.split('.').slice(-1);
+                                        const a = test[0].replace(/([A-Z])/g, ' $1')
                                             // uppercase the first character
-                                            .replace(/^./, function (str) { return str.toUpperCase(); });
+                                            .replace(/^./, (str) => { return str.toUpperCase(); });
                                         return a;
                                     },
                                     type: 'scroll',
                                 },
                                 dataZoom: this.showZoomFeature(userInput.sliderZoom),
                                 xAxis: {
-                                    name: xAxisName,
-                                    // nameLocation: 'middle',
-                                    // nameGap: 50,
+                                    // name: xAxisName,
                                     type: this.getXAxisType(userInput),
                                 },
                                 yAxis: {
-                                    name: yAxisName,
-                                    // nameLocation: 'middle',
-                                    // nameGap: 150,
+                                    // name: yAxisName,
                                     type: this.getYAxisType(userInput),
-                                    data: this.serviceData[userInput.listName].map(function (item) {
+                                    data: this.serviceData[userInput.listName].map((item) => {
                                         const val = extractValueFromJSON(userInput.yAxisDimension, item);
                                         return val;
                                     }),
@@ -535,18 +534,19 @@ class GpSmartEchartWidgetComponent {
                                     }
                                 },
                             };
-                        console.log('horizontal chart options', this.chartOption);
+                        if (isDevMode()) {
+                            console.log('Horizontal chart for API', this.chartOption);
+                        }
                     }
                     // End of Horizontal Bar & Stacked Horizontal Bar
                 } // End of API calls with JSON Response without Aggregation
                 else if (userInput.aggrList.length === 0 && this.isDatahubPostCall) {
                     // calls for Datahub without Aggregation
                     const resultDimension = this.getResultDimesions(userInput.aggrList, userInput.groupBy);
-                    console.log('resultDeimenions', resultDimension);
                     let dimensions = [];
                     let encodeData;
                     const datasetId = null;
-                    // Format of Data from datahub is 
+                    // Format of Data from datahub is
                     // Result:[
                     //   "columns":['colA','colB',...,'colN'],
                     //   "data":[
@@ -558,13 +558,13 @@ class GpSmartEchartWidgetComponent {
                     // ]
                     // source of Dataset should be [[columns],[datarows]]
                     this.serviceData = [this.serviceData.columns, ...this.serviceData.data];
-                    //End of Response Data extraction
-                    console.log('Extracted Service Data', this.serviceData);
+                    // End of Response Data extraction
                     if (userInput.type === 'bar' || userInput.type === 'line') {
                         dimensions = this.getDatasetDimensions(userInput);
-                        let yDimensions, xDimensions;
-                        let yAxisName = '', xAxisName = '';
-                        // if (userInput.type === 'bar' || userInput.type === 'line') {
+                        let yDimensions;
+                        let xDimensions;
+                        let yAxisName = '';
+                        let xAxisName = '';
                         if (userInput.yAxisDimension.split(',').length === 1) {
                             yDimensions = userInput.yAxisDimension;
                             dimensions.push(yDimensions);
@@ -593,12 +593,12 @@ class GpSmartEchartWidgetComponent {
                             dataset: [
                                 {
                                     id: 'raw_data',
-                                    // dimensions: dimensions,
                                     source: this.serviceData
                                 }
                             ],
                             title: {
-                                text: userInput.title
+                                text: userInput.title,
+                                left: 'center',
                             },
                             tooltip: {
                                 trigger: 'axis',
@@ -629,13 +629,11 @@ class GpSmartEchartWidgetComponent {
                                 width: 330,
                                 top: '10%',
                                 type: 'scroll',
-                                formatter: function (name) {
-                                    let test = name.split('.').slice(-1);
-                                    let a = 
-                                    // name.split(/(?=[A-Z])/).join(' ');
-                                    test[0].replace(/([A-Z])/g, ' $1')
+                                formatter(name) {
+                                    const test = name.split('.').slice(-1);
+                                    const a = test[0].replace(/([A-Z])/g, ' $1')
                                         // uppercase the first character
-                                        .replace(/^./, function (str) { return str.toUpperCase(); });
+                                        .replace(/^./, (str) => { return str.toUpperCase(); });
                                     a.trim();
                                     return a;
                                 },
@@ -652,15 +650,17 @@ class GpSmartEchartWidgetComponent {
                             },
                             series: encodeData
                         };
-                        console.log('encode data', encodeData);
-                        console.log('datahub bar without aggregation', this.chartOption);
+                        if (isDevMode()) {
+                            console.log('Baror Line chart for Datahub without aggregation', this.chartOption);
+                        }
                     } // End of Bar,Line Chart without Aggregation for Datahub
                     else if (userInput.type === 'scatter') {
                         dimensions = this.getDatasetDimensions(userInput);
                         if (dimensions.indexOf(userInput.groupBy) === -1) {
                             dimensions.push(userInput.groupBy);
                         }
-                        let xAxisName = '', yAxisName = '';
+                        let xAxisName = '';
+                        let yAxisName = '';
                         if (userInput.xAxisDimension.split(',').length > 1) {
                             xAxisName = '';
                         }
@@ -678,12 +678,12 @@ class GpSmartEchartWidgetComponent {
                             dataset: [
                                 {
                                     id: 'raw_data',
-                                    // dimensions: dimensions,
                                     source: this.serviceData
                                 }
                             ],
                             title: {
-                                text: userInput.title
+                                text: userInput.title,
+                                left: 'center',
                             },
                             grid: {
                                 left: '10%',
@@ -697,13 +697,11 @@ class GpSmartEchartWidgetComponent {
                                 width: 330,
                                 top: '10%',
                                 type: 'scroll',
-                                formatter: function (name) {
-                                    let test = name.split('.').slice(-1);
-                                    let a = 
-                                    // name.split(/(?=[A-Z])/).join(' ');
-                                    test[0].replace(/([A-Z])/g, ' $1')
+                                formatter(name) {
+                                    const test = name.split('.').slice(-1);
+                                    const a = test[0].replace(/([A-Z])/g, ' $1')
                                         // uppercase the first character
-                                        .replace(/^./, function (str) { return str.toUpperCase(); });
+                                        .replace(/^./, (str) => { return str.toUpperCase(); });
                                     a.trim();
                                     return a;
                                 },
@@ -713,9 +711,6 @@ class GpSmartEchartWidgetComponent {
                                 nameLocation: 'middle',
                                 nameGap: 50,
                                 type: this.getXAxisType(userInput)
-                                // data: this.serviceData[userInput.listName].map(function (item) {
-                                //   return item[userInput.xAxisDimension];
-                                // }),
                             },
                             yAxis: {
                                 name: yAxisName,
@@ -743,8 +738,10 @@ class GpSmartEchartWidgetComponent {
                             },
                             series: encodeData
                         };
-                        console.log('scatter option transformation', this.chartOption);
-                    } //End of Scatter Chart without Aggregation for Datahub
+                        if (isDevMode()) {
+                            console.log('Scatter chart without Aggregation for Datahub', this.chartOption);
+                        }
+                    } // End of Scatter Chart without Aggregation for Datahub
                     else if (userInput.type === 'pie') {
                         dimensions = [userInput.pieSlicenName, userInput.pieSliceValue];
                         encodeData = this.getEncodeData(userInput, datasetId);
@@ -752,15 +749,15 @@ class GpSmartEchartWidgetComponent {
                             dataset: [
                                 {
                                     id: 'raw_data',
-                                    // dimensions: dimensions,
                                     source: this.serviceData
                                 },
                             ],
                             title: {
-                                text: userInput.title
+                                text: userInput.title,
+                                left: 'center',
                             },
                             tooltip: {
-                                trigger: "item",
+                                trigger: 'item',
                                 confine: true
                             },
                             grid: {
@@ -775,13 +772,11 @@ class GpSmartEchartWidgetComponent {
                                 width: 330,
                                 top: '10%', left: 'left',
                                 type: 'scroll',
-                                formatter: function (name) {
-                                    let test = name.split('.').slice(-1);
-                                    let a = 
-                                    // name.split(/(?=[A-Z])/).join(' ');
-                                    test[0].replace(/([A-Z])/g, ' $1')
+                                formatter(name) {
+                                    const test = name.split('.').slice(-1);
+                                    const a = test[0].replace(/([A-Z])/g, ' $1')
                                         // uppercase the first character
-                                        .replace(/^./, function (str) { return str.toUpperCase(); });
+                                        .replace(/^./, (str) => { return str.toUpperCase(); });
                                     a.trim();
                                     return a;
                                 },
@@ -793,9 +788,13 @@ class GpSmartEchartWidgetComponent {
                             },
                             series: encodeData
                         };
+                        if (isDevMode()) {
+                            console.log('Pie chart without Aggregation for Datahub', this.chartOption);
+                        }
                     } // End of Pie chart without Aggregation for Datahub
                     else if (userInput.type === 'polar') {
-                        let yDimensions, xDimensions;
+                        let yDimensions;
+                        let xDimensions;
                         if (userInput.yAxisDimension.split(',').length === 1) {
                             yDimensions = userInput.yAxisDimension;
                             dimensions.push(yDimensions);
@@ -820,14 +819,13 @@ class GpSmartEchartWidgetComponent {
                             dataset: [
                                 {
                                     id: 'raw_data',
-                                    // dimensions: dimensions,
                                     source: this.serviceData
                                 },
                             ],
                             title: {
-                                text: userInput.title
+                                text: userInput.title,
+                                left: 'center',
                             },
-                            // legend: {},
                             tooltip: {
                                 trigger: 'axis',
                                 axisPointer: {
@@ -854,13 +852,11 @@ class GpSmartEchartWidgetComponent {
                                 width: 330,
                                 top: '10%', left: 'left',
                                 type: 'scroll',
-                                formatter: function (name) {
-                                    let test = name.split('.').slice(-1);
-                                    let a = 
-                                    // name.split(/(?=[A-Z])/).join(' ');
-                                    test[0].replace(/([A-Z])/g, ' $1')
+                                formatter(name) {
+                                    const test = name.split('.').slice(-1);
+                                    const a = test[0].replace(/([A-Z])/g, ' $1')
                                         // uppercase the first character
-                                        .replace(/^./, function (str) { return str.toUpperCase(); });
+                                        .replace(/^./, (str) => { return str.toUpperCase(); });
                                     a.trim();
                                     return a;
                                 },
@@ -872,30 +868,33 @@ class GpSmartEchartWidgetComponent {
                             },
                             series: encodeData
                         };
-                        // console.log("Aggregate POLAR CHart Option ", this.chartOption)
+                        if (isDevMode()) {
+                            console.log('Polar chart without Aggregation for Datahub', this.chartOption);
+                        }
                     } // End of Polar Chart Without Aggregation for Datahub
                     else if (userInput.type === 'radar') {
                         dimensions = [...userInput.radarDimensions];
                         this.seriesData = this.getRadarSeriesData(userInput);
-                        let indexOfXDimension = this.serviceData[0].indexOf(userInput.xAxisDimension);
-                        let indicatorData = [];
+                        const indexOfXDimension = this.serviceData[0].indexOf(userInput.xAxisDimension);
+                        const indicatorData = [];
                         for (let i = 1; i < this.serviceData.length; i++) {
                             indicatorData.push({ name: this.serviceData[i][indexOfXDimension] });
                         }
-                        // encodeData = this.getEncodeData(userInput, datasetId);
                         this.chartOption = {
+                            title: {
+                                text: userInput.title,
+                                left: 'center'
+                            },
                             legend: {
                                 icon: userInput.legend.icon,
                                 width: 330,
                                 top: '10%', left: 'left',
                                 type: 'scroll',
-                                formatter: function (name) {
-                                    let test = name.split('.').slice(-1);
-                                    let a = 
-                                    // name.split(/(?=[A-Z])/).join(' ');
-                                    test[0].replace(/([A-Z])/g, ' $1')
+                                formatter(name) {
+                                    const test = name.split('.').slice(-1);
+                                    const a = test[0].replace(/([A-Z])/g, ' $1')
                                         // uppercase the first character
-                                        .replace(/^./, function (str) { return str.toUpperCase(); });
+                                        .replace(/^./, (str) => { return str.toUpperCase(); });
                                     a.trim();
                                     return a;
                                 },
@@ -904,7 +903,8 @@ class GpSmartEchartWidgetComponent {
                                 trigger: 'item',
                             },
                             radar: {
-                                indicator: indicatorData
+                                indicator: indicatorData,
+                                radius: 100
                             },
                             series: this.seriesData,
                             toolbox: {
@@ -913,20 +913,21 @@ class GpSmartEchartWidgetComponent {
                                 }
                             }
                         };
-                        console.log('datahub radar without aggregation', this.chartOption);
+                        if (isDevMode()) {
+                            console.log('Radar Chart without Aggregation for Datahub', this.chartOption);
+                        }
                     } // End of Radar Chart without Aggregation for Datahub
                 } // ENd of Datahub Calls Response without Aggregation
                 else if (userInput.aggrList.length > 0) {
                     // calls for API & Datahub with Aggregation
                     echarts.registerTransform(simpleTransform.aggregate);
                     const resultDimension = this.getResultDimesions(userInput.aggrList, userInput.groupBy);
-                    console.log('resultDeimenions', resultDimension);
                     let dimensions = [];
                     let encodeData;
                     const datasetId = '_aggregate';
                     // Extract the service data based on the response type of wthere call is made to Datahub or Other API
                     if (this.isDatahubPostCall) {
-                        // Format of Data from datahub is 
+                        // Format of Data from datahub is
                         // Result:[
                         //   "columns":['colA','colB',...,'colN'],
                         //   "data":[
@@ -952,12 +953,12 @@ class GpSmartEchartWidgetComponent {
                         //   }
                         // ]
                         this.serviceData = this.serviceData[userInput.listName];
-                    } //End of Response Data extraction
-                    console.log('Extracted Service Data', this.serviceData);
+                    } // End of Response Data extraction
                     if (userInput.type === 'bar' || userInput.type === 'line') {
-                        // dimensions = this.getDatasetDimensions(userInput);
-                        let yDimensions, xDimensions;
-                        let xAxisName = '', yAxisName = '';
+                        let yDimensions;
+                        let xDimensions;
+                        let xAxisName = '';
+                        let yAxisName = '';
                         if (this.isDatahubPostCall) {
                             dimensions = null;
                         }
@@ -991,7 +992,7 @@ class GpSmartEchartWidgetComponent {
                             dataset: [
                                 {
                                     id: 'raw_data',
-                                    dimensions: dimensions,
+                                    dimensions,
                                     source: this.serviceData
                                 },
                                 {
@@ -1010,7 +1011,8 @@ class GpSmartEchartWidgetComponent {
                                 }
                             ],
                             title: {
-                                text: userInput.title
+                                text: userInput.title,
+                                left: 'center',
                             },
                             tooltip: {
                                 trigger: 'axis',
@@ -1029,9 +1031,6 @@ class GpSmartEchartWidgetComponent {
                             yAxis: {
                                 type: this.getYAxisType(userInput),
                                 name: yAxisName
-                                //   axisLine: {
-                                //     onZero: false // This is important, so x axis can start from non-zero number
-                                // },import { element } from 'protractor';
                             },
                             grid: {
                                 left: '10%',
@@ -1045,13 +1044,11 @@ class GpSmartEchartWidgetComponent {
                                 width: 330,
                                 top: '10%',
                                 type: 'scroll',
-                                formatter: function (name) {
-                                    let test = name.split('.').slice(-1);
-                                    let a = 
-                                    // name.split(/(?=[A-Z])/).join(' ');
-                                    test[0].replace(/([A-Z])/g, ' $1')
+                                formatter(name) {
+                                    const test = name.split('.').slice(-1);
+                                    const a = test[0].replace(/([A-Z])/g, ' $1')
                                         // uppercase the first character
-                                        .replace(/^./, function (str) { return str.toUpperCase(); });
+                                        .replace(/^./, (str) => { return str.toUpperCase(); });
                                     a.trim();
                                     return a;
                                 },
@@ -1068,9 +1065,10 @@ class GpSmartEchartWidgetComponent {
                             },
                             series: encodeData
                         };
-                        console.log('encode data', encodeData);
-                        console.log('aggregate bar', this.chartOption);
-                    } //End of Bar,Line Chart with Aggregation for datahub and API
+                        if (isDevMode()) {
+                            console.log('Aggregate Bar or Line chart', this.chartOption);
+                        }
+                    } // End of Bar,Line Chart with Aggregation for datahub and API
                     else if (userInput.type === 'scatter') {
                         if (this.isDatahubPostCall) {
                             dimensions = null;
@@ -1081,7 +1079,8 @@ class GpSmartEchartWidgetComponent {
                                 dimensions.push(userInput.groupBy);
                             }
                         }
-                        let xAxisName = '', yAxisName = '';
+                        let xAxisName = '';
+                        let yAxisName = '';
                         if (userInput.xAxisDimension.split(',').length > 1) {
                             xAxisName = '';
                         }
@@ -1099,7 +1098,7 @@ class GpSmartEchartWidgetComponent {
                             dataset: [
                                 {
                                     id: 'raw_data',
-                                    dimensions: dimensions,
+                                    dimensions,
                                     source: this.serviceData
                                 },
                                 {
@@ -1118,7 +1117,8 @@ class GpSmartEchartWidgetComponent {
                                 }
                             ],
                             title: {
-                                text: userInput.title
+                                text: userInput.title,
+                                left: 'center',
                             },
                             grid: {
                                 left: '10%',
@@ -1132,9 +1132,6 @@ class GpSmartEchartWidgetComponent {
                                 nameLocation: 'middle',
                                 nameGap: 50,
                                 type: this.getXAxisType(userInput)
-                                // data: this.serviceData[userInput.listName].map(function (item) {
-                                //   return item[userInput.xAxisDimension];
-                                // }),
                             },
                             yAxis: {
                                 name: yAxisName,
@@ -1153,13 +1150,11 @@ class GpSmartEchartWidgetComponent {
                                 width: 330,
                                 top: '10%',
                                 type: 'scroll',
-                                formatter: function (name) {
-                                    let test = name.split('.').slice(-1);
-                                    let a = 
-                                    // name.split(/(?=[A-Z])/).join(' ');
-                                    test[0].replace(/([A-Z])/g, ' $1')
+                                formatter(name) {
+                                    const test = name.split('.').slice(-1);
+                                    const a = test[0].replace(/([A-Z])/g, ' $1')
                                         // uppercase the first character
-                                        .replace(/^./, function (str) { return str.toUpperCase(); });
+                                        .replace(/^./, (str) => { return str.toUpperCase(); });
                                     a.trim();
                                     return a;
                                 },
@@ -1177,8 +1172,10 @@ class GpSmartEchartWidgetComponent {
                             },
                             series: encodeData
                         };
-                        console.log('scatter option transformation', this.chartOption);
-                    } //End of Scatter Chart with Aggregation for datahub and API
+                        if (isDevMode()) {
+                            console.log('Aggregate Scatter chart', this.chartOption);
+                        }
+                    } // End of Scatter Chart with Aggregation for datahub and API
                     else if (userInput.type === 'pie') {
                         if (this.isDatahubPostCall) {
                             dimensions = null;
@@ -1191,7 +1188,7 @@ class GpSmartEchartWidgetComponent {
                             dataset: [
                                 {
                                     id: 'raw_data',
-                                    dimensions: dimensions,
+                                    dimensions,
                                     source: this.serviceData
                                 },
                                 {
@@ -1210,10 +1207,11 @@ class GpSmartEchartWidgetComponent {
                                 }
                             ],
                             title: {
-                                text: userInput.title
+                                text: userInput.title,
+                                left: 'center',
                             },
                             tooltip: {
-                                trigger: "item",
+                                trigger: 'item',
                                 confine: true
                             },
                             grid: {
@@ -1229,13 +1227,13 @@ class GpSmartEchartWidgetComponent {
                                 icon: userInput.legend.icon,
                                 left: 'left',
                                 top: '10%',
-                                formatter: function (name) {
-                                    let test = name.split('.').slice(-1);
-                                    let a = 
+                                formatter(name) {
+                                    const test = name.split('.').slice(-1);
+                                    const a = 
                                     // name.split(/(?=[A-Z])/).join(' ');
                                     test[0].replace(/([A-Z])/g, ' $1')
                                         // uppercase the first character
-                                        .replace(/^./, function (str) { return str.toUpperCase(); });
+                                        .replace(/^./, (str) => { return str.toUpperCase(); });
                                     a.trim();
                                     return a;
                                 },
@@ -1247,9 +1245,13 @@ class GpSmartEchartWidgetComponent {
                             },
                             series: encodeData
                         };
-                    } //End of Pie Chart with Aggregation for datahub and API
+                        if (isDevMode()) {
+                            console.log('Aggregate Pie chart', this.chartOption);
+                        }
+                    } // End of Pie Chart with Aggregation for datahub and API
                     else if (userInput.type === 'polar') {
-                        let yDimensions, xDimensions;
+                        let yDimensions;
+                        let xDimensions;
                         if (this.isDatahubPostCall) {
                             dimensions = null;
                         }
@@ -1279,7 +1281,7 @@ class GpSmartEchartWidgetComponent {
                             dataset: [
                                 {
                                     id: 'raw_data',
-                                    dimensions: dimensions,
+                                    dimensions,
                                     source: this.serviceData
                                 },
                                 {
@@ -1298,9 +1300,9 @@ class GpSmartEchartWidgetComponent {
                                 }
                             ],
                             title: {
-                                text: userInput.title
+                                text: userInput.title,
+                                left: 'center',
                             },
-                            // legend: {},
                             tooltip: {
                                 trigger: 'axis',
                                 axisPointer: {
@@ -1328,13 +1330,11 @@ class GpSmartEchartWidgetComponent {
                                 icon: userInput.legend.icon,
                                 left: 'left',
                                 top: '10%',
-                                formatter: function (name) {
-                                    let test = name.split('.').slice(-1);
-                                    let a = 
-                                    // name.split(/(?=[A-Z])/).join(' ');
-                                    test[0].replace(/([A-Z])/g, ' $1')
+                                formatter(name) {
+                                    const test = name.split('.').slice(-1);
+                                    const a = test[0].replace(/([A-Z])/g, ' $1')
                                         // uppercase the first character
-                                        .replace(/^./, function (str) { return str.toUpperCase(); });
+                                        .replace(/^./, (str) => { return str.toUpperCase(); });
                                     a.trim();
                                     return a;
                                 },
@@ -1346,63 +1346,12 @@ class GpSmartEchartWidgetComponent {
                             },
                             series: encodeData
                         };
-                        // console.log("Aggregate POLAR CHart Option ", this.chartOption)
+                        if (isDevMode()) {
+                            console.log('Aggregate Polar chart', this.chartOption);
+                        }
                     } // End of Polar Chart with Aggregation for datahub and API
-                    // else if (userInput.type === 'radar') {
-                    //   // this code will not work as Apache does not support aggregation with radar
-                    //   if (this.isDatahubPostCall) {
-                    //     dimensions = null;
-                    //   } else {
-                    //     dimensions = [...userInput.radarDimensions];
-                    //   }
-                    //   encodeData = this.getEncodeData(userInput, datasetId);
-                    //   this.chartOption = {
-                    //     dataset: [
-                    //       {
-                    //         id: 'raw_data',
-                    //         dimensions: dimensions,
-                    //         source: this.serviceData
-                    //       },
-                    //       {
-                    //         id: '_aggregate',
-                    //         fromDatasetId: 'raw_data',
-                    //         transform: [
-                    //           {
-                    //             type: 'ecSimpleTransform:aggregate',
-                    //             config: {
-                    //               resultDimensions:
-                    //                 resultDimension,
-                    //               groupBy: userInput.groupBy
-                    //             },
-                    //             print: true
-                    //           }
-                    //         ]
-                    //       }
-                    //     ],
-                    //     legend: {
-                    //       icon: userInput.legend.icon,
-                    //       width: 330,
-                    //       type: 'scroll'
-                    //     },
-                    //     tooltip: {
-                    //       trigger: 'item',
-                    //     },
-                    //     radar: {
-                    //       indicator: this.serviceData[userInput.listName].map(function (item) {
-                    //         return { name: item[userInput.xAxisDimension] };
-                    //       }),
-                    //     },
-                    //     series: this.seriesData,
-                    //     toolbox: {
-                    //       feature: {
-                    //         saveAsImage: {}
-                    //       }
-                    //     }
-                    //   }
-                    // } // End of Radar Chart with Aggregation for datahub and API
                 } // End of calls for API & Datahub with Aggregation
                 // End of chartOptions
-                // })
             } // End of IF condition checking whether variable serviceData has some data or not
         });
     }
@@ -1416,14 +1365,14 @@ class GpSmartEchartWidgetComponent {
         return input.type;
     }
     getFormattedName(input) {
-        let test = input.split('.').slice(-1);
-        let a = test[0].replace(/([A-Z])/g, ' $1')
+        const test = input.split('.').slice(-1);
+        const a = test[0].replace(/([A-Z])/g, ' $1')
             // uppercase the first character
-            .replace(/^./, function (str) { return str.toUpperCase(); });
+            .replace(/^./, (str) => { return str.toUpperCase(); });
         return a.trim();
     }
     getEncodeData(userInput, datasetId, xDimensions, yDimensions) {
-        if (userInput.type === "polar") {
+        if (userInput.type === 'polar') {
             return [{
                     coordinateSystem: 'polar',
                     name: userInput.xAxisDimension,
@@ -1448,10 +1397,9 @@ class GpSmartEchartWidgetComponent {
             if (userInput.layout === 'horizontalScatter') {
                 if (userInput.xAxisDimension.split(',').length === 1) {
                     return [{
-                            // name: userInput.xAxisDimension,
                             type: userInput.type,
                             symbolSize: userInput.scatterSymbolSize,
-                            datasetId: datasetId,
+                            datasetId,
                             encode: {
                                 y: userInput.yAxisDimension,
                                 x: userInput.xAxisDimension,
@@ -1461,12 +1409,12 @@ class GpSmartEchartWidgetComponent {
                 }
                 else {
                     const xAxisDimensions = userInput.xAxisDimension.split(',');
-                    let xAxisData = [];
-                    for (let i in xAxisDimensions) {
+                    const xAxisData = [];
+                    xAxisDimensions.forEach(i => {
                         xAxisData[i] = {
                             type: userInput.type,
                             symbolSize: userInput.scatterSymbolSize,
-                            datasetId: datasetId,
+                            datasetId,
                             encode: {
                                 y: userInput.yAxisDimension,
                                 x: xAxisDimensions[i],
@@ -1486,7 +1434,7 @@ class GpSmartEchartWidgetComponent {
                                 }
                             },
                         };
-                    }
+                    });
                     return xAxisData;
                 } // End of else part of XAxisDimension
             }
@@ -1495,7 +1443,7 @@ class GpSmartEchartWidgetComponent {
                     return [{
                             type: userInput.type,
                             symbolSize: userInput.scatterSymbolSize,
-                            datasetId: datasetId,
+                            datasetId,
                             encode: {
                                 y: userInput.yAxisDimension,
                                 x: userInput.xAxisDimension,
@@ -1518,12 +1466,12 @@ class GpSmartEchartWidgetComponent {
                 }
                 else {
                     const yAxisDimensions = userInput.yAxisDimension.split(',');
-                    let yAxisData = [];
-                    for (let i in yAxisDimensions) {
+                    const yAxisData = [];
+                    yAxisDimensions.forEach(i => {
                         yAxisData[i] = {
                             type: userInput.type,
                             symbolSize: userInput.scatterSymbolSize,
-                            datasetId: datasetId,
+                            datasetId,
                             encode: {
                                 y: userInput.yAxisDimension,
                                 x: yAxisDimensions[i],
@@ -1543,21 +1491,10 @@ class GpSmartEchartWidgetComponent {
                                 }
                             },
                         };
-                    }
+                    });
                     return yAxisData;
                 } // End of else part of YAxisDimension
             }
-            // return [{
-            //   // name: userInput.xAxisDimension,
-            //   type: userInput.type,
-            //   symbolSize: userInput.scatterSymbolSize,
-            //   datasetId: datasetId,
-            //   encode: {
-            //     y: userInput.yAxisDimension,
-            //     x: userInput.xAxisDimension,
-            //     tooltip: [userInput.xAxisDimension, userInput.yAxisDimension]
-            //   },
-            // }]
         }
         else if (userInput.type === 'radar') {
             const dimensions = userInput.radarDimensions.split(',');
@@ -1565,14 +1502,14 @@ class GpSmartEchartWidgetComponent {
                 acc[dimension] = [];
                 return acc;
             }, {});
-            this.serviceData[userInput.listName].map(function (item) {
+            this.serviceData[userInput.listName].map((item) => {
                 Object.keys(item).forEach(key => {
                     if (dimensionRecord[key]) {
                         dimensionRecord[key].push(item[key]);
                     }
                 });
             });
-            let resultARR = Object.values(dimensionRecord);
+            const resultARR = Object.values(dimensionRecord);
             const result1 = Object.keys(dimensionRecord).map(key => ({
                 name: key,
                 value: dimensionRecord[key]
@@ -1583,107 +1520,98 @@ class GpSmartEchartWidgetComponent {
                     data: result1
                 }];
         }
-        else if (userInput.type === "bar" && (userInput.layout === 'simpleBar' || userInput.layout === 'stackedBar')) {
+        else if (userInput.type === 'bar' && (userInput.layout === 'simpleBar' || userInput.layout === 'stackedBar')) {
             if (userInput.yAxisDimension.split(',').length === 1) {
                 return [{
                         type: userInput.type,
-                        datasetId: datasetId,
-                        // stack:'a',
+                        datasetId,
                         name: yDimensions,
                         encode: {
                             x: xDimensions,
                             y: yDimensions
-                            // itemName: ['productName']
                         }
                     }];
             }
             else {
-                let yAxisData = [];
-                for (let i in yDimensions) {
+                const yAxisData = [];
+                yDimensions.array.forEach(i => {
                     yAxisData[i] = {
                         type: userInput.type,
-                        datasetId: datasetId,
+                        datasetId,
                         stack: this.getStackName(userInput.stack, yDimensions[i]),
                         name: yDimensions[i],
                         encode: {
                             x: xDimensions,
                             y: yDimensions[i]
-                            // itemName: ['productName']
                         }
                     };
-                } //end of for block
+                }); // end of for block
                 return yAxisData;
             }
         }
-        else if (userInput.type === "bar" && (userInput.layout === 'simpleHorizontalBar' || userInput.layout === 'stackedHorizontalBar')) {
+        else if (userInput.type === 'bar' && (userInput.layout === 'simpleHorizontalBar' || userInput.layout === 'stackedHorizontalBar')) {
             if (userInput.xAxisDimension.split(',').length === 1) {
                 return [{
                         type: userInput.type,
-                        datasetId: datasetId,
-                        // stack:'a',
+                        datasetId,
                         name: xDimensions,
                         encode: {
                             x: xDimensions,
                             y: yDimensions
-                            // itemName: ['productName']
                         }
                     }];
             }
             else {
-                let xAxisData = [];
-                for (let i in xDimensions) {
+                const xAxisData = [];
+                xDimensions.foreach(i => {
                     xAxisData[i] = {
                         type: userInput.type,
-                        datasetId: datasetId,
+                        datasetId,
                         stack: this.getStackName(userInput.stack, xDimensions[i]),
                         name: xDimensions[i],
                         encode: {
                             x: xDimensions[i],
                             y: yDimensions
-                            // itemName: ['productName']
                         }
                     };
-                } //end of for block
+                }); // end of for block
                 return xAxisData;
             }
         }
-        else if (userInput.type === "line") {
+        else if (userInput.type === 'line') {
             if (userInput.yAxisDimension.split(',').length === 1) {
                 return [{
                         type: userInput.type,
-                        datasetId: datasetId,
+                        datasetId,
                         smooth: userInput.smoothLine,
                         areaStyle: userInput.area,
-                        // stack:'a',
                         name: yDimensions,
                         encode: {
                             x: xDimensions,
                             y: yDimensions
-                            // itemName: ['productName']
                         }
                     }];
             }
             else {
-                let yAxisData = [];
-                for (let i in yDimensions) {
+                const yAxisData = [];
+                yDimensions.forEach(i => {
                     yAxisData[i] = {
                         type: userInput.type,
-                        datasetId: datasetId,
+                        datasetId,
                         smooth: userInput.smoothLine,
                         areaStyle: userInput.area,
                         name: yDimensions[i],
                         encode: {
                             x: xDimensions,
                             y: yDimensions[i]
-                            // itemName: ['productName']
                         }
                     };
-                } //end of for block
+                }); // end of for block
                 return yAxisData;
             }
         }
-        else if (userInput.type === "pie") {
-            let convradius = userInput.radius.split(',');
+        else if (userInput.type === 'pie') {
+            const convradius = userInput.radius.split(',');
             let roseValue = '';
             let sliceStyle;
             if (userInput.layout === 'roseMode') {
@@ -1712,7 +1640,7 @@ class GpSmartEchartWidgetComponent {
             }
             return [{
                     type: userInput.type,
-                    datasetId: datasetId,
+                    datasetId,
                     radius: convradius,
                     roseType: roseValue,
                     avoidLabelOverlap: false,
@@ -1741,20 +1669,12 @@ class GpSmartEchartWidgetComponent {
     }
     // getScatterChartSeriesData function is used to create series data for scatter chart
     getScatterChartSeriesData(userInput) {
-        // const result = [];
-        // this.serviceData[userInput.listName].map(function (item) {
-        //   const currentResult = [];
-        //   currentResult.push(item[userInput.xAxisDimension]);
-        //   currentResult.push(item[userInput.yAxisDimension]);
-        //   result.push(currentResult);
-        // });
         if (userInput.layout === 'horizontalScatter') {
             if (userInput.xAxisDimension.split(',').length === 1) {
                 return [{
                         type: userInput.type,
                         symbolSize: userInput.scatterSymbolSize,
-                        // data: result,
-                        data: this.serviceData[userInput.listName].map(function (item) {
+                        data: this.serviceData[userInput.listName].map((item) => {
                             return item[userInput.xAxisDimension];
                         }),
                         label: {
@@ -1774,13 +1694,12 @@ class GpSmartEchartWidgetComponent {
             }
             else {
                 const xAxisDimensions = userInput.xAxisDimension.split(',');
-                let xAxisData = [];
-                for (let i in xAxisDimensions) {
+                const xAxisData = [];
+                xAxisDimensions.forEach(i => {
                     xAxisData[i] = {
                         type: userInput.type,
                         symbolSize: userInput.scatterSymbolSize,
-                        // data: result,
-                        data: this.serviceData[userInput.listName].map(function (item) {
+                        data: this.serviceData[userInput.listName].map((item) => {
                             return item[xAxisDimensions[i]];
                         }),
                         label: {
@@ -1797,7 +1716,7 @@ class GpSmartEchartWidgetComponent {
                             }
                         },
                     };
-                }
+                }); // end of for loop
                 return xAxisData;
             } // End of else part of XAxisDimension
         }
@@ -1806,8 +1725,7 @@ class GpSmartEchartWidgetComponent {
                 return [{
                         type: userInput.type,
                         symbolSize: userInput.scatterSymbolSize,
-                        // data: result,
-                        data: this.serviceData[userInput.listName].map(function (item) {
+                        data: this.serviceData[userInput.listName].map((item) => {
                             return item[userInput.yAxisDimension];
                         }),
                         label: {
@@ -1827,13 +1745,12 @@ class GpSmartEchartWidgetComponent {
             }
             else {
                 const yAxisDimensions = userInput.yAxisDimension.split(',');
-                let yAxisData = [];
-                for (let i in yAxisDimensions) {
+                const yAxisData = [];
+                yAxisDimensions.forEach(i => {
                     yAxisData[i] = {
                         type: userInput.type,
                         symbolSize: userInput.scatterSymbolSize,
-                        // data: result,
-                        data: this.serviceData[userInput.listName].map(function (item) {
+                        data: this.serviceData[userInput.listName].map((item) => {
                             return item[yAxisDimensions[i]];
                         }),
                         label: {
@@ -1850,7 +1767,7 @@ class GpSmartEchartWidgetComponent {
                             }
                         },
                     };
-                }
+                });
                 return yAxisData;
             } // End of else part of YAxisDimension
         }
@@ -1858,7 +1775,7 @@ class GpSmartEchartWidgetComponent {
     // getPolarChartSeriesData function is used to create series data for polar chart
     getPolarChartSeriesData(userInput) {
         const result = [];
-        this.serviceData[userInput.listName].map(function (item) {
+        this.serviceData[userInput.listName].map((item) => {
             const currentResult = [];
             currentResult.push(item[userInput.xAxisDimension]);
             currentResult.push(item[userInput.yAxisDimension]);
@@ -1887,9 +1804,8 @@ class GpSmartEchartWidgetComponent {
             acc[dimension] = [];
             return acc;
         }, {});
-        console.log('dimensions', dimensions);
         if (userInput.listName in this.serviceData) {
-            this.serviceData[userInput.listName].map(function (item) {
+            this.serviceData[userInput.listName].map((item) => {
                 Object.keys(item).forEach(key => {
                     if (dimensionRecord[key]) {
                         dimensionRecord[key].push(item[key]);
@@ -1898,8 +1814,8 @@ class GpSmartEchartWidgetComponent {
             });
         }
         else {
-            let indexes = dimensions.map((v, index) => {
-                let val = v;
+            const indexes = dimensions.map((v, index) => {
+                const val = v;
                 return { key: val, value: this.serviceData[0].indexOf(v) };
             });
             for (let i = 1; i < this.serviceData.length; i++) {
@@ -1908,7 +1824,6 @@ class GpSmartEchartWidgetComponent {
                 });
             }
         }
-        // let resultARR = Object.values(dimensionRecord)
         const result1 = Object.keys(dimensionRecord).map(key => ({
             name: key,
             value: dimensionRecord[key]
@@ -1922,7 +1837,6 @@ class GpSmartEchartWidgetComponent {
         }
         else {
             return [{
-                    // name: userInput.,
                     type: 'radar',
                     data: result1
                 }];
@@ -1934,21 +1848,20 @@ class GpSmartEchartWidgetComponent {
             acc[dimension] = [];
             return acc;
         }, {});
-        let indexes = dimensions.map((v, index) => {
-            let val = v;
+        const indexes = dimensions.map((v, index) => {
+            const val = v;
             return { key: val, value: dataDim.indexOf(v) };
         });
-        arr.map(function (item, index) {
-            console.log('item ', item, '   index ', index);
+        arr.map((item, index) => {
             indexes.keys.forEach(element => {
                 dimensionRecord[element.key].push(item[element.value]);
             });
         });
     }
-    //getPieChartSeriesData function is used to create series data for pie chart
+    // getPieChartSeriesData function is used to create series data for pie chart
     getPieChartSeriesData(userInput) {
-        //convert comma separated string userInput.radius to array
-        let convradius = userInput.radius.split(',');
+        // convert comma separated string userInput.radius to array
+        const convradius = userInput.radius.split(',');
         let roseValue = '';
         let sliceStyle;
         if (userInput.layout === 'roseMode') {
@@ -1990,19 +1903,14 @@ class GpSmartEchartWidgetComponent {
                 },
                 itemStyle: sliceStyle,
                 emphasis: {
-                    // label: {
-                    //   show: true,
-                    //   fontSize: '30',
-                    //   fontWeight: 'bold'
-                    // }
                     itemStyle: {
                         shadowBlur: 10,
                         shadowOffsetX: 0,
                         shadowColor: 'rgba(0, 0, 0, 0.5)'
                     }
                 },
-                data: this.serviceData[userInput.listName].map(function (item) {
-                    //take val from userinput.pieslice value and return it
+                data: this.serviceData[userInput.listName].map((item) => {
+                    // take val from userinput.pieslice value and return it
                     const val = item[userInput.pieSliceValue];
                     let nam;
                     if (userInput.pieSliceValue === userInput.pieSlicenName) {
@@ -2018,14 +1926,13 @@ class GpSmartEchartWidgetComponent {
                 }),
             }];
     }
-    //getseriesdata recieves userinput and returns seriesdata
-    //seriesdata is an array of objects
+    // getseriesdata recieves userinput and returns seriesdata
+    // seriesdata is an array of objects
     getSeriesData(userInput) {
         if (userInput.yAxisDimension.split(',').length === 1) {
             return [{
-                    name: userInput.listName,
-                    // data as servicedata's userInput.listName from userinput yaxis dimension without using map function
-                    data: this.serviceData[userInput.listName].map(function (item) {
+                    name: this.getFormattedName(userInput.yAxisDimension),
+                    data: this.serviceData[userInput.listName].map((item) => {
                         return item[userInput.yAxisDimension];
                     }),
                     type: userInput.type,
@@ -2035,29 +1942,30 @@ class GpSmartEchartWidgetComponent {
         }
         else {
             const yAxisDimensions = userInput.yAxisDimension.split(',');
-            let yAxisData = [];
-            for (let i in yAxisDimensions) {
+            const yAxisData = [];
+            yAxisDimensions.forEach(i => {
                 yAxisData[i] = {
-                    name: yAxisDimensions[i],
+                    name: this.getFormattedName(userInput.yAxisDimensions[i]),
                     stack: this.getStackName(userInput.stack, yAxisDimensions[i]),
                     emphasis: {
                         focus: 'series'
                     },
-                    data: this.serviceData[userInput.listName].map(function (item) {
+                    data: this.serviceData[userInput.listName].map((item) => {
                         return item[yAxisDimensions[i]];
                     }),
                     type: userInput.type,
                     smooth: userInput.smoothLine,
                     areaStyle: userInput.area
                 };
-            } //end of for block
+            }); // end of for block
             return yAxisData;
         }
     }
     // Gets the dimensions for dataset
     getDatasetDimensions(userInput) {
-        let yDimensions, xDimensions, dimensionArr = [];
-        // if (userInput.type === 'bar' || userInput.type === 'line') {
+        let yDimensions;
+        let xDimensions;
+        let dimensionArr = [];
         if (userInput.yAxisDimension.split(',').length === 1) {
             yDimensions = userInput.yAxisDimension;
             dimensionArr.push(yDimensions);
@@ -2082,19 +1990,19 @@ class GpSmartEchartWidgetComponent {
     // else return dimensionName
     getStackName(stackData, dimensionName) {
         let result = '';
-        for (let x in stackData) {
-            let values = stackData[x].stackValues.split(',');
-            for (let i in values) {
+        stackData.forEach(x => {
+            const values = stackData[x].stackValues.split(',');
+            for (const i in values) {
                 if (values[i] === dimensionName) {
                     result = stackData[x].stackName;
                     return result;
                 }
             }
-        }
+        }); // end of for loop of stackdata
     }
-    //Get the dimensions and method array for aggregation
+    // Get the dimensions and method array for aggregation
     // List comes from aggregate config and conatins both method and dimension name
-    //We also need group by to be included as a dimension but without a method
+    // We also need group by to be included as a dimension but without a method
     getResultDimesions(list, groupby) {
         const changedNamesForResult = list.map(({ aggrDimesnion: from, aggrMethod: method }) => ({
             from,
@@ -2130,8 +2038,8 @@ class GpSmartEchartWidgetComponent {
     getHorizontalSeriesData(userInput) {
         if (userInput.xAxisDimension.split(',').length === 1) {
             return [{
-                    name: userInput.listName,
-                    data: this.serviceData[userInput.listName].map(function (item) {
+                    name: this.getFormattedName(userInput.xAxisDimension),
+                    data: this.serviceData[userInput.listName].map((item) => {
                         const val = extractValueFromJSON(userInput.xAxisDimension, item);
                         return val;
                     }),
@@ -2151,40 +2059,28 @@ class GpSmartEchartWidgetComponent {
         }
         else {
             const xAxisDimensions = userInput.xAxisDimension.split(',');
-            let xAxisData = [];
-            for (let i in xAxisDimensions) {
+            const xAxisData = [];
+            xAxisDimensions.forEach(i => {
                 xAxisData[i] = {
-                    name: xAxisDimensions[i],
+                    name: this.getFormattedName(userInput.xAxisDimensions[i]),
                     stack: this.getStackName(userInput.stack, xAxisDimensions[i]),
                     label: {
                         show: userInput.showLabel
                     },
                     emphasis: {
-                        // focus:'series',
                         label: {
                             show: true
                         },
                     },
-                    data: this.serviceData[userInput.listName].map(function (item) {
-                        // return item[yAxisDimensions[i]];
+                    data: this.serviceData[userInput.listName].map((item) => {
                         const val = extractValueFromJSON(xAxisDimensions[i], item);
                         return val;
                     }),
-                    // markPoint: {
-                    //   data: [
-                    //     { type: 'max', name: 'Max' },
-                    //     { type: 'min', name: 'Min' }
-                    //   ]
-                    // },
-                    // markLine: {
-                    //   data: [{ type: 'average', name: 'Avg' }]
-                    // }
-                    // ,
                     type: userInput.type,
                     smooth: userInput.smoothLine,
                     areaStyle: userInput.area
                 };
-            } //end of for block
+            }); // end of for block
             return xAxisData;
         }
     }
@@ -2192,7 +2088,7 @@ class GpSmartEchartWidgetComponent {
 GpSmartEchartWidgetComponent.decorators = [
     { type: Component, args: [{
                 selector: 'lib-gp-smart-echart-widget',
-                template: "<!-- <p> -->\r\n\r\n    <!-- <lib-gp-smart-echart-widget (configData)=\"dataFromUser($event)\"></lib-gp-smart-echart-widget> -->\r\n\r\n     <!-- <app-smart-chart-config (configData)=\"dataFromUser($event)\"></app-smart-chart-config> -->\r\n\r\n<!--</p> -->\r\n\r\n<!-- <div> -->\r\n\r\n    <div style=\"display: block\">\r\n\r\n        <div id=\"chart-container\" echarts [options]=\"chartOption\" class=\"demo-chart\"\r\n        ></div>\r\n\r\n    </div>\r\n\r\n<!-- </div> -->",
+                template: "\r\n<!-- <div>\r\n    <lib-smart-chart-config (configData)=\"dataFromUser($event)\"></lib-smart-chart-config>\r\n</div> -->\r\n\r\n    <div style=\"display: block\">\r\n\r\n        <div  echarts [options]=\"chartOption\" class=\"demo-chart\"\r\n        #chartBox></div>\r\n\r\n    </div>\r\n",
                 styles: ['gp-smart-echart-widget.component.css']
             },] }
 ];
@@ -2202,6 +2098,7 @@ GpSmartEchartWidgetComponent.ctorParameters = () => [
     { type: FetchClient }
 ];
 GpSmartEchartWidgetComponent.propDecorators = {
+    mapDivRef: [{ type: ViewChild, args: ['chartBox', { static: true },] }],
     config: [{ type: Input }]
 };
 
@@ -2246,6 +2143,23 @@ class AggregateData {
 class Feature {
 }
 
+/**
+ * Copyright (c) 2021 Software AG, Darmstadt, Germany and/or its licensors
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 const chartValues = {
     chartType: [
         {
@@ -2453,9 +2367,9 @@ class SmartChartConfigComponent {
         this.flag = false;
         this.config = {
             listName: '',
-            title: 'DATA CHART',
-            pieSlicenName: 'Date',
-            pieSliceValue: 'PhoneSales',
+            title: '',
+            pieSlicenName: '',
+            pieSliceValue: '',
             type: '',
             layout: '',
             dataSource: '',
@@ -2465,15 +2379,14 @@ class SmartChartConfigComponent {
             smoothLine: false,
             apiUrl: '',
             area: false,
-            yAxisDimension: 'QuarterSales',
-            radarDimensions: 'count,costOfRepair',
+            yAxisDimension: '',
+            radarDimensions: '',
             addStack: false,
             showApiInput: false,
             stack: [],
             stackList: Stack[''],
             aggrArr: [],
             aggrList: AggregateData[''],
-            // groupBy: '',
             legend: {
                 icon: '',
                 width: 330,
@@ -2481,38 +2394,6 @@ class SmartChartConfigComponent {
             },
             radius: []
         };
-        // @Input() config: ChartConfig = {
-        //   listName: '',
-        //   title: 'DATA CHART',
-        //   pieSlicenName: '',
-        //   pieSliceValue: '',
-        //   type: '',
-        //   layout: '',
-        //   dataSource: '',
-        //   dataSourceValue: '',
-        //   xAxis: '',
-        //   yAxis: '',
-        //   smoothLine: false,
-        //   apiUrl: '',
-        //   area: false,
-        //   yAxisDimension: 'Temperature',
-        //   radarDimensions: '',
-        //   addStack: false,
-        //   showApiInput: false,
-        //   showDatahubInput: false,
-        //   stack: [],
-        //   stackList: Stack[''],
-        //   aggrArr:[],
-        //   aggrList: AggregateData[''],
-        //   // groupBy: '',
-        //   legend: {
-        //     icon: '',
-        //     width: 330,
-        //     type: 'scroll'
-        //   },
-        //   radius: []
-        // };
-        //create output decorator to emit data
         this.chartData = chartValues;
         this.isGroupByInAggregate = false;
         this.isAggrAdded = false;
@@ -2520,33 +2401,12 @@ class SmartChartConfigComponent {
     }
     ngOnInit() {
         this.aggregationMethods = chartValues.aggregateMethod;
-        this.config.xAxis = 'Date';
-        this.config.xAxis = 'value';
-        this.config.xAxisDimension = 'PhoneSales';
-        this.config.yAxisDimension = 'QuarterSales';
-        this.config.apiUrl = 'https://democenter.gateway.webmethodscloud.com/gateway/ConnectedStoreAPIs/1.0/ConnectedStoreAPIs/getQuarterlySales';
-        this.config.legend = {
-            icon: 'diamond',
-            top: '10%',
-            type: 'scroll'
-        };
-        this.config.listName = 'SalesData';
         this.config.aggrList = [];
-        // this.config.xAxisDimension = 'time';
-        // this.config.yAxisDimension = 'c8y_Temperature.T.value';
-        // this.config.sqlQuery = 'select * from t664142085Space.temperature';
-        // this.config.apiUrl = 'service/datahub/sql?version=v1';
-        // this.config.legend = {
-        //   icon: 'diamond',
-        //   top: '10%',
-        //   type: 'scroll'
-        // }
-        // this.config.listName = 'rows';
-        // this.config.aggrList = [];
+        this.config.legend = {};
     }
-    //add another stack to the stackList
-    //if stackList is empty, add total to the stackList
-    //if stackList is not empty, add another stack to the stackList
+    // add another stack to the stackList
+    // if stackList is empty, add total to the stackList
+    // if stackList is not empty, add another stack to the stackList
     stackAdded(stack) {
         this.config.stackList = [];
         if (stack) {
@@ -2560,9 +2420,9 @@ class SmartChartConfigComponent {
     deleteStackValue(stack, index) {
         this.config.stackList.splice(index, 1);
     }
-    //updateStack is called when the user changes the type of chart
-    //updateStack is called when the user changes the layout of the chart
-    //updateStack is called when the user changes the data source of the chart
+    // updateStack is called when the user changes the type of chart
+    // updateStack is called when the user changes the layout of the chart
+    // updateStack is called when the user changes the data source of the chart
     updateStack() {
         if (this.config.apiUrl) {
             if (this.config.type === 'bar') {
@@ -2615,25 +2475,25 @@ class SmartChartConfigComponent {
         this.config.addStack = false;
     }
     onLayoutSelection(value) {
-        if (value === 'simpleBar' || value === 'stackedBar' || value === 'simple' || value === "stacked" || value === 'simpleScatter') {
-            for (let val of this.chartData.yAxisType) {
+        if (value === 'simpleBar' || value === 'stackedBar' || value === 'simple' || value === 'stacked' || value === 'simpleScatter') {
+            for (const val of this.chartData.yAxisType) {
                 if (val.id === 'category') {
                     val.disabled = true;
                 }
             }
-            for (let val of this.chartData.xAxisType) {
+            for (const val of this.chartData.xAxisType) {
                 if (val.id === 'category') {
                     val.disabled = false;
                 }
             }
         }
         else if (value === 'simpleHorizontalBar' || value === 'stackedHorizontalBar' || value === 'horizontalScatter') {
-            for (let val of this.chartData.yAxisType) {
+            for (const val of this.chartData.yAxisType) {
                 if (val.id === 'category') {
                     val.disabled = false;
                 }
             }
-            for (let val of this.chartData.xAxisType) {
+            for (const val of this.chartData.xAxisType) {
                 if (val.id === 'category') {
                     val.disabled = true;
                 }
@@ -2656,7 +2516,6 @@ class SmartChartConfigComponent {
     }
     // if onSelection, onLayoutSelection, dataSourceSelection is called, then submit data and emit config
     SubmitData() {
-        // console.log('config', this.config);
         this.config.aggrList.filter(element => {
             if (element.aggrDimesnion === this.config.groupBy) {
                 this.isGroupByInAggregate = true;
@@ -2678,8 +2537,8 @@ class SmartChartConfigComponent {
 }
 SmartChartConfigComponent.decorators = [
     { type: Component, args: [{
-                selector: 'app-smart-chart-config',
-                template: "<div class=\"form-group\">\r\n    <div class=\"form-group\">\r\n        <label for=\"title\">Chart Title</label>\r\n        <input type=\"text\" class=\"form-control\" name=\"title\" [(ngModel)]=\"config.title\">\r\n        <div >\r\n            <label for=\"listname\">List Name</label>\r\n            <input type=\"text\" class=\"form-control\" name=\"listname\" [(ngModel)]=\"config.listName\">\r\n        </div>\r\n    </div>\r\n    <!-- <div class=\"form-group\">\r\n\r\n        <label for=\"xAxisName\">X-Axis Name</label>\r\n        <input class=\"form-control\" name=\"xAxisName\" type=\"text\" [(ngModel)]=\"config.xAxisName\">\r\n        <label for=\"yAxisName\">Y-Axis Name</label>\r\n        <input class=\"form-control\" name=\"yAxisName\" type=\"text\" [(ngModel)]=\"config.yAxisName\">\r\n    </div> -->\r\n    <div class=\"form-group\">\r\n        <form>\r\n            <label for=\"api\" title=\"API URL\" class=\"c8y-radio radio-inline\">\r\n                <input type=\"radio\" id=\"api\" name=\"dataSource\" value=\"API\"\r\n                    (change)=\"dataSourceSelection($event.target.value)\" [(ngModel)]=\"config.dataSource\">\r\n                    <span></span>\r\n                    <span>API URL</span>\r\n                \r\n            </label>\r\n            <!-- <label for=\"device\" title=\"Device\" class=\"c8y-radio radio-inline\">\r\n                <input type=\"radio\" id=\"device\" name=\"dataSource\" value=\"device\"\r\n                    (change)=\"dataSourceSelection($event.target.value)\" [(ngModel)]=\"config.dataSource\">\r\n                    <span></span>\r\n                    <span>Device</span>\r\n\r\n            </label> -->\r\n            <label for=\"datahub\" title=\"DataHub\" class=\"c8y-radio radio-inline\">\r\n                <input type=\"radio\" id=\"datahub\" name=\"dataSource\" value=\"datahub\"\r\n                    (change)=\"dataSourceSelection($event.target.value)\" [(ngModel)]=\"config.dataSource\" placeholder=\"Enter Relative URL\">\r\n                    <span></span>\r\n                    <span>DataHub</span>\r\n\r\n            </label>\r\n        </form>\r\n        <ng-container *ngIf=\"config.showApiInput\">\r\n            &nbsp;&nbsp;<input class=\"form-control\" type=\"text\" [(ngModel)]=\"config.apiUrl\">\r\n        </ng-container>\r\n        <!-- <ng-container *ngIf=\"!config.showApiInput\">\r\n            &nbsp;&nbsp;\r\n        </ng-container> -->\r\n        <ng-container *ngIf=\"config.showDatahubInput\">\r\n            <input class=\"form-control\" type=\"text\" placeholder=\"Datahub URL\" [(ngModel)]=\"config.apiUrl\">\r\n            <div><textarea class=\"form-control\" placeholder=\"Sql Query\"  rows=\"3\" cols=\"30\" [(ngModel)]=\"config.sqlQuery\"></textarea>\r\n            </div>\r\n        </ng-container>\r\n      \r\n    </div>\r\n    <div class=\"form-group\">\r\n        <label for=\"type\">Chart Type</label>\r\n        <div class=\"c8y-select-wrapper\">\r\n            <select id=\"selectExample\" class=\"form-control\" name=\"type\" (change)=\"onSelection($event.target.value)\"\r\n                [(ngModel)]=\"config.type\">\r\n                <option *ngFor=\"let chartType of chartData.chartType\" value=\"{{chartType.id}}\">{{chartType.value}}\r\n                </option>\r\n            </select>\r\n        </div>\r\n        <!-- dont show div if config.type is scatter or radar -->\r\n        <div *ngIf=\" config.type!=='radar'\">\r\n            <label for=\"layout\">Chart Layout</label>\r\n            <div class=\"c8y-select-wrapper\">\r\n                <select name=\"layout\" id=\"selectExample\" class=\"form-control\" [(ngModel)]=\"config.layout\"\r\n                (change)=\"onLayoutSelection($event.target.value)\">\r\n                    <option *ngFor=\"let chartLayout of chartLayoutData\" value=\"{{chartLayout.id}}\">{{chartLayout.value}}\r\n                    </option>\r\n                </select>\r\n            </div>\r\n        </div>\r\n        <div *ngIf=\"config.type=='pie'\">\r\n            <label for=\"listname\">PieSliceValue</label>\r\n            <input type=\"text\" class=\"form-control\" name=\"listname\" [(ngModel)]=\"config.pieSliceValue\">\r\n            <label for=\"listname\">PieSliceName</label>\r\n            <input type=\"text\" class=\"form-control\" name=\"listname\" [(ngModel)]=\"config.pieSlicenName\">\r\n        </div>\r\n    </div>\r\n\r\n    <div *ngIf=\"config.type==='line'\">\r\n        <label title=\"Area\" class=\"c8y-checkbox\">\r\n            <input type=\"checkbox\" value=\"true\" [(ngModel)]=\"config.area\">\r\n            <span></span>\r\n            <span>Area</span>\r\n        </label>\r\n        <label title=\"Smooth Line\" class=\"c8y-checkbox\">\r\n            <input type=\"checkbox\" value=\"true\" [(ngModel)]=\"config.smoothLine\">\r\n            <span></span>\r\n            <span>Smooth Line</span>\r\n        </label><br>\r\n    </div>\r\n    <!-- dont show div if config.type is pie or radar -->\r\n    <div class=\"form-group\" *ngIf=\"config.type!=='pie'\">\r\n        <div class=\"form-group\" *ngIf=\"config.type!=='polar'\">\r\n            <label for=\"xAxisType\">X-Axis Type</label>\r\n            <div class=\"c8y-select-wrapper\">\r\n                <select id=\"selectExample\" class=\"form-control\" name=\"xAxisType\" [(ngModel)]=\"config.xAxis\">\r\n                    <option *ngFor=\"let type of chartData.xAxisType\" value=\"{{type.id}}\"\r\n                    [disabled]='type.disabled'>{{type.value}}\r\n                    </option>\r\n                </select>\r\n            </div>\r\n        </div>\r\n        <label for=\"xAxisDimension\">X-Axis Dimension</label>\r\n        <input class=\"form-control\" name=\"url\" type=\"text\" [(ngModel)]=\"config.xAxisDimension\">\r\n    </div>\r\n\r\n    <div class=\"form-group\" *ngIf=\"config.type!=='pie' && config.type!=='radar'\">\r\n        <div class=\"form-group\" *ngIf=\"config.type!=='polar'\">\r\n            <label for=\"yAxisType\">Y-Axis Type</label>\r\n            <div class=\"c8y-select-wrapper\">\r\n                <select id=\"selectExample\" class=\"form-control\" name=\"yAxisType\" [(ngModel)]=\"config.yAxis\">\r\n                    <option *ngFor=\"let type of chartData.yAxisType\" value=\"{{type.id}}\"\r\n                    [disabled]='type.disabled'>{{type.value}}\r\n                    </option>\r\n                </select>\r\n            </div>\r\n        </div>\r\n        <label for=\"yAxisDimension\">Y-Axis Dimension</label>\r\n        <input class=\"form-control\" name=\"yAxisDimension\" type=\"text\" [(ngModel)]=\"config.yAxisDimension\">\r\n    </div>\r\n\r\n    <div class=\"form-group\" *ngIf=\"config.type=='radar'\">\r\n        <label for=\"radarDimensions\">Radar Dimensions</label>\r\n        <input class=\"form-control\" name=\"radarDimensions\" type=\"text\" [(ngModel)]=\"config.radarDimensions\">\r\n    </div>\r\n    <!-- Dropdown for Aggregation / group by methods  -->\r\n    <div *ngIf=\"config.type==='pie'||config.type==='bar'||config.type==='line' ||config.type==='polar' || config.type==='scatter' \">\r\n        <label for=\"aggregation\">Aggregate Method</label>\r\n        <button type=\"button\" class=\"btn btn-primary btn-xs\" (click)=\"addAnotherAggregate()\">+</button>\r\n\r\n        <ng-container *ngFor=\"let item of config.aggrList;let i = index\">\r\n            <div class=\"form-group\">\r\n                <label for=\"aggregateDimension\">Dimension </label>\r\n                <input class=\"form-control\" name=\"aggregateDimension\" type=\"text\"\r\n                    [ngClass]=\"{'alertInput': isGroupByInAggregate === true}\"\r\n                    [(ngModel)]=\"config.aggrList[i].aggrDimesnion\">\r\n\r\n                <label for=\"aggregation\">Method</label>\r\n                <select name=\"aggregation\" id=\"selectMethod\" class=\"form-control\"\r\n                    [(ngModel)]=\"config.aggrList[i].aggrMethod\">\r\n                    <option *ngFor=\"let method of aggregationMethods\" value=\"{{method.id}}\">{{method.value}}\r\n                    </option>\r\n                </select>\r\n\r\n\r\n                <button class=\"btn btn-primary btn-xs btn-danger\" (click)=\"deleteAggrValue($event,i)\">-</button>\r\n            </div>\r\n        </ng-container>\r\n\r\n        <div class=\"form-group\" *ngIf=\"isAggrAdded\">\r\n            <label for=\"groupByDimension\">Group By</label>\r\n            <input class=\"form-control\" name=\"groupByDimension\" type=\"text\" [(ngModel)]=\"config.groupBy\">\r\n\r\n        </div>\r\n    </div>\r\n\r\n    <!-- Dropdown for Legend Icon -->\r\n    <label for=\"legend\">Legend config</label>\r\n    <div class=\"c8y-select-wrapper\">\r\n        <select name=\"legend\" id=\"LegendSelect\" class=\"form-control\" [(ngModel)]=\"config.legend.icon\">\r\n            <option *ngFor=\"let legendType of chartData.legendType\" value=\"{{legendType.icon}}\">{{legendType.value}}\r\n            </option>\r\n        </select>\r\n    </div>\r\n    <!-- Pie chart options -->\r\n    <div id=\"pie-option-conatiner\" *ngIf=\"config.type==='pie'\">\r\n        <!-- <div id=\"pie-option-conatiner\" *ngIf=\"config.layout==='roseMode'\">\r\n            <label for=\"roseType\">RoseType</label>\r\n            <div class=\"c8y-select-wrapper\">\r\n                <select class=\"form-control\" name=\"roseType\" [(ngModel)]=\"config.roseType\">\r\n                    <option value=\"radius\">Radius\r\n                    </option>\r\n                </select>\r\n            </div>\r\n        </div> -->\r\n        \r\n        <label for=\"radius\">Pie Radius</label>\r\n        <div>\r\n            <input class=\"form-control\" name=\"radius\" type=\"text\" placeholder=\"0%,100%\" [(ngModel)]=\"config.radius\">\r\n        </div>\r\n    </div>\r\n    <div class=\"form-group\" *ngIf=\"config.type==='pie'\">\r\n        <label for=\"pieConfig\">Pie Slice Config</label>\r\n        <div>\r\n        <label for=\"pieBorderRadius\">Border Radius</label>\r\n            <input class=\"form-control\" name=\"pieBorderRadius\" type=\"number\" min='0' max='30' placeholder=\"0\" value=\"0\" [(ngModel)]=\"config.pieBorderRadius\">\r\n       \r\n        <label for=\"pieBorderWidth\">Border Width</label>\r\n            <input class=\"form-control\" name=\"pieBorderWidth\" type=\"number\" min='0' max='30' placeholder=\"0\"  value=\"0\"[(ngModel)]=\"config.pieBorderWidth\">\r\n        </div>\r\n     </div>\r\n\r\n    <!-- For scatter bubble size -->\r\n    <div *ngIf=\"config.type==='scatter'\">\r\n        <label title=\"Bubble Size\"for=\"symbolSize\">Bubble Size</label>\r\n        <input class=\"form-control\" name=\"symbolSize\" type=\"number\" placeholder=\"Enter a number\"\r\n            [(ngModel)]=\"config.scatterSymbolSize\" min=\"5\" max=\"20\">\r\n\r\n    </div>\r\n    <!-- stack container -->\r\n    <div id=\"stack-conatiner\" *ngIf=\"config.type==='line' || config.type==='bar'\">\r\n        <div id=\"stack-container\" *ngIf=\"config.layout==='stacked' || config.layout==='stackedBar'\">\r\n            <div style=\"margin-right: 0px;\">\r\n                <label class=\"c8y-checkbox checkbox-inline\" title=\"addStack\">\r\n                    <input type=\"checkbox\" value=\"Add Stack\" [(ngModel)]=\"config.addStack\"\r\n                        (click)=\"stackAdded($event.target.checked)\">\r\n                    <span></span>\r\n                    <span>Add Stack</span>\r\n                </label>\r\n            </div>\r\n            <div *ngIf=\"config.addStack\">\r\n                <button type=\"button\" class=\"btn btn-primary btn-xs\" (click)=\"addAnotherStack()\">Add\r\n                    Another Stack</button>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <div *ngIf=\"config.type==='line'  || config.type==='scatter'  || config.type==='bar'\">\r\n        <label title=\"Slider Zoom\" class=\"c8y-checkbox\">\r\n            <input type=\"checkbox\" value=\"false\" [(ngModel)]=\"config.sliderZoom\" >\r\n            <span></span>\r\n            <span>Slider Zoom</span>\r\n        </label>\r\n        <label title=\"Box Zoom\" class=\"c8y-checkbox\">\r\n            <input type=\"checkbox\" value=\"false\" [(ngModel)]=\"config.boxZoom\">\r\n            <span></span>\r\n            <span>Box Zoom</span>\r\n        </label>\r\n    </div>\r\n    <div *ngIf=\"config.layout==='stacked' || config.layout==='stackedBar'\">\r\n        <div *ngIf=\"config.addStack\">\r\n            <ng-container *ngFor=\"let item of config.stackList;let i = index\">\r\n                <div class=\"form-group\">\r\n                    <label for=\"stackName\">Stack Name</label>\r\n                    <div>\r\n                        <input class=\"form-control\" name=\"stackName\" type=\"text\"\r\n                            [(ngModel)]=\"config.stackList[i].stackName\">\r\n                    </div>\r\n                    <label for=\"stackValues\">Stack Values</label>\r\n                    <div>\r\n                        <input class=\"form-control\" name=\"stackValues\" type=\"text\"\r\n                            [(ngModel)]=\"config.stackList[i].stackValues\">\r\n                    </div>\r\n                    <div>\r\n                        <button class=\"btn btn-primary btn-xs btn-danger\" (click)=\"deleteStackValue($event,i)\">Delete\r\n                            Stack</button>\r\n                    </div>\r\n                </div>\r\n            </ng-container>\r\n            <button type=\"button\" class=\"btn btn-primary btn-xs\" (click)=\"updateStack()\">update</button>\r\n\r\n        </div>\r\n    </div>\r\n\r\n</div>\r\n<!-- <div>\r\n    <input type=\"submit\" (click)=\"SubmitData()\" value=\"Submit\" />\r\n</div> -->",
+                selector: 'lib-smart-chart-config',
+                template: "<div class=\"form-group\">\r\n    <div class=\"form-group\">\r\n        <label for=\"title\">Chart Title</label>\r\n        <input type=\"text\" class=\"form-control\" name=\"title\" [(ngModel)]=\"config.title\">\r\n        <div >\r\n            <label for=\"listname\">List Name</label>\r\n            <input type=\"text\" class=\"form-control\" name=\"listname\" [(ngModel)]=\"config.listName\">\r\n        </div>\r\n    </div>\r\n  \r\n    <div class=\"form-group\">\r\n        <form>\r\n            <label for=\"api\" title=\"API URL\" class=\"c8y-radio radio-inline\">\r\n                <input type=\"radio\" id=\"api\" name=\"dataSource\" value=\"API\"\r\n                    (change)=\"dataSourceSelection($event.target.value)\" [(ngModel)]=\"config.dataSource\">\r\n                    <span></span>\r\n                    <span>API URL</span>\r\n                \r\n            </label>\r\n            \r\n            <label for=\"datahub\" title=\"DataHub\" class=\"c8y-radio radio-inline\">\r\n                <input type=\"radio\" id=\"datahub\" name=\"dataSource\" value=\"datahub\"\r\n                    (change)=\"dataSourceSelection($event.target.value)\" [(ngModel)]=\"config.dataSource\" placeholder=\"Enter Relative URL\">\r\n                    <span></span>\r\n                    <span>DataHub</span>\r\n\r\n            </label>\r\n        </form>\r\n        <ng-container *ngIf=\"config.showApiInput\">\r\n            &nbsp;&nbsp;<input class=\"form-control\" type=\"text\" [(ngModel)]=\"config.apiUrl\">\r\n        </ng-container>\r\n     \r\n        <ng-container *ngIf=\"config.showDatahubInput\">\r\n            <input class=\"form-control\" type=\"text\" placeholder=\"Datahub URL\" [(ngModel)]=\"config.apiUrl\">\r\n            <div><textarea class=\"form-control\" placeholder=\"Sql Query\"  rows=\"3\" cols=\"30\" [(ngModel)]=\"config.sqlQuery\"></textarea>\r\n            </div>\r\n        </ng-container>\r\n      \r\n    </div>\r\n    <div class=\"form-group\">\r\n        <label for=\"type\">Chart Type</label>\r\n        <div class=\"c8y-select-wrapper\">\r\n            <select id=\"selectExample\" class=\"form-control\" name=\"type\" (change)=\"onSelection($event.target.value)\"\r\n                [(ngModel)]=\"config.type\">\r\n                <option *ngFor=\"let chartType of chartData.chartType\" value=\"{{chartType.id}}\">{{chartType.value}}\r\n                </option>\r\n            </select>\r\n        </div>\r\n        <!-- dont show div if config.type is scatter or radar -->\r\n        <div *ngIf=\" config.type!=='radar'\">\r\n            <label for=\"layout\">Chart Layout</label>\r\n            <div class=\"c8y-select-wrapper\">\r\n                <select name=\"layout\" id=\"selectExample\" class=\"form-control\" [(ngModel)]=\"config.layout\"\r\n                (change)=\"onLayoutSelection($event.target.value)\">\r\n                    <option *ngFor=\"let chartLayout of chartLayoutData\" value=\"{{chartLayout.id}}\">{{chartLayout.value}}\r\n                    </option>\r\n                </select>\r\n            </div>\r\n        </div>\r\n        <div *ngIf=\"config.type=='pie'\">\r\n            <label for=\"listname\">PieSliceValue</label>\r\n            <input type=\"text\" class=\"form-control\" name=\"listname\" [(ngModel)]=\"config.pieSliceValue\">\r\n            <label for=\"listname\">PieSliceName</label>\r\n            <input type=\"text\" class=\"form-control\" name=\"listname\" [(ngModel)]=\"config.pieSlicenName\">\r\n        </div>\r\n    </div>\r\n\r\n    <div *ngIf=\"config.type==='line'\">\r\n        <label title=\"Area\" class=\"c8y-checkbox\">\r\n            <input type=\"checkbox\" value=\"true\" [(ngModel)]=\"config.area\">\r\n            <span></span>\r\n            <span>Area</span>\r\n        </label>\r\n        <label title=\"Smooth Line\" class=\"c8y-checkbox\">\r\n            <input type=\"checkbox\" value=\"true\" [(ngModel)]=\"config.smoothLine\">\r\n            <span></span>\r\n            <span>Smooth Line</span>\r\n        </label><br>\r\n    </div>\r\n    <!-- dont show div if config.type is pie or radar -->\r\n    <div class=\"form-group\" *ngIf=\"config.type!=='pie'\">\r\n        <div class=\"form-group\" *ngIf=\"config.type!=='polar'\">\r\n            <label for=\"xAxisType\">X-Axis Type</label>\r\n            <div class=\"c8y-select-wrapper\">\r\n                <select id=\"selectExample\" class=\"form-control\" name=\"xAxisType\" [(ngModel)]=\"config.xAxis\">\r\n                    <option *ngFor=\"let type of chartData.xAxisType\" value=\"{{type.id}}\"\r\n                    [disabled]='type.disabled'>{{type.value}}\r\n                    </option>\r\n                </select>\r\n            </div>\r\n        </div>\r\n        <label for=\"xAxisDimension\">X-Axis Dimension</label>\r\n        <input class=\"form-control\" name=\"url\" type=\"text\" [(ngModel)]=\"config.xAxisDimension\">\r\n    </div>\r\n\r\n    <div class=\"form-group\" *ngIf=\"config.type!=='pie' && config.type!=='radar'\">\r\n        <div class=\"form-group\" *ngIf=\"config.type!=='polar'\">\r\n            <label for=\"yAxisType\">Y-Axis Type</label>\r\n            <div class=\"c8y-select-wrapper\">\r\n                <select id=\"selectExample\" class=\"form-control\" name=\"yAxisType\" [(ngModel)]=\"config.yAxis\">\r\n                    <option *ngFor=\"let type of chartData.yAxisType\" value=\"{{type.id}}\"\r\n                    [disabled]='type.disabled'>{{type.value}}\r\n                    </option>\r\n                </select>\r\n            </div>\r\n        </div>\r\n        <label for=\"yAxisDimension\">Y-Axis Dimension</label>\r\n        <input class=\"form-control\" name=\"yAxisDimension\" type=\"text\" [(ngModel)]=\"config.yAxisDimension\">\r\n    </div>\r\n\r\n    <div class=\"form-group\" *ngIf=\"config.type=='radar'\">\r\n        <label for=\"radarDimensions\">Radar Dimensions</label>\r\n        <input class=\"form-control\" name=\"radarDimensions\" type=\"text\" [(ngModel)]=\"config.radarDimensions\">\r\n    </div>\r\n    <!-- Dropdown for Aggregation / group by methods  -->\r\n    <div *ngIf=\"config.type==='pie'||config.type==='bar'||config.type==='line' ||config.type==='polar' || config.type==='scatter' \">\r\n        <label for=\"aggregation\">Aggregate Method</label>\r\n        <button type=\"button\" class=\"btn btn-primary btn-xs\" (click)=\"addAnotherAggregate()\">+</button>\r\n\r\n        <ng-container *ngFor=\"let item of config.aggrList;let i = index\">\r\n            <div class=\"form-group\">\r\n                <label for=\"aggregateDimension\">Dimension </label>\r\n                <input class=\"form-control\" name=\"aggregateDimension\" type=\"text\"\r\n                    [ngClass]=\"{'alertInput': isGroupByInAggregate === true}\"\r\n                    [(ngModel)]=\"config.aggrList[i].aggrDimesnion\">\r\n\r\n                <label for=\"aggregation\">Method</label>\r\n                <select name=\"aggregation\" id=\"selectMethod\" class=\"form-control\"\r\n                    [(ngModel)]=\"config.aggrList[i].aggrMethod\">\r\n                    <option *ngFor=\"let method of aggregationMethods\" value=\"{{method.id}}\">{{method.value}}\r\n                    </option>\r\n                </select>\r\n\r\n\r\n                <button class=\"btn btn-primary btn-xs btn-danger\" (click)=\"deleteAggrValue($event,i)\">-</button>\r\n            </div>\r\n        </ng-container>\r\n\r\n        <div class=\"form-group\" *ngIf=\"isAggrAdded\">\r\n            <label for=\"groupByDimension\">Group By</label>\r\n            <input class=\"form-control\" name=\"groupByDimension\" type=\"text\" [(ngModel)]=\"config.groupBy\">\r\n\r\n        </div>\r\n    </div>\r\n\r\n    <!-- Dropdown for Legend Icon -->\r\n    <label for=\"legend\">Legend config</label>\r\n    <div class=\"c8y-select-wrapper\">\r\n        <select name=\"legend\" id=\"LegendSelect\" class=\"form-control\" [(ngModel)]=\"config.legend.icon\">\r\n            <option *ngFor=\"let legendType of chartData.legendType\" value=\"{{legendType.icon}}\">{{legendType.value}}\r\n            </option>\r\n        </select>\r\n    </div>\r\n    <!-- Pie chart options -->\r\n    <div id=\"pie-option-conatiner\" *ngIf=\"config.type==='pie'\">\r\n        <label for=\"radius\">Pie Radius</label>\r\n        <div>\r\n            <input class=\"form-control\" name=\"radius\" type=\"text\" placeholder=\"0%,100%\" [(ngModel)]=\"config.radius\">\r\n        </div>\r\n    </div>\r\n    <div class=\"form-group\" *ngIf=\"config.type==='pie'\">\r\n        <label for=\"pieConfig\">Pie Slice Config</label>\r\n        <div>\r\n        <label for=\"pieBorderRadius\">Border Radius</label>\r\n            <input class=\"form-control\" name=\"pieBorderRadius\" type=\"number\" min='0' max='30' placeholder=\"0\" value=\"0\" [(ngModel)]=\"config.pieBorderRadius\">\r\n       \r\n        <label for=\"pieBorderWidth\">Border Width</label>\r\n            <input class=\"form-control\" name=\"pieBorderWidth\" type=\"number\" min='0' max='30' placeholder=\"0\"  value=\"0\"[(ngModel)]=\"config.pieBorderWidth\">\r\n        </div>\r\n     </div>\r\n\r\n    <!-- For scatter bubble size -->\r\n    <div *ngIf=\"config.type==='scatter'\">\r\n        <label title=\"Bubble Size\"for=\"symbolSize\">Bubble Size</label>\r\n        <input class=\"form-control\" name=\"symbolSize\" type=\"number\" placeholder=\"Enter a number\"\r\n            [(ngModel)]=\"config.scatterSymbolSize\" min=\"5\" max=\"20\">\r\n\r\n    </div>\r\n    <!-- stack container -->\r\n    <div id=\"stack-conatiner\" *ngIf=\"config.type==='line' || config.type==='bar'\">\r\n        <div id=\"stack-container\" *ngIf=\"config.layout==='stacked' || config.layout==='stackedBar'\">\r\n            <div style=\"margin-right: 0px;\">\r\n                <label class=\"c8y-checkbox checkbox-inline\" title=\"addStack\">\r\n                    <input type=\"checkbox\" value=\"Add Stack\" [(ngModel)]=\"config.addStack\"\r\n                        (click)=\"stackAdded($event.target.checked)\">\r\n                    <span></span>\r\n                    <span>Add Stack</span>\r\n                </label>\r\n            </div>\r\n            <div *ngIf=\"config.addStack\">\r\n                <button type=\"button\" class=\"btn btn-primary btn-xs\" (click)=\"addAnotherStack()\">Add\r\n                    Another Stack</button>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <div *ngIf=\"config.type==='line'  || config.type==='scatter'  || config.type==='bar'\">\r\n        <label title=\"Slider Zoom\" class=\"c8y-checkbox\">\r\n            <input type=\"checkbox\" value=\"false\" [(ngModel)]=\"config.sliderZoom\" >\r\n            <span></span>\r\n            <span>Slider Zoom</span>\r\n        </label>\r\n        <label title=\"Box Zoom\" class=\"c8y-checkbox\">\r\n            <input type=\"checkbox\" value=\"false\" [(ngModel)]=\"config.boxZoom\">\r\n            <span></span>\r\n            <span>Box Zoom</span>\r\n        </label>\r\n    </div>\r\n    <div *ngIf=\"config.layout==='stacked' || config.layout==='stackedBar'\">\r\n        <div *ngIf=\"config.addStack\">\r\n            <ng-container *ngFor=\"let item of config.stackList;let i = index\">\r\n                <div class=\"form-group\">\r\n                    <label for=\"stackName\">Stack Name</label>\r\n                    <div>\r\n                        <input class=\"form-control\" name=\"stackName\" type=\"text\"\r\n                            [(ngModel)]=\"config.stackList[i].stackName\">\r\n                    </div>\r\n                    <label for=\"stackValues\">Stack Values</label>\r\n                    <div>\r\n                        <input class=\"form-control\" name=\"stackValues\" type=\"text\"\r\n                            [(ngModel)]=\"config.stackList[i].stackValues\">\r\n                    </div>\r\n                    <div>\r\n                        <button class=\"btn btn-primary btn-xs btn-danger\" (click)=\"deleteStackValue($event,i)\">Delete\r\n                            Stack</button>\r\n                    </div>\r\n                </div>\r\n            </ng-container>\r\n            <button type=\"button\" class=\"btn btn-primary btn-xs\" (click)=\"updateStack()\">update</button>\r\n\r\n        </div>\r\n    </div>\r\n\r\n</div>\r\n<!-- <div>\r\n    <input type=\"submit\" (click)=\"SubmitData()\" value=\"Submit\" />\r\n</div> -->",
                 styles: ["div{margin-top:5px;margin-right:5px;margin-bottom:5px}.alertInput{border:2px solid red}"]
             },] }
 ];

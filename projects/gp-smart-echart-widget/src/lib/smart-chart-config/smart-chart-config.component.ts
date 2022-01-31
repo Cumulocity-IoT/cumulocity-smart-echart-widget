@@ -283,6 +283,7 @@ export class SmartChartConfigComponent implements OnInit {
   ngOnInit(): void {
     this.aggregationMethods = chartValues.aggregateMethod;
     this.config.aggrList = [];
+    this.config.legend={};
   }
 
 

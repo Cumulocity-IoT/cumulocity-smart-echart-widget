@@ -19,9 +19,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 export declare class GpSmartEchartWidgetService {
     private http;
-    private httpHeaders;
-    private options;
-    token: string;
     constructor(http: HttpClient);
     getAPIData(apiUrl: any): Observable<any>;
 }

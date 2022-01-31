@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { OnInit } from '@angular/core';
+import { ElementRef, OnInit } from '@angular/core';
 import { EChartsOption } from 'echarts';
 import { ChartConfig } from './model/config.modal';
 import { GpSmartEchartWidgetService } from './gp-smart-echart-widget.service';
@@ -24,6 +24,7 @@ export declare class GpSmartEchartWidgetComponent implements OnInit {
     private chartService;
     private realTimeService;
     private fetchClient;
+    protected mapDivRef: ElementRef;
     config: ChartConfig;
     serviceData: any;
     seriesData: any;
@@ -33,6 +34,7 @@ export declare class GpSmartEchartWidgetComponent implements OnInit {
     protected allSubscriptions: any;
     realtime: boolean;
     deviceId: string;
+    protected chartDiv: HTMLDivElement;
     isDatahubPostCall: boolean;
     constructor(chartService: GpSmartEchartWidgetService, realTimeService: Realtime, fetchClient: FetchClient);
     ngOnInit(): void;
@@ -100,7 +102,7 @@ export declare class GpSmartEchartWidgetComponent implements OnInit {
     }[];
     getSeriesData(userInput: any): any[];
     getDatasetDimensions(userInput: any): any[];
-    getStackName(stackData: any, dimensionName: any): string;
+    getStackName(stackData: any, dimensionName: any): void;
     getResultDimesions(list: any, groupby: any): any;
     showZoomFeature(val: any): ({
         type: string;

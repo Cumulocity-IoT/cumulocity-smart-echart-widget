@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
 import { ChartConfig } from './model/config.modal';
@@ -33,6 +33,7 @@ import { extractValueFromJSON } from './util/extractValueFromJSON.util';
   styles: ['gp-smart-echart-widget.component.css']
 })
 export class GpSmartEchartWidgetComponent implements OnInit {
+  @ViewChild('chartBox', { static: true}) protected mapDivRef: ElementRef;
   @Input() config: ChartConfig;
   serviceData;
   seriesData;
@@ -42,10 +43,14 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   protected allSubscriptions: any = [];
   realtime = true;
   deviceId = '';
+  protected chartDiv: HTMLDivElement;
   isDatahubPostCall = false;
   constructor(private chartService: GpSmartEchartWidgetService,
     private realTimeService: Realtime, private fetchClient: FetchClient) { }
   ngOnInit(): void {
+    this.chartDiv = this.mapDivRef.nativeElement;
+    this.createChart(this.config);
+    
   }
   dataFromUser(userInput: ChartConfig) {
     this.createChart(userInput);
@@ -57,8 +62,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   }
   // createChart function is used to create chart with the help of echart library
   async createChart(userInput?: ChartConfig) {
-    const chartDom = document.getElementById('chart-container');
-    const myChart = echarts.init(chartDom);
+    // const chartDom = document.getElementById('chart-container');
+    // const myChart = echarts.init(chartDom);
+    const myChart = echarts.init(this.chartDiv);
     myChart.showLoading();
     if (userInput.showApiInput) {
       this.serviceData = await this.chartService.getAPIData(userInput.apiUrl).toPromise();
@@ -85,7 +91,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           this.seriesData = this.getPieChartSeriesData(userInput);
           this.chartOption = {
             title: {
-              text: userInput.title
+              text: userInput.title,
+              left:'center',
             },
             legend: {
               icon: userInput.legend.icon,
@@ -127,7 +134,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           this.seriesData = this.getPolarChartSeriesData(userInput);
           this.chartOption = {
             title: {
-              text: userInput.title
+              text: userInput.title,
+              left:'center',
             },
             legend: {
               icon: userInput.legend.icon,
@@ -214,7 +222,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           this.seriesData = this.getScatterChartSeriesData(userInput);
           this.chartOption = {
             title: {
-              text: userInput.title
+              text: userInput.title,
+              left:'center',
             },
             grid: {
               left: '10%',
@@ -264,6 +273,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         else if (userInput.type === 'radar') {
           this.seriesData = this.getRadarSeriesData(userInput);
           this.chartOption = {
+            title:{
+              text:userInput.title,
+              left:'center'
+            },
             legend: {
               icon: userInput.legend.icon,
               width: 330,
@@ -281,6 +294,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             },
             tooltip: {
               trigger: 'item',
+              confine:true
             },
             grid: {
               left: '10%',
@@ -293,6 +307,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               indicator: this.serviceData[userInput.listName].map((item) => {
                 return { name: item[userInput.xAxisDimension] };
               }),
+              radius:100
             },
             series: this.seriesData,
             toolbox: {
@@ -320,6 +335,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           this.chartOption = {
             title: {
               text: userInput.title,
+              left:'center',
             },
             legend: {
               icon: userInput.legend.icon,
@@ -356,11 +372,11 @@ export class GpSmartEchartWidgetComponent implements OnInit {
                 return item[userInput.xAxisDimension];
               }),
               type: this.getXAxisType(userInput),
-              name: xAxisName
+              // name: xAxisName
             },
             yAxis: {
               type: this.getYAxisType(userInput),
-              name: yAxisName
+              // name: yAxisName
             },
             series: this.seriesData,
             toolbox: {
@@ -423,11 +439,11 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             },
             dataZoom: this.showZoomFeature(userInput.sliderZoom),
             xAxis: {
-              name: xAxisName,
+              // name: xAxisName,
               type: this.getXAxisType(userInput),
             },
             yAxis: {
-              name: yAxisName,
+              // name: yAxisName,
               type: this.getYAxisType(userInput),
               data: this.serviceData[userInput.listName].map((item) => {
                 const val = extractValueFromJSON(userInput.yAxisDimension, item);
@@ -503,7 +519,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               }
             ],
             title: {
-              text: userInput.title
+              text: userInput.title,
+              left:'center',
             },
             tooltip: {
               trigger: 'axis',
@@ -583,7 +600,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               }
             ],
             title: {
-              text: userInput.title
+              text: userInput.title,
+              left:'center',
             },
             grid: {
               left: '10%',
@@ -652,7 +670,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               },
             ],
             title: {
-              text: userInput.title
+              text: userInput.title,
+              left:'center',
             },
             tooltip: {
               trigger: 'item',
@@ -717,7 +736,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               },
             ],
             title: {
-              text: userInput.title
+              text: userInput.title,
+              left:'center',
             },
             tooltip: {
               trigger: 'axis',
@@ -773,6 +793,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             indicatorData.push({ name: this.serviceData[i][indexOfXDimension] });
           }
           this.chartOption = {
+            title:{
+              text:userInput.title,
+              left:'center'
+            },
             legend: {
               icon: userInput.legend.icon,
               width: 330,
@@ -792,7 +816,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               trigger: 'item',
             },
             radar: {
-              indicator: indicatorData
+              indicator: indicatorData,
+              radius:100
             },
             series: this.seriesData,
             toolbox: {
@@ -892,7 +917,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               }
             ],
             title: {
-              text: userInput.title
+              text: userInput.title,
+              left:'center',
             },
             tooltip: {
               trigger: 'axis',
@@ -992,7 +1018,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               }
             ],
             title: {
-              text: userInput.title
+              text: userInput.title,
+              left:'center',
             },
             grid: {
               left: '10%',
@@ -1080,7 +1107,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               }
             ],
             title: {
-              text: userInput.title
+              text: userInput.title,
+              left:'center',
             },
             tooltip: {
               trigger: 'item',
@@ -1167,7 +1195,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               }
             ],
             title: {
-              text: userInput.title
+              text: userInput.title,
+              left:'center',
             },
             tooltip: {
               trigger: 'axis',
@@ -1273,7 +1302,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         } else {
           const xAxisDimensions = userInput.xAxisDimension.split(',');
           const xAxisData = [];
-          xAxisDimensions.forEach(i => {
+          xAxisDimensions.forEach((value,i) => {
             xAxisData[i] = {
               type: userInput.type,
               symbolSize: userInput.scatterSymbolSize,
@@ -1328,7 +1357,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         } else {
           const yAxisDimensions = userInput.yAxisDimension.split(',');
           const yAxisData = [];
-          yAxisDimensions.forEach(i => {
+          yAxisDimensions.forEach((value,i) => {
             yAxisData[i] = {
               type: userInput.type,
               symbolSize: userInput.scatterSymbolSize,
@@ -1364,7 +1393,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         return acc;
       }, {});
       this.serviceData[userInput.listName].map((item) => {
-        Object.keys(item).forEach(key => {
+        Object.keys(item).forEach((value,key) => {
           if (dimensionRecord[key]) {
             dimensionRecord[key].push(item[key])
           }
@@ -1394,7 +1423,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         }];
       } else {
         const yAxisData = [];
-        yDimensions.array.forEach(i => {
+        yDimensions.array.forEach((value,i) => {
           yAxisData[i] = {
             type: userInput.type,
             datasetId,
@@ -1422,7 +1451,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         }];
       } else {
         const xAxisData = [];
-        xDimensions.foreach(i => {
+        xDimensions.forEach((value,i) => {
           xAxisData[i] = {
             type: userInput.type,
             datasetId,
@@ -1452,7 +1481,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         }];
       } else {
         const yAxisData = [];
-        yDimensions.forEach(i => {
+        yDimensions.forEach((value,i) => {
           yAxisData[i] = {
             type: userInput.type,
             datasetId,
@@ -1548,7 +1577,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
       } else {
         const xAxisDimensions = userInput.xAxisDimension.split(',');
         const xAxisData = [];
-        xAxisDimensions.forEach(i => {
+        xAxisDimensions.forEach((value,i) => {
           xAxisData[i] = {
             type: userInput.type,
             symbolSize: userInput.scatterSymbolSize,
@@ -1597,7 +1626,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
       } else {
         const yAxisDimensions = userInput.yAxisDimension.split(',');
         const yAxisData = [];
-        yAxisDimensions.forEach(i => {
+        yAxisDimensions.forEach((value,i) => {
           yAxisData[i] = {
             type: userInput.type,
             symbolSize: userInput.scatterSymbolSize,
@@ -1657,7 +1686,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
     }, {});
     if (userInput.listName in this.serviceData) {
       this.serviceData[userInput.listName].map((item) => {
-        Object.keys(item).forEach(key => {
+        Object.keys(item).forEach((value,key) => {
           if (dimensionRecord[key]) {
             dimensionRecord[key].push(item[key])
           }
@@ -1776,7 +1805,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   getSeriesData(userInput) {
     if (userInput.yAxisDimension.split(',').length === 1) {
       return [{
-        name: userInput.listName,
+        name: this.getFormattedName(userInput.yAxisDimension),
         data: this.serviceData[userInput.listName].map((item) => {
           return item[userInput.yAxisDimension];
         }),
@@ -1787,7 +1816,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
     } else {
       const yAxisDimensions = userInput.yAxisDimension.split(',');
       const yAxisData = [];
-      yAxisDimensions.forEach(i => {
+      yAxisDimensions.forEach((value,i) => {
         yAxisData[i] = {
           name: yAxisDimensions[i],
           stack: this.getStackName(userInput.stack, yAxisDimensions[i]),
@@ -1795,6 +1824,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             focus: 'series'
           },
           data: this.serviceData[userInput.listName].map((item) => {
+            console.log(item[yAxisDimensions[i]]);
+            // return val;
             return item[yAxisDimensions[i]];
           }),
           type: userInput.type,
@@ -1830,7 +1861,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   // else return dimensionName
   getStackName(stackData, dimensionName) {
     let result = '';
-    stackData.forEach(x => {
+    stackData.forEach((value,x) => {
       const values = stackData[x].stackValues.split(',');
       for (const i in values) {
         if (values[i] === dimensionName) {
@@ -1880,7 +1911,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   getHorizontalSeriesData(userInput) {
     if (userInput.xAxisDimension.split(',').length === 1) {
       return [{
-        name: userInput.listName,
+        name: this.getFormattedName(userInput.xAxisDimension),
         data: this.serviceData[userInput.listName].map((item) => {
           const val = extractValueFromJSON(userInput.xAxisDimension, item);
           return val;
@@ -1901,7 +1932,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
     } else {
       const xAxisDimensions = userInput.xAxisDimension.split(',');
       const xAxisData = [];
-      xAxisDimensions.forEach(i => {
+      xAxisDimensions.forEach((value,i) => {
         xAxisData[i] = {
           name: xAxisDimensions[i],
           stack: this.getStackName(userInput.stack, xAxisDimensions[i]),
