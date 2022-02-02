@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
 import { ChartConfig } from './model/config.modal';
@@ -45,6 +45,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   deviceId = '';
   protected chartDiv: HTMLDivElement;
   isDatahubPostCall = false;
+  dataChart;
   constructor(private chartService: GpSmartEchartWidgetService,
     private realTimeService: Realtime, private fetchClient: FetchClient) { }
   ngOnInit(): void {
@@ -64,8 +65,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   async createChart(userInput?: ChartConfig) {
     // const chartDom = document.getElementById('chart-container');
     // const myChart = echarts.init(chartDom);
-    const myChart = echarts.init(this.chartDiv);
-    myChart.showLoading();
+    this.dataChart = echarts.init(this.chartDiv);
+    // const myChart = echarts.init(this.chartDiv);
+    this.dataChart.showLoading();
     if (userInput.showApiInput) {
       this.serviceData = await this.chartService.getAPIData(userInput.apiUrl).toPromise();
     } else if (userInput.showDatahubInput) {
@@ -84,20 +86,20 @@ export class GpSmartEchartWidgetComponent implements OnInit {
       if (isDevMode()) { console.log('No Datasource selected'); }
     }
     if (this.serviceData) {
-      myChart.hideLoading();
+      this.dataChart.hideLoading();
       if (userInput.aggrList.length === 0 && !this.isDatahubPostCall) {
         // calls for API without Aggregation
         if (userInput.type === 'pie') {
           this.seriesData = this.getPieChartSeriesData(userInput);
           this.chartOption = {
-            title: {
-              text: userInput.title,
-              left:'center',
-            },
+            // title: {
+            //   text: userInput.title,
+            //   left:'center',
+            // },
             legend: {
               icon: userInput.legend.icon,
               width: 330,
-              top: '10%',
+              // top: '10%',
               type: 'scroll',
               formatter(name) {
                 const test = name.split('.').slice(-1);
@@ -110,6 +112,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             },
             xAxis: {
               show: false,
+              boundaryGap: false,
               data: this.serviceData[userInput.listName].map((item) => {
                 return item[userInput.xAxisDimension];
               }),
@@ -133,14 +136,14 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         else if (userInput.type === 'polar') {
           this.seriesData = this.getPolarChartSeriesData(userInput);
           this.chartOption = {
-            title: {
-              text: userInput.title,
-              left:'center',
-            },
+            // title: {
+            //   text: userInput.title,
+            //   left:'center',
+            // },
             legend: {
               icon: userInput.legend.icon,
               width: 330,
-              top: '10%',
+              // top: '10%',
               type: 'scroll',
               formatter(name) {
                 const test = name.split('.').slice(-1);
@@ -191,7 +194,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               name: this.getFormattedName(userInput.xAxisDimension),
               nameLocation: 'middle',
               nameGap: 30,
-              type: this.getXAxisType(userInput)
+              type: this.getXAxisType(userInput),
+              boundaryGap: false,
             };
             yAxisObject = {
               name: this.getFormattedName(userInput.yAxisDimension),
@@ -210,7 +214,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               data: this.serviceData[userInput.listName].map((item) => {
                 return item[userInput.xAxisDimension];
               }),
-              type: this.getXAxisType(userInput)
+              type: this.getXAxisType(userInput),
+              boundaryGap: false,
             };
             yAxisObject = {
               name: this.getFormattedName(userInput.yAxisDimension),
@@ -221,10 +226,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           }
           this.seriesData = this.getScatterChartSeriesData(userInput);
           this.chartOption = {
-            title: {
-              text: userInput.title,
-              left:'center',
-            },
+            // title: {
+            //   text: userInput.title,
+            //   left:'center',
+            // },
             grid: {
               left: '10%',
               top: '20%',
@@ -253,7 +258,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             legend: {
               icon: userInput.legend.icon,
               width: 330,
-              top: '10%',
+              // top: '10%',
               type: 'scroll',
               formatter(name) {
                 const test = name.split('.').slice(-1);
@@ -273,14 +278,14 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         else if (userInput.type === 'radar') {
           this.seriesData = this.getRadarSeriesData(userInput);
           this.chartOption = {
-            title:{
-              text:userInput.title,
-              left:'center'
-            },
+            // title:{
+            //   text:userInput.title,
+            //   left:'center'
+            // },
             legend: {
               icon: userInput.legend.icon,
               width: 330,
-              top: '10%',
+              // top: '10%',
               type: 'scroll',
               formatter(name) {
                 const test = name.split('.').slice(-1);
@@ -333,14 +338,14 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             yAxisName = this.getFormattedName(userInput.yAxisDimension)
           }
           this.chartOption = {
-            title: {
-              text: userInput.title,
-              left:'center',
-            },
+            // title: {
+            //   text: userInput.title,
+            //   left:'center',
+            // },
             legend: {
               icon: userInput.legend.icon,
               width: 330,
-              top: '10%',
+              // top: '10%',
               type: 'scroll',
               formatter(name) {
                 const test = name.split('.').slice(-1);
@@ -372,6 +377,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
                 return item[userInput.xAxisDimension];
               }),
               type: this.getXAxisType(userInput),
+              boundaryGap: false,
               // name: xAxisName
             },
             yAxis: {
@@ -408,13 +414,13 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           this.seriesData = this.getHorizontalSeriesData(userInput);
           this.chartOption =
           {
-            title: {
-              text: userInput.title,
-              left: 'center',
-              textStyle: {
-                overflow: 'truncate',
-              }
-            },
+            // title: {
+            //   text: userInput.title,
+            //   left: 'center',
+            //   textStyle: {
+            //     overflow: 'truncate',
+            //   }
+            // },
             grid: {
               left: '10%',
               top: '20%',
@@ -426,7 +432,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               show: true,
               icon: userInput.legend.icon,
               orient: 'horizontal',
-              top: '10%',
+              // top: '10%',
               formatter(name) {
                 const test = name.split('.').slice(-1);
                 const a =
@@ -441,6 +447,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             xAxis: {
               // name: xAxisName,
               type: this.getXAxisType(userInput),
+              boundaryGap: false,
             },
             yAxis: {
               // name: yAxisName,
@@ -518,10 +525,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
                 source: this.serviceData
               }
             ],
-            title: {
-              text: userInput.title,
-              left:'center',
-            },
+            // title: {
+            //   text: userInput.title,
+            //   left:'center',
+            // },
             tooltip: {
               trigger: 'axis',
               axisPointer: {
@@ -535,6 +542,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               nameGap: 30,
               scale: true,
               type: this.getXAxisType(userInput),
+              boundaryGap: false,
             },
             yAxis: {
               type: this.getYAxisType(userInput),
@@ -549,7 +557,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             legend: {
               icon: userInput.legend.icon,
               width: 330,
-              top: '10%',
+              // top: '10%',
               type: 'scroll',
               formatter(name) {
                 const test = name.split('.').slice(-1);
@@ -599,10 +607,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
                 source: this.serviceData
               }
             ],
-            title: {
-              text: userInput.title,
-              left:'center',
-            },
+            // title: {
+            //   text: userInput.title,
+            //   left:'center',
+            // },
             grid: {
               left: '10%',
               top: '20%',
@@ -613,7 +621,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             legend: {
               icon: userInput.legend.icon,
               width: 330,
-              top: '10%',
+              // top: '10%',
               type: 'scroll',
               formatter(name) {
                 const test = name.split('.').slice(-1);
@@ -629,7 +637,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               name: xAxisName,
               nameLocation: 'middle',
               nameGap: 50,
-              type: this.getXAxisType(userInput)
+              type: this.getXAxisType(userInput),
+              boundaryGap: false,
             },
             yAxis: {
               name: yAxisName,
@@ -669,10 +678,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
                 source: this.serviceData
               },
             ],
-            title: {
-              text: userInput.title,
-              left:'center',
-            },
+            // title: {
+            //   text: userInput.title,
+            //   left:'center',
+            // },
             tooltip: {
               trigger: 'item',
               confine: true
@@ -687,7 +696,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             legend: {
               icon: userInput.legend.icon,
               width: 330,
-              top: '10%', left: 'left',
+              // top: '10%', 
+              left: 'left',
               type: 'scroll',
               formatter(name) {
                 const test = name.split('.').slice(-1);
@@ -735,10 +745,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
                 source: this.serviceData
               },
             ],
-            title: {
-              text: userInput.title,
-              left:'center',
-            },
+            // title: {
+            //   text: userInput.title,
+            //   left:'center',
+            // },
             tooltip: {
               trigger: 'axis',
               axisPointer: {
@@ -763,7 +773,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             legend: {
               icon: userInput.legend.icon,
               width: 330,
-              top: '10%', left: 'left',
+              // top: '10%',
+              left: 'left',
               type: 'scroll',
               formatter(name) {
                 const test = name.split('.').slice(-1);
@@ -793,14 +804,15 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             indicatorData.push({ name: this.serviceData[i][indexOfXDimension] });
           }
           this.chartOption = {
-            title:{
-              text:userInput.title,
-              left:'center'
-            },
+            // title:{
+            //   text:userInput.title,
+            //   left:'center'
+            // },
             legend: {
               icon: userInput.legend.icon,
               width: 330,
-              top: '10%', left: 'left',
+              // top: '10%',
+              left: 'left',
               type: 'scroll',
               formatter(name) {
                 const test = name.split('.').slice(-1);
@@ -916,10 +928,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
                 ]
               }
             ],
-            title: {
-              text: userInput.title,
-              left:'center',
-            },
+            // title: {
+            //   text: userInput.title,
+            //   left:'center',
+            // },
             tooltip: {
               trigger: 'axis',
               axisPointer: {
@@ -933,6 +945,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               nameGap: 30,
               scale: true,
               type: this.getXAxisType(userInput),
+              boundaryGap: false,
             },
             yAxis: {
               type: this.getYAxisType(userInput),
@@ -948,7 +961,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             legend: {
               icon: userInput.legend.icon,
               width: 330,
-              top: '10%',
+              // top: '10%',
               type: 'scroll',
               formatter(name) {
                 const test = name.split('.').slice(-1);
@@ -1017,10 +1030,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
                 ]
               }
             ],
-            title: {
-              text: userInput.title,
-              left:'center',
-            },
+            // title: {
+            //   text: userInput.title,
+            //   left:'center',
+            // },
             grid: {
               left: '10%',
               top: '20%',
@@ -1032,7 +1045,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               name: xAxisName,
               nameLocation: 'middle',
               nameGap: 50,
-              type: this.getXAxisType(userInput)
+              type: this.getXAxisType(userInput),
+              boundaryGap: false,
             },
             yAxis: {
               name: yAxisName,
@@ -1049,7 +1063,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             legend: {
               icon: userInput.legend.icon,
               width: 330,
-              top: '10%',
+              // top: '10%',
               type: 'scroll',
               formatter(name) {
                 const test = name.split('.').slice(-1);
@@ -1106,10 +1120,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
                 ]
               }
             ],
-            title: {
-              text: userInput.title,
-              left:'center',
-            },
+            // title: {
+            //   text: userInput.title,
+            //   left:'center',
+            // },
             tooltip: {
               trigger: 'item',
               confine: true
@@ -1126,7 +1140,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               type: 'scroll',
               icon: userInput.legend.icon,
               left: 'left',
-              top: '10%',
+              // top: '10%',
               formatter(name) {
                 const test = name.split('.').slice(-1);
                 const a =
@@ -1194,10 +1208,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
                 ]
               }
             ],
-            title: {
-              text: userInput.title,
-              left:'center',
-            },
+            // title: {
+            //   text: userInput.title,
+            //   left:'center',
+            // },
             tooltip: {
               trigger: 'axis',
               axisPointer: {
@@ -1224,7 +1238,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               type: 'scroll',
               icon: userInput.legend.icon,
               left: 'left',
-              top: '10%',
+              // top: '10%',
               formatter(name) {
                 const test = name.split('.').slice(-1);
                 const a =
@@ -1955,5 +1969,13 @@ export class GpSmartEchartWidgetComponent implements OnInit {
       });// end of for block
       return xAxisData;
     }
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    console.log(this.dataChart)
+      if(this.dataChart) {
+        this.dataChart.resize();
+      }
   }
 }

@@ -151,14 +151,14 @@ class GpSmartEchartWidgetComponent {
                     if (userInput.type === 'pie') {
                         this.seriesData = this.getPieChartSeriesData(userInput);
                         this.chartOption = {
-                            title: {
-                                text: userInput.title,
-                                left: 'center',
-                            },
+                            // title: {
+                            //   text: userInput.title,
+                            //   left:'center',
+                            // },
                             legend: {
                                 icon: userInput.legend.icon,
                                 width: 330,
-                                top: '10%',
+                                // top: '10%',
                                 type: 'scroll',
                                 formatter(name) {
                                     const test = name.split('.').slice(-1);
@@ -171,6 +171,7 @@ class GpSmartEchartWidgetComponent {
                             },
                             xAxis: {
                                 show: false,
+                                boundaryGap: false,
                                 data: this.serviceData[userInput.listName].map((item) => {
                                     return item[userInput.xAxisDimension];
                                 }),
@@ -196,14 +197,14 @@ class GpSmartEchartWidgetComponent {
                     else if (userInput.type === 'polar') {
                         this.seriesData = this.getPolarChartSeriesData(userInput);
                         this.chartOption = {
-                            title: {
-                                text: userInput.title,
-                                left: 'center',
-                            },
+                            // title: {
+                            //   text: userInput.title,
+                            //   left:'center',
+                            // },
                             legend: {
                                 icon: userInput.legend.icon,
                                 width: 330,
-                                top: '10%',
+                                // top: '10%',
                                 type: 'scroll',
                                 formatter(name) {
                                     const test = name.split('.').slice(-1);
@@ -256,7 +257,8 @@ class GpSmartEchartWidgetComponent {
                                 name: this.getFormattedName(userInput.xAxisDimension),
                                 nameLocation: 'middle',
                                 nameGap: 30,
-                                type: this.getXAxisType(userInput)
+                                type: this.getXAxisType(userInput),
+                                boundaryGap: false,
                             };
                             yAxisObject = {
                                 name: this.getFormattedName(userInput.yAxisDimension),
@@ -276,7 +278,8 @@ class GpSmartEchartWidgetComponent {
                                 data: this.serviceData[userInput.listName].map((item) => {
                                     return item[userInput.xAxisDimension];
                                 }),
-                                type: this.getXAxisType(userInput)
+                                type: this.getXAxisType(userInput),
+                                boundaryGap: false,
                             };
                             yAxisObject = {
                                 name: this.getFormattedName(userInput.yAxisDimension),
@@ -287,10 +290,10 @@ class GpSmartEchartWidgetComponent {
                         }
                         this.seriesData = this.getScatterChartSeriesData(userInput);
                         this.chartOption = {
-                            title: {
-                                text: userInput.title,
-                                left: 'center',
-                            },
+                            // title: {
+                            //   text: userInput.title,
+                            //   left:'center',
+                            // },
                             grid: {
                                 left: '10%',
                                 top: '20%',
@@ -319,7 +322,7 @@ class GpSmartEchartWidgetComponent {
                             legend: {
                                 icon: userInput.legend.icon,
                                 width: 330,
-                                top: '10%',
+                                // top: '10%',
                                 type: 'scroll',
                                 formatter(name) {
                                     const test = name.split('.').slice(-1);
@@ -340,14 +343,14 @@ class GpSmartEchartWidgetComponent {
                     else if (userInput.type === 'radar') {
                         this.seriesData = this.getRadarSeriesData(userInput);
                         this.chartOption = {
-                            title: {
-                                text: userInput.title,
-                                left: 'center'
-                            },
+                            // title:{
+                            //   text:userInput.title,
+                            //   left:'center'
+                            // },
                             legend: {
                                 icon: userInput.legend.icon,
                                 width: 330,
-                                top: '10%',
+                                // top: '10%',
                                 type: 'scroll',
                                 formatter(name) {
                                     const test = name.split('.').slice(-1);
@@ -404,14 +407,14 @@ class GpSmartEchartWidgetComponent {
                             yAxisName = this.getFormattedName(userInput.yAxisDimension);
                         }
                         this.chartOption = {
-                            title: {
-                                text: userInput.title,
-                                left: 'center',
-                            },
+                            // title: {
+                            //   text: userInput.title,
+                            //   left:'center',
+                            // },
                             legend: {
                                 icon: userInput.legend.icon,
                                 width: 330,
-                                top: '10%',
+                                // top: '10%',
                                 type: 'scroll',
                                 formatter(name) {
                                     const test = name.split('.').slice(-1);
@@ -442,6 +445,7 @@ class GpSmartEchartWidgetComponent {
                                     return item[userInput.xAxisDimension];
                                 }),
                                 type: this.getXAxisType(userInput),
+                                boundaryGap: false,
                             },
                             yAxis: {
                                 type: this.getYAxisType(userInput),
@@ -481,13 +485,13 @@ class GpSmartEchartWidgetComponent {
                         this.seriesData = this.getHorizontalSeriesData(userInput);
                         this.chartOption =
                             {
-                                title: {
-                                    text: userInput.title,
-                                    left: 'center',
-                                    textStyle: {
-                                        overflow: 'truncate',
-                                    }
-                                },
+                                // title: {
+                                //   text: userInput.title,
+                                //   left: 'center',
+                                //   textStyle: {
+                                //     overflow: 'truncate',
+                                //   }
+                                // },
                                 grid: {
                                     left: '10%',
                                     top: '20%',
@@ -499,7 +503,7 @@ class GpSmartEchartWidgetComponent {
                                     show: true,
                                     icon: userInput.legend.icon,
                                     orient: 'horizontal',
-                                    top: '10%',
+                                    // top: '10%',
                                     formatter(name) {
                                         const test = name.split('.').slice(-1);
                                         const a = test[0].replace(/([A-Z])/g, ' $1')
@@ -513,6 +517,7 @@ class GpSmartEchartWidgetComponent {
                                 xAxis: {
                                     // name: xAxisName,
                                     type: this.getXAxisType(userInput),
+                                    boundaryGap: false,
                                 },
                                 yAxis: {
                                     // name: yAxisName,
@@ -596,10 +601,10 @@ class GpSmartEchartWidgetComponent {
                                     source: this.serviceData
                                 }
                             ],
-                            title: {
-                                text: userInput.title,
-                                left: 'center',
-                            },
+                            // title: {
+                            //   text: userInput.title,
+                            //   left:'center',
+                            // },
                             tooltip: {
                                 trigger: 'axis',
                                 axisPointer: {
@@ -613,6 +618,7 @@ class GpSmartEchartWidgetComponent {
                                 nameGap: 30,
                                 scale: true,
                                 type: this.getXAxisType(userInput),
+                                boundaryGap: false,
                             },
                             yAxis: {
                                 type: this.getYAxisType(userInput),
@@ -627,7 +633,7 @@ class GpSmartEchartWidgetComponent {
                             legend: {
                                 icon: userInput.legend.icon,
                                 width: 330,
-                                top: '10%',
+                                // top: '10%',
                                 type: 'scroll',
                                 formatter(name) {
                                     const test = name.split('.').slice(-1);
@@ -681,10 +687,10 @@ class GpSmartEchartWidgetComponent {
                                     source: this.serviceData
                                 }
                             ],
-                            title: {
-                                text: userInput.title,
-                                left: 'center',
-                            },
+                            // title: {
+                            //   text: userInput.title,
+                            //   left:'center',
+                            // },
                             grid: {
                                 left: '10%',
                                 top: '20%',
@@ -695,7 +701,7 @@ class GpSmartEchartWidgetComponent {
                             legend: {
                                 icon: userInput.legend.icon,
                                 width: 330,
-                                top: '10%',
+                                // top: '10%',
                                 type: 'scroll',
                                 formatter(name) {
                                     const test = name.split('.').slice(-1);
@@ -710,7 +716,8 @@ class GpSmartEchartWidgetComponent {
                                 name: xAxisName,
                                 nameLocation: 'middle',
                                 nameGap: 50,
-                                type: this.getXAxisType(userInput)
+                                type: this.getXAxisType(userInput),
+                                boundaryGap: false,
                             },
                             yAxis: {
                                 name: yAxisName,
@@ -752,10 +759,10 @@ class GpSmartEchartWidgetComponent {
                                     source: this.serviceData
                                 },
                             ],
-                            title: {
-                                text: userInput.title,
-                                left: 'center',
-                            },
+                            // title: {
+                            //   text: userInput.title,
+                            //   left:'center',
+                            // },
                             tooltip: {
                                 trigger: 'item',
                                 confine: true
@@ -770,7 +777,8 @@ class GpSmartEchartWidgetComponent {
                             legend: {
                                 icon: userInput.legend.icon,
                                 width: 330,
-                                top: '10%', left: 'left',
+                                // top: '10%', 
+                                left: 'left',
                                 type: 'scroll',
                                 formatter(name) {
                                     const test = name.split('.').slice(-1);
@@ -822,10 +830,10 @@ class GpSmartEchartWidgetComponent {
                                     source: this.serviceData
                                 },
                             ],
-                            title: {
-                                text: userInput.title,
-                                left: 'center',
-                            },
+                            // title: {
+                            //   text: userInput.title,
+                            //   left:'center',
+                            // },
                             tooltip: {
                                 trigger: 'axis',
                                 axisPointer: {
@@ -850,7 +858,8 @@ class GpSmartEchartWidgetComponent {
                             legend: {
                                 icon: userInput.legend.icon,
                                 width: 330,
-                                top: '10%', left: 'left',
+                                // top: '10%',
+                                left: 'left',
                                 type: 'scroll',
                                 formatter(name) {
                                     const test = name.split('.').slice(-1);
@@ -881,14 +890,15 @@ class GpSmartEchartWidgetComponent {
                             indicatorData.push({ name: this.serviceData[i][indexOfXDimension] });
                         }
                         this.chartOption = {
-                            title: {
-                                text: userInput.title,
-                                left: 'center'
-                            },
+                            // title:{
+                            //   text:userInput.title,
+                            //   left:'center'
+                            // },
                             legend: {
                                 icon: userInput.legend.icon,
                                 width: 330,
-                                top: '10%', left: 'left',
+                                // top: '10%',
+                                left: 'left',
                                 type: 'scroll',
                                 formatter(name) {
                                     const test = name.split('.').slice(-1);
@@ -1010,10 +1020,10 @@ class GpSmartEchartWidgetComponent {
                                     ]
                                 }
                             ],
-                            title: {
-                                text: userInput.title,
-                                left: 'center',
-                            },
+                            // title: {
+                            //   text: userInput.title,
+                            //   left:'center',
+                            // },
                             tooltip: {
                                 trigger: 'axis',
                                 axisPointer: {
@@ -1027,6 +1037,7 @@ class GpSmartEchartWidgetComponent {
                                 nameGap: 30,
                                 scale: true,
                                 type: this.getXAxisType(userInput),
+                                boundaryGap: false,
                             },
                             yAxis: {
                                 type: this.getYAxisType(userInput),
@@ -1042,7 +1053,7 @@ class GpSmartEchartWidgetComponent {
                             legend: {
                                 icon: userInput.legend.icon,
                                 width: 330,
-                                top: '10%',
+                                // top: '10%',
                                 type: 'scroll',
                                 formatter(name) {
                                     const test = name.split('.').slice(-1);
@@ -1116,10 +1127,10 @@ class GpSmartEchartWidgetComponent {
                                     ]
                                 }
                             ],
-                            title: {
-                                text: userInput.title,
-                                left: 'center',
-                            },
+                            // title: {
+                            //   text: userInput.title,
+                            //   left:'center',
+                            // },
                             grid: {
                                 left: '10%',
                                 top: '20%',
@@ -1131,7 +1142,8 @@ class GpSmartEchartWidgetComponent {
                                 name: xAxisName,
                                 nameLocation: 'middle',
                                 nameGap: 50,
-                                type: this.getXAxisType(userInput)
+                                type: this.getXAxisType(userInput),
+                                boundaryGap: false,
                             },
                             yAxis: {
                                 name: yAxisName,
@@ -1148,7 +1160,7 @@ class GpSmartEchartWidgetComponent {
                             legend: {
                                 icon: userInput.legend.icon,
                                 width: 330,
-                                top: '10%',
+                                // top: '10%',
                                 type: 'scroll',
                                 formatter(name) {
                                     const test = name.split('.').slice(-1);
@@ -1206,10 +1218,10 @@ class GpSmartEchartWidgetComponent {
                                     ]
                                 }
                             ],
-                            title: {
-                                text: userInput.title,
-                                left: 'center',
-                            },
+                            // title: {
+                            //   text: userInput.title,
+                            //   left:'center',
+                            // },
                             tooltip: {
                                 trigger: 'item',
                                 confine: true
@@ -1226,7 +1238,7 @@ class GpSmartEchartWidgetComponent {
                                 type: 'scroll',
                                 icon: userInput.legend.icon,
                                 left: 'left',
-                                top: '10%',
+                                // top: '10%',
                                 formatter(name) {
                                     const test = name.split('.').slice(-1);
                                     const a = 
@@ -1299,10 +1311,10 @@ class GpSmartEchartWidgetComponent {
                                     ]
                                 }
                             ],
-                            title: {
-                                text: userInput.title,
-                                left: 'center',
-                            },
+                            // title: {
+                            //   text: userInput.title,
+                            //   left:'center',
+                            // },
                             tooltip: {
                                 trigger: 'axis',
                                 axisPointer: {
@@ -1329,7 +1341,7 @@ class GpSmartEchartWidgetComponent {
                                 type: 'scroll',
                                 icon: userInput.legend.icon,
                                 left: 'left',
-                                top: '10%',
+                                // top: '10%',
                                 formatter(name) {
                                     const test = name.split('.').slice(-1);
                                     const a = test[0].replace(/([A-Z])/g, ' $1')
@@ -1503,7 +1515,7 @@ class GpSmartEchartWidgetComponent {
                 return acc;
             }, {});
             this.serviceData[userInput.listName].map((item) => {
-                Object.keys(item).forEach((value, key) => {
+                Object.keys(item).forEach(key => {
                     if (dimensionRecord[key]) {
                         dimensionRecord[key].push(item[key]);
                     }
@@ -1806,7 +1818,7 @@ class GpSmartEchartWidgetComponent {
         }, {});
         if (userInput.listName in this.serviceData) {
             this.serviceData[userInput.listName].map((item) => {
-                Object.keys(item).forEach((value, key) => {
+                Object.keys(item).forEach(key => {
                     if (dimensionRecord[key]) {
                         dimensionRecord[key].push(item[key]);
                     }
@@ -2090,7 +2102,7 @@ class GpSmartEchartWidgetComponent {
 GpSmartEchartWidgetComponent.decorators = [
     { type: Component, args: [{
                 selector: 'lib-gp-smart-echart-widget',
-                template: "\r\n\r\n\r\n    <div style=\"display: block\">\r\n\r\n        <div  echarts [options]=\"chartOption\" class=\"demo-chart\"\r\n        #chartBox></div>\r\n\r\n    </div>\r\n",
+                template: "\r\n\r\n\r\n    <div class=\"row col-xs-12 col-md-12\" style=\"display: block\">\r\n\r\n        <div  echarts [options]=\"chartOption\" class=\"demo-chart\"\r\n        #chartBox></div>\r\n\r\n    </div>\r\n",
                 styles: ['gp-smart-echart-widget.component.css']
             },] }
 ];
@@ -2540,8 +2552,8 @@ class SmartChartConfigComponent {
 SmartChartConfigComponent.decorators = [
     { type: Component, args: [{
                 selector: 'lib-smart-chart-config',
-                template: "<div class=\"form-group\">\r\n    <div class=\"form-group\">\r\n        <label for=\"title\">Chart Title</label>\r\n        <input type=\"text\" class=\"form-control\" name=\"title\" [(ngModel)]=\"config.title\">\r\n        <div >\r\n            <label for=\"listname\">List Name</label>\r\n            <input type=\"text\" class=\"form-control\" name=\"listname\" [(ngModel)]=\"config.listName\">\r\n        </div>\r\n    </div>\r\n  \r\n    <div class=\"form-group\">\r\n        <form>\r\n            <label for=\"api\" title=\"API URL\" class=\"c8y-radio radio-inline\">\r\n                <input type=\"radio\" id=\"api\" name=\"dataSource\" value=\"API\"\r\n                    (change)=\"dataSourceSelection($event.target.value)\" [(ngModel)]=\"config.dataSource\">\r\n                    <span></span>\r\n                    <span>API URL</span>\r\n                \r\n            </label>\r\n            \r\n            <label for=\"datahub\" title=\"DataHub\" class=\"c8y-radio radio-inline\">\r\n                <input type=\"radio\" id=\"datahub\" name=\"dataSource\" value=\"datahub\"\r\n                    (change)=\"dataSourceSelection($event.target.value)\" [(ngModel)]=\"config.dataSource\" placeholder=\"Enter Relative URL\">\r\n                    <span></span>\r\n                    <span>DataHub</span>\r\n\r\n            </label>\r\n        </form>\r\n        <ng-container *ngIf=\"config.showApiInput\">\r\n            &nbsp;&nbsp;<input class=\"form-control\" type=\"text\" [(ngModel)]=\"config.apiUrl\">\r\n        </ng-container>\r\n     \r\n        <ng-container *ngIf=\"config.showDatahubInput\">\r\n            <input class=\"form-control\" type=\"text\" placeholder=\"Datahub URL\" [(ngModel)]=\"config.apiUrl\">\r\n            <div><textarea class=\"form-control\" placeholder=\"Sql Query\"  rows=\"3\" cols=\"30\" [(ngModel)]=\"config.sqlQuery\"></textarea>\r\n            </div>\r\n        </ng-container>\r\n      \r\n    </div>\r\n    <div class=\"form-group\">\r\n        <label for=\"type\">Chart Type</label>\r\n        <div class=\"c8y-select-wrapper\">\r\n            <select id=\"selectExample\" class=\"form-control\" name=\"type\" (change)=\"onSelection($event.target.value)\"\r\n                [(ngModel)]=\"config.type\">\r\n                <option *ngFor=\"let chartType of chartData.chartType\" value=\"{{chartType.id}}\">{{chartType.value}}\r\n                </option>\r\n            </select>\r\n        </div>\r\n        <!-- dont show div if config.type is scatter or radar -->\r\n        <div *ngIf=\" config.type!=='radar'\">\r\n            <label for=\"layout\">Chart Layout</label>\r\n            <div class=\"c8y-select-wrapper\">\r\n                <select name=\"layout\" id=\"selectExample\" class=\"form-control\" [(ngModel)]=\"config.layout\"\r\n                (change)=\"onLayoutSelection($event.target.value)\">\r\n                    <option *ngFor=\"let chartLayout of chartLayoutData\" value=\"{{chartLayout.id}}\">{{chartLayout.value}}\r\n                    </option>\r\n                </select>\r\n            </div>\r\n        </div>\r\n        <div *ngIf=\"config.type=='pie'\">\r\n            <label for=\"listname\">PieSliceValue</label>\r\n            <input type=\"text\" class=\"form-control\" name=\"listname\" [(ngModel)]=\"config.pieSliceValue\">\r\n            <label for=\"listname\">PieSliceName</label>\r\n            <input type=\"text\" class=\"form-control\" name=\"listname\" [(ngModel)]=\"config.pieSlicenName\">\r\n        </div>\r\n    </div>\r\n\r\n    <div *ngIf=\"config.type==='line'\">\r\n        <label title=\"Area\" class=\"c8y-checkbox\">\r\n            <input type=\"checkbox\" value=\"true\" [(ngModel)]=\"config.area\">\r\n            <span></span>\r\n            <span>Area</span>\r\n        </label>\r\n        <label title=\"Smooth Line\" class=\"c8y-checkbox\">\r\n            <input type=\"checkbox\" value=\"true\" [(ngModel)]=\"config.smoothLine\">\r\n            <span></span>\r\n            <span>Smooth Line</span>\r\n        </label><br>\r\n    </div>\r\n    <!-- dont show div if config.type is pie or radar -->\r\n    <div class=\"form-group\" *ngIf=\"config.type!=='pie'\">\r\n        <div class=\"form-group\" *ngIf=\"config.type!=='polar'\">\r\n            <label for=\"xAxisType\">X-Axis Type</label>\r\n            <div class=\"c8y-select-wrapper\">\r\n                <select id=\"selectExample\" class=\"form-control\" name=\"xAxisType\" [(ngModel)]=\"config.xAxis\">\r\n                    <option *ngFor=\"let type of chartData.xAxisType\" value=\"{{type.id}}\"\r\n                    [disabled]='type.disabled'>{{type.value}}\r\n                    </option>\r\n                </select>\r\n            </div>\r\n        </div>\r\n        <label for=\"xAxisDimension\">X-Axis Dimension</label>\r\n        <input class=\"form-control\" name=\"url\" type=\"text\" [(ngModel)]=\"config.xAxisDimension\">\r\n    </div>\r\n\r\n    <div class=\"form-group\" *ngIf=\"config.type!=='pie' && config.type!=='radar'\">\r\n        <div class=\"form-group\" *ngIf=\"config.type!=='polar'\">\r\n            <label for=\"yAxisType\">Y-Axis Type</label>\r\n            <div class=\"c8y-select-wrapper\">\r\n                <select id=\"selectExample\" class=\"form-control\" name=\"yAxisType\" [(ngModel)]=\"config.yAxis\">\r\n                    <option *ngFor=\"let type of chartData.yAxisType\" value=\"{{type.id}}\"\r\n                    [disabled]='type.disabled'>{{type.value}}\r\n                    </option>\r\n                </select>\r\n            </div>\r\n        </div>\r\n        <label for=\"yAxisDimension\">Y-Axis Dimension</label>\r\n        <input class=\"form-control\" name=\"yAxisDimension\" type=\"text\" [(ngModel)]=\"config.yAxisDimension\">\r\n    </div>\r\n\r\n    <div class=\"form-group\" *ngIf=\"config.type=='radar'\">\r\n        <label for=\"radarDimensions\">Radar Dimensions</label>\r\n        <input class=\"form-control\" name=\"radarDimensions\" type=\"text\" [(ngModel)]=\"config.radarDimensions\">\r\n    </div>\r\n    <!-- Dropdown for Aggregation / group by methods  -->\r\n    <div *ngIf=\"config.type==='pie'||config.type==='bar'||config.type==='line' ||config.type==='polar' || config.type==='scatter' \">\r\n        <label for=\"aggregation\">Aggregate Method</label>\r\n        <button type=\"button\" class=\"btn btn-primary btn-xs\" (click)=\"addAnotherAggregate()\">+</button>\r\n\r\n        <ng-container *ngFor=\"let item of config.aggrList;let i = index\">\r\n            <div class=\"form-group\">\r\n                <label for=\"aggregateDimension\">Dimension </label>\r\n                <input class=\"form-control\" name=\"aggregateDimension\" type=\"text\"\r\n                    [ngClass]=\"{'alertInput': isGroupByInAggregate === true}\"\r\n                    [(ngModel)]=\"config.aggrList[i].aggrDimesnion\">\r\n\r\n                <label for=\"aggregation\">Method</label>\r\n                <select name=\"aggregation\" id=\"selectMethod\" class=\"form-control\"\r\n                    [(ngModel)]=\"config.aggrList[i].aggrMethod\">\r\n                    <option *ngFor=\"let method of aggregationMethods\" value=\"{{method.id}}\">{{method.value}}\r\n                    </option>\r\n                </select>\r\n\r\n\r\n                <button class=\"btn btn-primary btn-xs btn-danger\" (click)=\"deleteAggrValue($event,i)\">-</button>\r\n            </div>\r\n        </ng-container>\r\n\r\n        <div class=\"form-group\" *ngIf=\"isAggrAdded\">\r\n            <label for=\"groupByDimension\">Group By</label>\r\n            <input class=\"form-control\" name=\"groupByDimension\" type=\"text\" [(ngModel)]=\"config.groupBy\">\r\n\r\n        </div>\r\n    </div>\r\n\r\n    <!-- Dropdown for Legend Icon -->\r\n    <label for=\"legend\">Legend config</label>\r\n    <div class=\"c8y-select-wrapper\">\r\n        <select name=\"legend\" id=\"LegendSelect\" class=\"form-control\" [(ngModel)]=\"config.legend.icon\">\r\n            <option *ngFor=\"let legendType of chartData.legendType\" value=\"{{legendType.icon}}\">{{legendType.value}}\r\n            </option>\r\n        </select>\r\n    </div>\r\n    <!-- Pie chart options -->\r\n    <div id=\"pie-option-conatiner\" *ngIf=\"config.type==='pie'\">\r\n        <label for=\"radius\">Pie Radius</label>\r\n        <div>\r\n            <input class=\"form-control\" name=\"radius\" type=\"text\" placeholder=\"0%,100%\" [(ngModel)]=\"config.radius\">\r\n        </div>\r\n    </div>\r\n    <div class=\"form-group\" *ngIf=\"config.type==='pie'\">\r\n        <label for=\"pieConfig\">Pie Slice Config</label>\r\n        <div>\r\n        <label for=\"pieBorderRadius\">Border Radius</label>\r\n            <input class=\"form-control\" name=\"pieBorderRadius\" type=\"number\" min='0' max='30' placeholder=\"0\" value=\"0\" [(ngModel)]=\"config.pieBorderRadius\">\r\n       \r\n        <label for=\"pieBorderWidth\">Border Width</label>\r\n            <input class=\"form-control\" name=\"pieBorderWidth\" type=\"number\" min='0' max='30' placeholder=\"0\"  value=\"0\"[(ngModel)]=\"config.pieBorderWidth\">\r\n        </div>\r\n     </div>\r\n\r\n    <!-- For scatter bubble size -->\r\n    <div *ngIf=\"config.type==='scatter'\">\r\n        <label title=\"Bubble Size\"for=\"symbolSize\">Bubble Size</label>\r\n        <input class=\"form-control\" name=\"symbolSize\" type=\"number\" placeholder=\"Enter a number\"\r\n            [(ngModel)]=\"config.scatterSymbolSize\" min=\"5\" max=\"20\">\r\n\r\n    </div>\r\n    <!-- stack container -->\r\n    <div id=\"stack-conatiner\" *ngIf=\"config.type==='line' || config.type==='bar'\">\r\n        <div id=\"stack-container\" *ngIf=\"config.layout==='stacked' || config.layout==='stackedBar'\">\r\n            <div style=\"margin-right: 0px;\">\r\n                <label class=\"c8y-checkbox checkbox-inline\" title=\"addStack\">\r\n                    <input type=\"checkbox\" value=\"Add Stack\" [(ngModel)]=\"config.addStack\"\r\n                        (click)=\"stackAdded($event.target.checked)\">\r\n                    <span></span>\r\n                    <span>Add Stack</span>\r\n                </label>\r\n            </div>\r\n            <div *ngIf=\"config.addStack\">\r\n                <button type=\"button\" class=\"btn btn-primary btn-xs\" (click)=\"addAnotherStack()\">Add\r\n                    Another Stack</button>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <div *ngIf=\"config.type==='line'  || config.type==='scatter'  || config.type==='bar'\">\r\n        <label title=\"Slider Zoom\" class=\"c8y-checkbox\">\r\n            <input type=\"checkbox\" value=\"false\" [(ngModel)]=\"config.sliderZoom\" >\r\n            <span></span>\r\n            <span>Slider Zoom</span>\r\n        </label>\r\n        <label title=\"Box Zoom\" class=\"c8y-checkbox\">\r\n            <input type=\"checkbox\" value=\"false\" [(ngModel)]=\"config.boxZoom\">\r\n            <span></span>\r\n            <span>Box Zoom</span>\r\n        </label>\r\n    </div>\r\n    <div *ngIf=\"config.layout==='stacked' || config.layout==='stackedBar'\">\r\n        <div *ngIf=\"config.addStack\">\r\n            <ng-container *ngFor=\"let item of config.stackList;let i = index\">\r\n                <div class=\"form-group\">\r\n                    <label for=\"stackName\">Stack Name</label>\r\n                    <div>\r\n                        <input class=\"form-control\" name=\"stackName\" type=\"text\"\r\n                            [(ngModel)]=\"config.stackList[i].stackName\">\r\n                    </div>\r\n                    <label for=\"stackValues\">Stack Values</label>\r\n                    <div>\r\n                        <input class=\"form-control\" name=\"stackValues\" type=\"text\"\r\n                            [(ngModel)]=\"config.stackList[i].stackValues\">\r\n                    </div>\r\n                    <div>\r\n                        <button class=\"btn btn-primary btn-xs btn-danger\" (click)=\"deleteStackValue($event,i)\">Delete\r\n                            Stack</button>\r\n                    </div>\r\n                </div>\r\n            </ng-container>\r\n            <button type=\"button\" class=\"btn btn-primary btn-xs\" (click)=\"updateStack()\">update</button>\r\n\r\n        </div>\r\n    </div>\r\n\r\n</div>\r\n",
-                styles: ["div{margin-top:5px;margin-right:5px;margin-bottom:5px}.alertInput{border:2px solid red}"]
+                template: "<div class=\"form-group\">\r\n    <div class=\"form-group col-xs-12 col-md-12 col-lg-12 row\">\r\n        <!-- <div class=\"col-xs-5 col-md-5\">\r\n            <label for=\"title\">Chart Title</label>\r\n            <input type=\"text\" class=\"form-control\" name=\"title\" [(ngModel)]=\"config.title\">\r\n        </div> -->\r\n        <div class=\"col-xs-5 col-md-5\">\r\n            <label for=\"listname\">List Name</label>\r\n            <input type=\"text\" class=\"form-control\" name=\"listname\" [(ngModel)]=\"config.listName\">\r\n        </div>\r\n    </div>\r\n    <div class=\"form-group\">\r\n        <!-- <form> -->\r\n        <div class=\"form-group col-xs-12 col-md-12 col-lg-12 row\">\r\n            <div class=\"col-xs-2 col-md-2\">\r\n                <label for=\"api\" title=\"API URL\" class=\"c8y-radio radio-inline\">\r\n                    <input type=\"radio\" id=\"api\" name=\"dataSource\" value=\"API\"\r\n                        (change)=\"dataSourceSelection($event.target.value)\" [(ngModel)]=\"config.dataSource\">\r\n                    <span></span>\r\n                    <span>API URL</span>\r\n                </label>\r\n            </div>\r\n            <div class=\"col-xs-2 col-md-2\">\r\n                <label for=\"datahub\" title=\"DataHub\" class=\"c8y-radio radio-inline\">\r\n                    <input type=\"radio\" id=\"datahub\" name=\"dataSource\" value=\"datahub\"\r\n                        (change)=\"dataSourceSelection($event.target.value)\" [(ngModel)]=\"config.dataSource\"\r\n                        placeholder=\"Enter Relative URL\">\r\n                    <span></span>\r\n                    <span>DataHub</span>\r\n                </label>\r\n            </div>\r\n        </div>\r\n        <!-- </form> -->\r\n        <div class=\"form-group col-xs-12 col-md-12 col-lg-12 row\">\r\n\r\n            <ng-container *ngIf=\"config.showApiInput\">\r\n                <div class=\"col-xs-6 col-md-6\">\r\n                    <input class=\"form-control\" type=\"text\" placeholder=\"API URL\" [(ngModel)]=\"config.apiUrl\">\r\n                </div>\r\n            </ng-container>\r\n\r\n            <div class=\"col-xs-6 col-md-6\">\r\n                <ng-container *ngIf=\"config.showDatahubInput\">\r\n                    <input class=\"form-control\" type=\"text\" placeholder=\"Datahub URL\" [(ngModel)]=\"config.apiUrl\">\r\n                    <div>\r\n                        <textarea class=\"form-control\" placeholder=\"Sql Query\" rows=\"3\" cols=\"30\"\r\n                            [(ngModel)]=\"config.sqlQuery\">\r\n                        </textarea>\r\n                    </div>\r\n                </ng-container>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <div class=\"form-group col-xs-12 col-md-12 col-lg-12 row\">\r\n        <div class=\"col-xs-5 col-md-5\">\r\n            <label for=\"type\">Chart Type</label>\r\n            <div class=\"c8y-select-wrapper\">\r\n                <select id=\"selectExample\" class=\"form-control\" name=\"type\" (change)=\"onSelection($event.target.value)\"\r\n                    [(ngModel)]=\"config.type\">\r\n                    <option *ngFor=\"let chartType of chartData.chartType\" value=\"{{chartType.id}}\">{{chartType.value}}\r\n                    </option>\r\n                </select>\r\n            </div>\r\n        </div>\r\n        <!-- dont show div if config.type is scatter or radar -->\r\n        <div *ngIf=\" config.type!=='radar'\" class=\"col-xs-5 col-md-5\">\r\n            <label for=\"layout\">Chart Layout</label>\r\n            <div class=\"c8y-select-wrapper\">\r\n                <select name=\"layout\" id=\"selectExample\" class=\"form-control\" [(ngModel)]=\"config.layout\"\r\n                    (change)=\"onLayoutSelection($event.target.value)\">\r\n                    <option *ngFor=\"let chartLayout of chartLayoutData\" value=\"{{chartLayout.id}}\">{{chartLayout.value}}\r\n                    </option>\r\n                </select>\r\n            </div>\r\n        </div>\r\n        <div *ngIf=\"config.type=='pie'\" class=\"form-group col-xs-12 col-md-12 col-lg-12 row\">\r\n            <div class=\"col-xs-5 col-md-5\">\r\n                <label for=\"listname\">PieSliceValue</label>\r\n                <input type=\"text\" class=\"form-control\" name=\"listname\" [(ngModel)]=\"config.pieSliceValue\">\r\n            </div>\r\n            <div class=\"col-xs-5 col-md-5\">\r\n                <label for=\"listname\">PieSliceName</label>\r\n                <input type=\"text\" class=\"form-control\" name=\"listname\" [(ngModel)]=\"config.pieSlicenName\">\r\n            </div>\r\n        </div>\r\n        <!-- Pie chart options -->\r\n        <div id=\"pie-option-conatiner\" *ngIf=\"config.type==='pie'\" class=\"form-group col-xs-12 col-md-12 col-lg-12 row\">\r\n            <div class=\"col-xs-5 col-md-5\">\r\n                <label for=\"radius\">Pie Radius</label>\r\n                <input class=\"form-control\" name=\"radius\" type=\"text\" placeholder=\"0%,100%\" [(ngModel)]=\"config.radius\">\r\n            </div>\r\n        </div>\r\n        <div class=\"col-md-12 col-xs-12\" *ngIf=\"config.type==='pie'\">\r\n            <label for=\"pieConfig\">Pie Slice Config</label>\r\n        </div>\r\n        <div class=\"form-group col-xs-12 col-md-12 col-lg-12 row\" *ngIf=\"config.type==='pie'\">\r\n            <div class=\"col-xs-5 col-md-5\">\r\n                <label for=\"pieBorderRadius\">Border Radius</label>\r\n                <input class=\"form-control\" name=\"pieBorderRadius\" type=\"number\" min='0' max='30' placeholder=\"0\"\r\n                    value=\"0\" [(ngModel)]=\"config.pieBorderRadius\">\r\n            </div>\r\n            <div class=\"col-xs-5 col-md-5\">\r\n                <label for=\"pieBorderWidth\">Border Width</label>\r\n                <input class=\"form-control\" name=\"pieBorderWidth\" type=\"number\" min='0' max='30' placeholder=\"0\"\r\n                    value=\"0\" [(ngModel)]=\"config.pieBorderWidth\">\r\n            </div>\r\n        </div>\r\n        <!-- Line Chart configurations for Area Line Chart and Smooth Line Chart -->\r\n        <div *ngIf=\"config.type==='line'\" class=\"form-group col-xs-12 col-md-12 col-lg-12 row\">\r\n            <div class=\"col-xs-5 col-md-5\">\r\n                <label title=\"Area\" class=\"c8y-checkbox\">\r\n                    <input type=\"checkbox\" value=\"true\" [(ngModel)]=\"config.area\">\r\n                    <span></span>\r\n                    <span>Area</span>\r\n                </label>\r\n            </div>\r\n            <div class=\"col-xs-5 col-md-5\">\r\n                <label title=\"Smooth Line\" class=\"c8y-checkbox\">\r\n                    <input type=\"checkbox\" value=\"true\" [(ngModel)]=\"config.smoothLine\">\r\n                    <span></span>\r\n                    <span>Smooth Line</span>\r\n                </label>\r\n            </div>\r\n        </div>\r\n        <!-- dont show div if config.type is pie or radar -->\r\n        <div class=\"form-group col-xs-12 col-md-12 col-lg-12 row\" *ngIf=\"config.type!=='pie'\">\r\n            <div class=\"form-group col-xs-5 col-md-5\" *ngIf=\"config.type!=='polar'\">\r\n                <label for=\"xAxisType\">X-Axis Type</label>\r\n                <div class=\"c8y-select-wrapper\">\r\n                    <select id=\"selectExample\" class=\"form-control\" name=\"xAxisType\" [(ngModel)]=\"config.xAxis\">\r\n                        <option *ngFor=\"let type of chartData.xAxisType\" value=\"{{type.id}}\" [disabled]='type.disabled'>\r\n                            {{type.value}}\r\n                        </option>\r\n                    </select>\r\n                </div>\r\n            </div>\r\n            <div class=\"col-xs-5 col-md-5\">\r\n                <label for=\"xAxisDimension\">X-Axis Dimension</label>\r\n                <input class=\"form-control\" name=\"url\" type=\"text\" [(ngModel)]=\"config.xAxisDimension\">\r\n            </div>\r\n        </div>\r\n        <div class=\"form-group col-xs-12 col-md-12 col-lg-12 row\" *ngIf=\"config.type!=='pie' && config.type!=='radar'\">\r\n            <div class=\"form-group col-md-5 col-xs-5\" *ngIf=\"config.type!=='polar'\">\r\n                <label for=\"yAxisType\">Y-Axis Type</label>\r\n                <div class=\"c8y-select-wrapper\">\r\n                    <select id=\"selectExample\" class=\"form-control\" name=\"yAxisType\" [(ngModel)]=\"config.yAxis\">\r\n                        <option *ngFor=\"let type of chartData.yAxisType\" value=\"{{type.id}}\" [disabled]='type.disabled'>\r\n                            {{type.value}}\r\n                        </option>\r\n                    </select>\r\n                </div>\r\n            </div>\r\n            <div class=\"col-xs-5 col-md-5\">\r\n                <label for=\"yAxisDimension\">Y-Axis Dimension</label>\r\n                <input class=\"form-control\" name=\"yAxisDimension\" type=\"text\" [(ngModel)]=\"config.yAxisDimension\">\r\n            </div>\r\n        </div>\r\n        <div class=\"form-group col-xs-12 col-md-12 col-lg-12 row\" *ngIf=\"config.type=='radar'\">\r\n            <div class=\"col-xs-5 col-md-5\">\r\n                <label for=\"radarDimensions\">Radar Dimensions</label>\r\n                <input class=\"form-control\" name=\"radarDimensions\" type=\"text\" [(ngModel)]=\"config.radarDimensions\">\r\n            </div>\r\n        </div>\r\n        <!-- Dropdown for Aggregation / group by methods  -->\r\n        <div class=\"form-group col-xs-12 col-md-12 col-lg-12 row\"\r\n            *ngIf=\"config.type==='pie'||config.type==='bar'||config.type==='line' ||config.type==='polar' || config.type==='scatter' \">\r\n            <div class=\"col-xs-6 col-md-6 row\">\r\n                <div class=\"col-xs-4 col-md-4\">\r\n                    <label for=\"aggregation\">Aggregate Method</label>\r\n                </div>\r\n                <div class=\"col-xs-2 col-md-2\">\r\n                    <button type=\"button\" class=\"btn btn-primary btn-xs\" (click)=\"addAnotherAggregate()\">+</button>\r\n                </div>\r\n            </div>\r\n        </div>\r\n        <div class=\"form-group col-xs-12 col-md-12 col-lg-12 row\">\r\n            <ng-container *ngFor=\"let item of config.aggrList;let i = index\">\r\n                <div class=\"row col-xs-12 col-md-12 col-lg-12\">\r\n                    <div class=\"col-xs-2 col-md-2\">\r\n                        <label for=\"aggregateDimension\">Dimension </label>\r\n                    </div>\r\n                    <div class=\"col-xs-2 col-md-2\">\r\n                        <input class=\"form-control\" name=\"aggregateDimension\" type=\"text\"\r\n                            [ngClass]=\"{'alertInput': isGroupByInAggregate === true}\"\r\n                            [(ngModel)]=\"config.aggrList[i].aggrDimesnion\">\r\n                    </div>\r\n                    <div class=\"col-xs-2 col-md-2\">\r\n                        <label for=\"aggregation\">Method</label>\r\n                    </div>\r\n                    <div class=\"col-xs-2 col-md-2\">\r\n                        <select name=\"aggregation\" id=\"selectMethod\" class=\"form-control\"\r\n                            [(ngModel)]=\"config.aggrList[i].aggrMethod\">\r\n                            <option *ngFor=\"let method of aggregationMethods\" value=\"{{method.id}}\">{{method.value}}\r\n                            </option>\r\n                        </select>\r\n                    </div>\r\n                    <div class=\"col-xs-2 col-md-2 \">\r\n                        <button class=\"btn btn-primary btn-xs btn-danger\" (click)=\"deleteAggrValue($event,i)\">-</button>\r\n                    </div>\r\n                </div>\r\n            </ng-container>\r\n            <div class=\"form-group col-xs-12 col-md-12 col-lg-12 row\" *ngIf=\"isAggrAdded\">\r\n                <div class=\"col-xs-2 col-md-2\">\r\n                    <label for=\"groupByDimension\">Group By</label>\r\n                </div>\r\n                <div class=\"col-xs-2 col-md-2\">\r\n                    <input class=\"form-control\" name=\"groupByDimension\" type=\"text\" [(ngModel)]=\"config.groupBy\">\r\n                </div>\r\n            </div>\r\n        </div>\r\n        <!-- Dropdown for Legend Icon -->\r\n        <div class=\"form-group col-xs-12 col-md-12 row\">\r\n            <div class=\"col-md-5 col-xs-5\">\r\n                <label for=\"legend\">Legend Shape</label>\r\n                <div class=\"c8y-select-wrapper\">\r\n                    <select name=\"legend\" id=\"LegendSelect\" class=\"form-control\" [(ngModel)]=\"config.legend.icon\">\r\n                        <option *ngFor=\"let legendType of chartData.legendType\" value=\"{{legendType.icon}}\">\r\n                            {{legendType.value}}\r\n                        </option>\r\n                    </select>\r\n                </div>\r\n            </div>\r\n        </div>\r\n        <!-- For scatter bubble size -->\r\n        <div *ngIf=\"config.type==='scatter'\" class=\"col-xs-12 col-md-12 col-lg-12 row\">\r\n            <div class=\"col-xs-5 col-md-5\">\r\n                <label title=\"Bubble Size\" for=\"symbolSize\">Bubble Size</label>\r\n                <input class=\"form-control\" name=\"symbolSize\" type=\"number\" placeholder=\"Enter a number\"\r\n                    [(ngModel)]=\"config.scatterSymbolSize\" min=\"5\" max=\"20\">\r\n            </div>\r\n        </div>\r\n        <!-- stack container -->\r\n        <div id=\"stack-conatiner\" *ngIf=\"config.type==='line' || config.type==='bar'\"\r\n            class=\"form-group col-xs-12 col-md-12 col-lg-12 row\">\r\n            <div id=\"stack-container\" *ngIf=\"config.layout==='stacked' || config.layout==='stackedBar'\">\r\n                <div class=\"col-xs-2 col-md-2\">\r\n                    <label class=\"c8y-checkbox checkbox-inline\" title=\"addStack\">\r\n                        <input type=\"checkbox\" value=\"Add Stack\" [(ngModel)]=\"config.addStack\"\r\n                            (click)=\"stackAdded($event.target.checked)\">\r\n                        <span></span>\r\n                        <span>Add Stack</span>\r\n                    </label>\r\n                </div>\r\n                <div *ngIf=\"config.addStack\" class=\"col-xs-2 col-md-2\">\r\n                    <button type=\"button\" class=\"btn btn-primary btn-xs\" (click)=\"addAnotherStack()\">Add\r\n                        Another Stack</button>\r\n                </div>\r\n            </div>\r\n        </div>\r\n        <div *ngIf=\"config.layout==='stacked' || config.layout==='stackedBar'\">\r\n            <div *ngIf=\"config.addStack\">\r\n                <ng-container *ngFor=\"let item of config.stackList;let i = index\">\r\n                    <div class=\"row col-xs-12 col-md-12 col-lg-12\" style=\"margin-top: 5px;\">\r\n                        <div class=\"col-md-2 col-xs-2\">\r\n                            <label for=\"stackName\">Stack Name</label>\r\n                        </div>\r\n                        <div class=\"col-md-2 col-xs-2\">\r\n                            <input class=\"form-control\" name=\"stackName\" type=\"text\"\r\n                                [(ngModel)]=\"config.stackList[i].stackName\">\r\n                        </div>\r\n                        <div class=\"col-md-2 col-xs-2\">\r\n                            <label for=\"stackValues\">Stack Values</label>\r\n                        </div>\r\n                        <div class=\"col-md-2 col-xs-2\">\r\n                            <input class=\"form-control\" name=\"stackValues\" type=\"text\"\r\n                                [(ngModel)]=\"config.stackList[i].stackValues\">\r\n                        </div>\r\n                        <div class=\"col-md-2 col-xs-2\">\r\n                            <button class=\"btn btn-primary btn-xs btn-danger\"\r\n                                (click)=\"deleteStackValue($event,i)\">Delete\r\n                                Stack</button>\r\n                        </div>\r\n                    </div>\r\n                </ng-container>\r\n                <div class=\"row col-xs-12 col-md-12 col-lg-12\">\r\n                    <div class=\"col-xs-2 col-md-2\">\r\n                        <button type=\"button\" class=\"btn btn-primary btn-xs\" (click)=\"updateStack()\">update</button>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n        <div *ngIf=\"config.type==='line'  || config.type==='scatter'  || config.type==='bar'\"\r\n            class=\"form-group col-xs-12 col-md-12 col-lg-12 row\">\r\n            <div class=\"form-group col-xs-5 col-md-5\">\r\n                <label title=\"Slider Zoom\" class=\"c8y-checkbox\">\r\n                    <input type=\"checkbox\" value=\"false\" [(ngModel)]=\"config.sliderZoom\">\r\n                    <span></span>\r\n                    <span>Slider Zoom</span>\r\n                </label>\r\n            </div>\r\n            <div class=\"form-group col-xs-5 col-md-5\">\r\n                <label title=\"Box Zoom\" class=\"c8y-checkbox\">\r\n                    <input type=\"checkbox\" value=\"false\" [(ngModel)]=\"config.boxZoom\">\r\n                    <span></span>\r\n                    <span>Box Zoom</span>\r\n                </label>\r\n            </div>\r\n        </div>\r\n    </div>",
+                styles: [".alertInput{border:2px solid red}"]
             },] }
 ];
 SmartChartConfigComponent.ctorParameters = () => [];
