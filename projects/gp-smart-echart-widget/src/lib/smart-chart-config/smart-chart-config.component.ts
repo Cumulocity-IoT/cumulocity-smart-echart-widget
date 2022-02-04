@@ -244,6 +244,7 @@ const chartValues = {
 export class SmartChartConfigComponent implements OnInit {
   constructor() { }
   flag = false;
+  userSelectedColor=[];
   @Input() config: ChartConfig = {
     listName: '',
     title: '',
@@ -299,7 +300,9 @@ export class SmartChartConfigComponent implements OnInit {
       this.config.stackList.length = 0;
     }
   }
-
+  yAxisDimensionUpdate(val){
+console.log(val,this.config.yAxisDimension)
+  }
   deleteStackValue(stack, index) {
     this.config.stackList.splice(index, 1);
   }
@@ -347,6 +350,15 @@ export class SmartChartConfigComponent implements OnInit {
     if (this.config.aggrList.length === 0) {
       this.isAggrAdded = false;
     }
+  }
+  colorUpdate(colorSelected){
+    this.userSelectedColor = [...this.userSelectedColor,colorSelected];
+    this.config.colors = this.userSelectedColor.join(',')
+  }
+  colorUpdateByTyping(colorTyped){
+    let joinedArr = [...this.userSelectedColor,...colorTyped.split(',')];
+    this.userSelectedColor = [...new Set([...joinedArr])]
+    
   }
   onSelection(value) {
     this.chartData.chartLayout.filter(val => {

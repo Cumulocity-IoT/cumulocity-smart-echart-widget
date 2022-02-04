@@ -59,6 +59,7 @@ export interface ChartConfig {
     scatterSymbolSize?:string;
     pieBorderWidth?:number|0;
     pieBorderRadius?:number|0;
+    colors?:string | '';
 }
 
 export class Emphasis{

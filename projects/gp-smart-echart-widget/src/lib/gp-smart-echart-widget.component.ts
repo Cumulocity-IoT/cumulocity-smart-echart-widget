@@ -33,7 +33,7 @@ import { extractValueFromJSON } from './util/extractValueFromJSON.util';
   styles: ['gp-smart-echart-widget.component.css']
 })
 export class GpSmartEchartWidgetComponent implements OnInit {
-  @ViewChild('chartBox', { static: true}) protected mapDivRef: ElementRef;
+  @ViewChild('chartBox', { static: true }) protected mapDivRef: ElementRef;
   @Input() config: ChartConfig;
   serviceData;
   seriesData;
@@ -46,12 +46,13 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   protected chartDiv: HTMLDivElement;
   isDatahubPostCall = false;
   dataChart;
+  colorsForChart ;
   constructor(private chartService: GpSmartEchartWidgetService,
     private realTimeService: Realtime, private fetchClient: FetchClient) { }
   ngOnInit(): void {
     this.chartDiv = this.mapDivRef.nativeElement;
     this.createChart(this.config);
-    
+
   }
   dataFromUser(userInput: ChartConfig) {
     this.createChart(userInput);
@@ -68,6 +69,11 @@ export class GpSmartEchartWidgetComponent implements OnInit {
     this.dataChart = echarts.init(this.chartDiv);
     // const myChart = echarts.init(this.chartDiv);
     this.dataChart.showLoading();
+    if (!userInput.colors) {
+      console.log('No colors Specified')
+    } else {
+      this.colorsForChart = [...userInput.colors.split(',')]
+    }
     if (userInput.showApiInput) {
       this.serviceData = await this.chartService.getAPIData(userInput.apiUrl).toPromise();
     } else if (userInput.showDatahubInput) {
@@ -299,7 +305,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             },
             tooltip: {
               trigger: 'item',
-              confine:true
+              confine: true
             },
             grid: {
               left: '10%',
@@ -312,7 +318,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               indicator: this.serviceData[userInput.listName].map((item) => {
                 return { name: item[userInput.xAxisDimension] };
               }),
-              radius:100
+              radius: 100
             },
             series: this.seriesData,
             toolbox: {
@@ -829,7 +835,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             },
             radar: {
               indicator: indicatorData,
-              radius:100
+              radius: 100
             },
             series: this.seriesData,
             toolbox: {
@@ -1316,7 +1322,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         } else {
           const xAxisDimensions = userInput.xAxisDimension.split(',');
           const xAxisData = [];
-          xAxisDimensions.forEach((value,i) => {
+          xAxisDimensions.forEach((value, i) => {
             xAxisData[i] = {
               type: userInput.type,
               symbolSize: userInput.scatterSymbolSize,
@@ -1371,7 +1377,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         } else {
           const yAxisDimensions = userInput.yAxisDimension.split(',');
           const yAxisData = [];
-          yAxisDimensions.forEach((value,i) => {
+          yAxisDimensions.forEach((value, i) => {
             yAxisData[i] = {
               type: userInput.type,
               symbolSize: userInput.scatterSymbolSize,
@@ -1437,7 +1443,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         }];
       } else {
         const yAxisData = [];
-        yDimensions.array.forEach((value,i) => {
+        yDimensions.array.forEach((value, i) => {
           yAxisData[i] = {
             type: userInput.type,
             datasetId,
@@ -1465,7 +1471,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         }];
       } else {
         const xAxisData = [];
-        xDimensions.forEach((value,i) => {
+        xDimensions.forEach((value, i) => {
           xAxisData[i] = {
             type: userInput.type,
             datasetId,
@@ -1495,7 +1501,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         }];
       } else {
         const yAxisData = [];
-        yDimensions.forEach((value,i) => {
+        yDimensions.forEach((value, i) => {
           yAxisData[i] = {
             type: userInput.type,
             datasetId,
@@ -1591,7 +1597,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
       } else {
         const xAxisDimensions = userInput.xAxisDimension.split(',');
         const xAxisData = [];
-        xAxisDimensions.forEach((value,i) => {
+        xAxisDimensions.forEach((value, i) => {
           xAxisData[i] = {
             type: userInput.type,
             symbolSize: userInput.scatterSymbolSize,
@@ -1640,7 +1646,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
       } else {
         const yAxisDimensions = userInput.yAxisDimension.split(',');
         const yAxisData = [];
-        yAxisDimensions.forEach((value,i) => {
+        yAxisDimensions.forEach((value, i) => {
           yAxisData[i] = {
             type: userInput.type,
             symbolSize: userInput.scatterSymbolSize,
@@ -1817,6 +1823,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   // getseriesdata recieves userinput and returns seriesdata
   // seriesdata is an array of objects
   getSeriesData(userInput) {
+
     if (userInput.yAxisDimension.split(',').length === 1) {
       return [{
         name: this.getFormattedName(userInput.yAxisDimension),
@@ -1825,12 +1832,15 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         }),
         type: userInput.type,
         smooth: userInput.smoothLine,
-        areaStyle: userInput.area
+        areaStyle: userInput.area,
+        itemStyle: {
+          color: this.colorsForChart[0]
+        }
       }];
     } else {
       const yAxisDimensions = userInput.yAxisDimension.split(',');
       const yAxisData = [];
-      yAxisDimensions.forEach((value,i) => {
+      yAxisDimensions.forEach((value, i) => {
         yAxisData[i] = {
           name: yAxisDimensions[i],
           stack: this.getStackName(userInput.stack, yAxisDimensions[i]),
@@ -1844,7 +1854,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           }),
           type: userInput.type,
           smooth: userInput.smoothLine,
-          areaStyle: userInput.area
+          areaStyle: userInput.area,
+          itemStyle: {
+            color: this.colorsForChart[i]
+          }
         }
       }); // end of for block
       return yAxisData;
@@ -1875,7 +1888,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   // else return dimensionName
   getStackName(stackData, dimensionName) {
     let result = '';
-    stackData.forEach((value,x) => {
+    stackData.forEach((value, x) => {
       const values = stackData[x].stackValues.split(',');
       for (const i in values) {
         if (values[i] === dimensionName) {
@@ -1946,7 +1959,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
     } else {
       const xAxisDimensions = userInput.xAxisDimension.split(',');
       const xAxisData = [];
-      xAxisDimensions.forEach((value,i) => {
+      xAxisDimensions.forEach((value, i) => {
         xAxisData[i] = {
           name: xAxisDimensions[i],
           stack: this.getStackName(userInput.stack, xAxisDimensions[i]),
@@ -1974,8 +1987,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   @HostListener('window:resize')
   onResize() {
     console.log(this.dataChart)
-      if(this.dataChart) {
-        this.dataChart.resize();
-      }
+    if (this.dataChart) {
+      this.dataChart.resize();
+    }
   }
 }

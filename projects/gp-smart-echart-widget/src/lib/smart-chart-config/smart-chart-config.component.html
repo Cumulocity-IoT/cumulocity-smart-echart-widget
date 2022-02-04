@@ -136,14 +136,14 @@
             </div>
             <div class="col-xs-5 col-md-5">
                 <label for="xAxisDimension">X-Axis Dimension</label>
-                <input class="form-control" name="url" type="text" [(ngModel)]="config.xAxisDimension">
+                <input class="form-control" name="url" type="text" [(ngModel)]="config.xAxisDimension" >
             </div>
         </div>
         <div class="form-group col-xs-12 col-md-12 col-lg-12 row" *ngIf="config.type!=='pie' && config.type!=='radar'">
             <div class="form-group col-md-5 col-xs-5" *ngIf="config.type!=='polar'">
                 <label for="yAxisType">Y-Axis Type</label>
                 <div class="c8y-select-wrapper">
-                    <select id="selectExample" class="form-control" name="yAxisType" [(ngModel)]="config.yAxis">
+                    <select id="selectExample" class="form-control" name="yAxisType" [(ngModel)]="config.yAxis" >
                         <option *ngFor="let type of chartData.yAxisType" value="{{type.id}}" [disabled]='type.disabled'>
                             {{type.value}}
                         </option>
@@ -152,7 +152,7 @@
             </div>
             <div class="col-xs-5 col-md-5">
                 <label for="yAxisDimension">Y-Axis Dimension</label>
-                <input class="form-control" name="yAxisDimension" type="text" [(ngModel)]="config.yAxisDimension">
+                <input class="form-control" name="yAxisDimension" type="text" [(ngModel)]="config.yAxisDimension" (change)="yAxisDimensionUpdate(config.yAxisDimension)">
             </div>
         </div>
         <div class="form-group col-xs-12 col-md-12 col-lg-12 row" *ngIf="config.type=='radar'">
@@ -297,4 +297,13 @@
             </div>
         </div>
     </div>
-   
+    <div class="form-group col-xs-12 col-md-12 col-lg-12 row">
+        <div class="col-xs-1 col-md-1">
+            <label title="Chart Color" for="chartColor">Chart Color</label>
+            <input type="text" name="chartColor" [(ngModel)]="config.colors" (change)="colorUpdateByTyping($event.target.value)">
+            <input class="form-control" type="color" placeholder="Enter color HEX"   (change)="colorUpdate($event.target.value)">
+        </div>
+    </div>
+    <div>
+        <input type="submit" (click)="SubmitData()" value="Submit" />
+    </div>
