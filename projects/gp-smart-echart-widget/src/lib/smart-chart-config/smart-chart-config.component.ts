@@ -288,6 +288,8 @@ export class SmartChartConfigComponent implements OnInit {
     this.aggregationMethods = chartValues.aggregateMethod;
     this.config.aggrList = [];
     this.config.legend={};
+    // To initialize the chart layout dropdown
+    this.onSelection(this.config.type);
   }
 
 
