@@ -288,6 +288,9 @@ export class SmartChartConfigComponent implements OnInit {
     this.aggregationMethods = chartValues.aggregateMethod;
     this.config.aggrList = [];
     this.config.legend={};
+     // Default value for datahub sql query
+     this.config.datahubUrl = "service/datahub/sql?version=v1";
+     this.config.sqlLimit = 100;
     // To initialize the chart layout dropdown
     this.onSelection(this.config.type);
   }

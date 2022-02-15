@@ -33,13 +33,20 @@
         </ng-container>
         <ng-container *ngIf="config.showDatahubInput">
             <div class="col-xs-6 col-md-6">
-                <input class="form-control" type="text" placeholder="Datahub URL" [(ngModel)]="config.apiUrl">
+                <input class="form-control" type="text" placeholder="Datahub URL" [(ngModel)]="config.datahubUrl">
                 <div>
                     <textarea class="form-control" placeholder="Sql Query" rows="3" cols="30"
                         [(ngModel)]="config.sqlQuery">
                     </textarea>
                 </div>
             </div>
+            <div class="col-xs-6 col-md-6">
+                <label for="sqlLimit">Sql Result Limit</label>
+                <div>
+                    <input name="sqlLimit" [(ngModel)]="config.sqlLimit" type="number" min="100" max="20000" step="1" />
+                </div>
+            </div>
+
         </ng-container>
     </div>
 </div>
@@ -266,7 +273,7 @@
                 <span>Smooth Line</span>
             </label>
         </div>
-       
+
     </div>
 </div>
 <!-- End of Line Chart Config Section -->
@@ -353,7 +360,7 @@
                 (change)="colorUpdateByTyping($event.target.value)">
         </div>
         <div class="col-xs-3 col-md-3">
-            <br/>
+            <br />
             <input class="form-control" type="color" placeholder="Enter color HEX"
                 (change)="colorUpdate($event.target.value)">
         </div>

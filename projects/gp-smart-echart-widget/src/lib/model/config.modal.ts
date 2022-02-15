@@ -65,7 +65,8 @@ export interface ChartConfig {
     fontSize?:number|'';
     xAxisRotateLabels?:number;
     yAxisRotateLabels?:number;
-
+    sqlLimit?:number;
+    datahubUrl?:string;
 }
 
 export class Emphasis{

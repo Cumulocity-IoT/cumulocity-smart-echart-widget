@@ -82,7 +82,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
     } else if (userInput.showDatahubInput) {
       const sqlReqObject = {
         sql: userInput.sqlQuery,
-        limit: 100,
+        limit: userInput.sqlLimit,
         format: 'PANDAS'
       };
       const response = await this.fetchClient.fetch(userInput.apiUrl, {
@@ -2150,7 +2150,6 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   onResized(event: ResizedEvent) {
     this.width = event.newWidth;
     this.height = event.newHeight;
-    console.log('resize called',this.width,this.height);
     this.dataChart.resize({
       width: this.width,
       height:this.height
