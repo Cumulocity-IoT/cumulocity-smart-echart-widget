@@ -60,6 +60,12 @@ export interface ChartConfig {
     pieBorderWidth?:number|0;
     pieBorderRadius?:number|0;
     colors?:string | '';
+    areaOpacity?: string | '';
+    radarChartRadius?:number|'';
+    fontSize?:number|'';
+    xAxisRotateLabels?:number;
+    yAxisRotateLabels?:number;
+
 }
 
 export class Emphasis{

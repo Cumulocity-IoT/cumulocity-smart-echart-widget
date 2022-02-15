@@ -20,6 +20,7 @@ import { ChartConfig } from '../model/config.modal';
 export declare class SmartChartConfigComponent implements OnInit {
     constructor();
     flag: boolean;
+    userSelectedColor: any[];
     config: ChartConfig;
     chartData: {
         chartType: {
@@ -60,11 +61,14 @@ export declare class SmartChartConfigComponent implements OnInit {
     configData: EventEmitter<any>;
     ngOnInit(): void;
     stackAdded(stack: any): void;
+    yAxisDimensionUpdate(val: any): void;
     deleteStackValue(stack: any, index: any): void;
     updateStack(): void;
     addAnotherStack(): void;
     addAnotherAggregate(): void;
     deleteAggrValue(aggr: any, index: any): void;
+    colorUpdate(colorSelected: any): void;
+    colorUpdateByTyping(colorTyped: any): void;
     onSelection(value: any): void;
     onLayoutSelection(value: any): void;
     dataSourceSelection(value: any): void;

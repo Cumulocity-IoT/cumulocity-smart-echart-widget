@@ -1,12 +1,10 @@
-
 <div>
-    <lib-smart-chart-config (configData)="dataFromUser($event)"></lib-smart-chart-config>
-
+        <lib-smart-chart-config></lib-smart-chart-config>
 </div>
-
-    <div class="row col-xs-12 col-md-12" style="display: block">
-
-        <div  echarts [options]="chartOption" class="demo-chart"
-        #chartBox></div>
-
-    </div>
+<!-- <div (resized)="onResized($event)" style="height:100%;width:100%;">
+   
+        <div echarts [options]="chartOption" class="demo-chart" #chartBox
+        [style.height.px]="height" [style.width.px]="width"
+        ></div>
+   
+</div> -->

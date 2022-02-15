@@ -27,6 +27,7 @@ import {
   Realtime,
 } from '@c8y/client';
 import { extractValueFromJSON } from './util/extractValueFromJSON.util';
+import { ResizedEvent } from 'angular-resize-event';
 @Component({
   selector: 'lib-gp-smart-echart-widget',
   templateUrl: './gp-smart-echart-widget.component.html',
@@ -39,6 +40,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   seriesData;
   chartData;
   userInput;
+  width: number;
+  height: number;
+
   chartOption: EChartsOption = {};
   protected allSubscriptions: any = [];
   realtime = true;
@@ -46,13 +50,12 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   protected chartDiv: HTMLDivElement;
   isDatahubPostCall = false;
   dataChart;
-  colorsForChart ;
+  colorsForChart;
   constructor(private chartService: GpSmartEchartWidgetService,
-    private realTimeService: Realtime, private fetchClient: FetchClient) { }
+     private fetchClient: FetchClient) { }
   ngOnInit(): void {
     this.chartDiv = this.mapDivRef.nativeElement;
     this.createChart(this.config);
-
   }
   dataFromUser(userInput: ChartConfig) {
     this.createChart(userInput);
@@ -62,6 +65,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   reloadData(userInput: ChartConfig) {
     this.createChart(userInput);
   }
+
+
   // createChart function is used to create chart with the help of echart library
   async createChart(userInput?: ChartConfig) {
     // const chartDom = document.getElementById('chart-container');
@@ -70,7 +75,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
     // const myChart = echarts.init(this.chartDiv);
     this.dataChart.showLoading();
     if (!userInput.colors) {
-      console.log('No colors Specified')
+      if (isDevMode()) { console.log('No colors Specified'); }
+      this.colorsForChart = [];
     } else {
       this.colorsForChart = [...userInput.colors.split(',')]
     }
@@ -93,6 +99,12 @@ export class GpSmartEchartWidgetComponent implements OnInit {
     }
     if (this.serviceData) {
       this.dataChart.hideLoading();
+      let axisFontSize = 0;
+      if(userInput.fontSize === 0 || userInput.fontSize === '' || userInput.fontSize === null || userInput.fontSize === undefined){
+        axisFontSize = 12;
+      }else {
+        axisFontSize = userInput.fontSize;
+      }
       if (userInput.aggrList.length === 0 && !this.isDatahubPostCall) {
         // calls for API without Aggregation
         if (userInput.type === 'pie') {
@@ -137,6 +149,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             }
           }
           if (isDevMode()) { console.log('Pie Chart For API', this.chartOption); }
+          console.log('Pie Chart For API', this.chartOption);
         }
         // End of piechart for API
         else if (userInput.type === 'polar') {
@@ -202,6 +215,11 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               nameGap: 30,
               type: this.getXAxisType(userInput),
               boundaryGap: false,
+              axisLabel:{
+                interval:0,
+                fontSize:axisFontSize,
+                rotate:userInput.xAxisRotateLabels
+              }
             };
             yAxisObject = {
               name: this.getFormattedName(userInput.yAxisDimension),
@@ -210,7 +228,12 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               data: this.serviceData[userInput.listName].map((item) => {
                 return item[userInput.yAxisDimension];
               }),
-              type: this.getYAxisType(userInput)
+              type: this.getYAxisType(userInput),
+              axisLabel:{
+                interval:0,
+                fontSize:axisFontSize,
+                rotate:userInput.yAxisRotateLabels
+              }
             };
           } else {
             xAxisObject = {
@@ -222,12 +245,20 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               }),
               type: this.getXAxisType(userInput),
               boundaryGap: false,
+              axisLabel:{
+                fontSize:axisFontSize,
+                rotate:userInput.xAxisRotateLabels
+              }
             };
             yAxisObject = {
               name: this.getFormattedName(userInput.yAxisDimension),
               nameLocation: 'middle',
               nameGap: 70,
-              type: this.getYAxisType(userInput)
+              type: this.getYAxisType(userInput),
+              axisLabel:{
+                fontSize:axisFontSize,
+                rotate:userInput.yAxisRotateLabels
+              }
             };
           }
           this.seriesData = this.getScatterChartSeriesData(userInput);
@@ -318,7 +349,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               indicator: this.serviceData[userInput.listName].map((item) => {
                 return { name: item[userInput.xAxisDimension] };
               }),
-              radius: 100
+              radius: userInput.radarChartRadius
             },
             series: this.seriesData,
             toolbox: {
@@ -328,6 +359,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             }
           }
           if (isDevMode()) { console.log('Radar chart for API', this.chartOption) }
+          console.log('Radar chart for API', this.chartOption);
         } // End of Radar CHart for API
         else if ((userInput.type === 'line' || userInput.type === 'bar')
           && (userInput.layout !== 'simpleHorizontalBar' && userInput.layout !== 'stackedHorizontalBar')) {
@@ -384,11 +416,21 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               }),
               type: this.getXAxisType(userInput),
               boundaryGap: false,
+              axisLabel:{
+                interval:0,
+                fontSize:axisFontSize,
+                rotate:userInput.xAxisRotateLabels
+              }
               // name: xAxisName
             },
             yAxis: {
               type: this.getYAxisType(userInput),
               // name: yAxisName
+              axisLabel:{
+                interval:0,
+                fontSize:axisFontSize,
+                rotate:userInput.yAxisRotateLabels
+              }
             },
             series: this.seriesData,
             toolbox: {
@@ -454,6 +496,11 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               // name: xAxisName,
               type: this.getXAxisType(userInput),
               boundaryGap: false,
+              axisLabel:{
+                interval:0,
+                fontSize:axisFontSize,
+                rotate:userInput.xAxisRotateLabels
+              }
             },
             yAxis: {
               // name: yAxisName,
@@ -462,6 +509,11 @@ export class GpSmartEchartWidgetComponent implements OnInit {
                 const val = extractValueFromJSON(userInput.yAxisDimension, item);
                 return val;
               }),
+              axisLabel:{
+                interval:0,
+                fontSize:axisFontSize,
+                rotate:userInput.yAxisRotateLabels
+              }
             },
             series: this.seriesData,
             toolbox: {
@@ -549,9 +601,19 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               scale: true,
               type: this.getXAxisType(userInput),
               boundaryGap: false,
+              axisLabel:{
+                interval:0,
+                fontSize:axisFontSize,
+                rotate:userInput.xAxisRotateLabels
+              }
             },
             yAxis: {
               type: this.getYAxisType(userInput),
+              axisLabel:{
+                interval:0,
+                fontSize:axisFontSize,
+                rotate:userInput.yAxisRotateLabels
+              }
             },
             grid: {
               left: '10%',
@@ -587,7 +649,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             },
             series: encodeData
           };
-          if (isDevMode()) { console.log('Baror Line chart for Datahub without aggregation', this.chartOption); }
+          if (isDevMode()) { console.log('Bar or Line chart for Datahub without aggregation', this.chartOption); }
         } // End of Bar,Line Chart without Aggregation for Datahub
         else if (userInput.type === 'scatter') {
           dimensions = this.getDatasetDimensions(userInput);
@@ -645,12 +707,22 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               nameGap: 50,
               type: this.getXAxisType(userInput),
               boundaryGap: false,
+              axisLabel:{
+                interval:0,
+                fontSize:axisFontSize,
+                rotate:userInput.xAxisRotateLabels
+              }
             },
             yAxis: {
               name: yAxisName,
               nameLocation: 'middle',
               nameGap: 70,
-              type: this.getYAxisType(userInput)
+              type: this.getYAxisType(userInput),
+              axisLabel:{
+                interval:0,
+                fontSize:axisFontSize,
+                rotate:userInput.yAxisRotateLabels
+              }
             },
             tooltip: {
               trigger: 'axis',
@@ -723,6 +795,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             series: encodeData
           };
           if (isDevMode()) { console.log('Pie chart without Aggregation for Datahub', this.chartOption); }
+          console.log('Pie chart without Aggregation for Datahub', this.chartOption);
         } // End of Pie chart without Aggregation for Datahub
         else if (userInput.type === 'polar') {
           let yDimensions; let xDimensions;
@@ -835,7 +908,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             },
             radar: {
               indicator: indicatorData,
-              radius: 100
+              radius: userInput.radarChartRadius
             },
             series: this.seriesData,
             toolbox: {
@@ -845,6 +918,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             }
           }
           if (isDevMode()) { console.log('Radar Chart without Aggregation for Datahub', this.chartOption); }
+          console.log('Radar Chart without Aggregation for Datahub', this.chartOption);
         } // End of Radar Chart without Aggregation for Datahub
       } // ENd of Datahub Calls Response without Aggregation
       else if (userInput.aggrList.length > 0) {
@@ -952,10 +1026,20 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               scale: true,
               type: this.getXAxisType(userInput),
               boundaryGap: false,
+              axisLabel:{
+                interval:0,
+                fontSize:axisFontSize,
+                rotate:userInput.xAxisRotateLabels
+              }
             },
             yAxis: {
               type: this.getYAxisType(userInput),
-              name: yAxisName
+              name: yAxisName,
+              axisLabel:{
+                interval:0,
+                fontSize:axisFontSize,
+                rotate:userInput.yAxisRotateLabels
+              }
             },
             grid: {
               left: '10%',
@@ -1053,12 +1137,22 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               nameGap: 50,
               type: this.getXAxisType(userInput),
               boundaryGap: false,
+              axisLabel:{
+                interval:0,
+                fontSize:axisFontSize,
+                rotate:userInput.xAxisRotateLabels
+              }
             },
             yAxis: {
               name: yAxisName,
               nameLocation: 'middle',
               nameGap: 70,
-              type: this.getYAxisType(userInput)
+              type: this.getYAxisType(userInput),
+              axisLabel:{
+                interval:0,
+                fontSize:axisFontSize,
+                rotate:userInput.yAxisRotateLabels
+              }
             },
             tooltip: {
               trigger: 'axis',
@@ -1166,6 +1260,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             series: encodeData
           };
           if (isDevMode()) { console.log('Aggregate Pie chart', this.chartOption); }
+          console.log('Aggregate Pie chart', this.chartOption);
         } // End of Pie Chart with Aggregation for datahub and API
         else if (userInput.type === 'polar') {
           let yDimensions; let xDimensions;
@@ -1299,6 +1394,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         label: {
           show: userInput.showLabel
         },
+        color: this.colorsForChart,
         emphasis: {
           label: {
             show: true
@@ -1318,6 +1414,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               x: userInput.xAxisDimension,
               tooltip: [userInput.xAxisDimension, userInput.yAxisDimension]
             },
+            color: this.getChartItemColor(0),
           }]
         } else {
           const xAxisDimensions = userInput.xAxisDimension.split(',');
@@ -1335,6 +1432,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               label: {
                 show: userInput.showLabel
               },
+              color: this.getChartItemColor(i),
               emphasis: {
                 focus: 'series',
                 label: {
@@ -1360,6 +1458,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               x: userInput.xAxisDimension,
               tooltip: [userInput.xAxisDimension, userInput.yAxisDimension]
             },
+            color: this.getChartItemColor(0),
             label: {
               show: userInput.showLabel
             },
@@ -1387,6 +1486,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
                 x: yAxisDimensions[i],
                 tooltip: [yAxisDimensions[i], userInput.yAxisDimension]
               },
+              color: this.getChartItemColor(i),
               label: {
                 show: userInput.showLabel
               },
@@ -1420,9 +1520,12 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         });
       });
       const resultARR = Object.values(dimensionRecord)
-      const result1 = Object.keys(dimensionRecord).map(key => ({
+      const result1 = Object.keys(dimensionRecord).map((key, i) => ({
         name: key,
-        value: dimensionRecord[key]
+        value: dimensionRecord[key],
+        itemStyle: {
+          color: this.getChartItemColor(i)
+        }
       }));
       return [{
         name: userInput.listName,
@@ -1439,7 +1542,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           encode: {
             x: xDimensions,
             y: yDimensions
-          }
+          },
+          color: this.getChartItemColor(0)
         }];
       } else {
         const yAxisData = [];
@@ -1452,7 +1556,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             encode: {
               x: xDimensions,
               y: yDimensions[i]
-            }
+            },
+            color: this.getChartItemColor(i)
+
           }
         }); // end of for block
         return yAxisData;
@@ -1467,7 +1573,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           encode: {
             x: xDimensions,
             y: yDimensions
-          }
+          },
+          color: this.getChartItemColor(0)
+
         }];
       } else {
         const xAxisData = [];
@@ -1480,7 +1588,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             encode: {
               x: xDimensions[i],
               y: yDimensions
-            }
+            },
+            color: this.getChartItemColor(i)
+
           }
         }); // end of for block
         return xAxisData;
@@ -1497,7 +1607,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           encode: {
             x: xDimensions,
             y: yDimensions
-          }
+          },
+          color: this.getChartItemColor(0)
+
         }];
       } else {
         const yAxisData = [];
@@ -1511,7 +1623,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             encode: {
               x: xDimensions,
               y: yDimensions[i]
-            }
+            },
+            color: this.getChartItemColor(i)
+
           }
         }); // end of for block
         return yAxisData;
@@ -1566,7 +1680,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         encode: {
           itemName: [userInput.pieSlicenName],
           value: userInput.pieSliceValue
-        }
+        },
+        color: this.colorsForChart
       }];
     }
   }
@@ -1580,6 +1695,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           data: this.serviceData[userInput.listName].map((item) => {
             return item[userInput.xAxisDimension];
           }),
+          itemStyle: {
+            color: this.getChartItemColor(0)
+          },
           label: {
             show: userInput.showLabel
           },
@@ -1607,6 +1725,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             label: {
               show: userInput.showLabel
             },
+            itemStyle: {
+              color: this.getChartItemColor(i)
+            },
             emphasis: {
               focus: 'series',
               label: {
@@ -1632,6 +1753,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           label: {
             show: userInput.showLabel
           },
+          itemStyle: {
+            color: this.getChartItemColor(0)
+          },
           emphasis: {
             focus: 'series',
             label: {
@@ -1655,6 +1779,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             }),
             label: {
               show: userInput.showLabel
+            },
+            itemStyle: {
+              color: this.getChartItemColor(i)
             },
             emphasis: {
               focus: 'series',
@@ -1690,6 +1817,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
       label: {
         show: userInput.showLabel
       },
+      itemStyle: {
+        color: this.getChartItemColor(0)
+      },
       emphasis: {
         label: {
           show: true
@@ -1723,19 +1853,21 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         });
       }
     }
-    const result1 = Object.keys(dimensionRecord).map(key => ({
+    const result1 = Object.keys(dimensionRecord).map((key, i) => ({
       name: key,
-      value: dimensionRecord[key]
+      value: dimensionRecord[key],
     }));
     if (userInput.listName in this.serviceData) {
       return [{
         name: userInput.listName,
         type: 'radar',
+        color: this.colorsForChart,
         data: result1
       }]
     } else {
       return [{
         type: 'radar',
+        color: this.colorsForChart,
         data: result1
       }]
     }
@@ -1804,7 +1936,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           shadowColor: 'rgba(0, 0, 0, 0.5)'
         }
       },
-      data: this.serviceData[userInput.listName].map((item) => {
+      color: this.colorsForChart,
+      data: this.serviceData[userInput.listName].map((item, i) => {
         // take val from userinput.pieslice value and return it
         const val = item[userInput.pieSliceValue];
         let nam;
@@ -1815,7 +1948,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         }
         return {
           value: val,
-          name: nam
+          name: nam,
         }
       }),
     }]
@@ -1823,7 +1956,6 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   // getseriesdata recieves userinput and returns seriesdata
   // seriesdata is an array of objects
   getSeriesData(userInput) {
-
     if (userInput.yAxisDimension.split(',').length === 1) {
       return [{
         name: this.getFormattedName(userInput.yAxisDimension),
@@ -1834,21 +1966,21 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         smooth: userInput.smoothLine,
         areaStyle: userInput.area,
         itemStyle: {
-          color: this.colorsForChart[0]
+          color: this.getChartItemColor(0)
         }
       }];
     } else {
       const yAxisDimensions = userInput.yAxisDimension.split(',');
       const yAxisData = [];
       yAxisDimensions.forEach((value, i) => {
+        let ab = this.getStackName(userInput.stackList, yAxisDimensions[i]);
         yAxisData[i] = {
           name: yAxisDimensions[i],
-          stack: this.getStackName(userInput.stack, yAxisDimensions[i]),
+          stack: this.getStackName(userInput.stackList, yAxisDimensions[i]),
           emphasis: {
             focus: 'series'
           },
           data: this.serviceData[userInput.listName].map((item) => {
-            console.log(item[yAxisDimensions[i]]);
             // return val;
             return item[yAxisDimensions[i]];
           }),
@@ -1856,11 +1988,18 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           smooth: userInput.smoothLine,
           areaStyle: userInput.area,
           itemStyle: {
-            color: this.colorsForChart[i]
+            color: this.getChartItemColor(i)
           }
         }
       }); // end of for block
       return yAxisData;
+    }
+  }
+  getChartItemColor(index) {
+    if (this.colorsForChart[index] === undefined) {
+      return ''
+    } else {
+      return this.colorsForChart[index];
     }
   }
   // Gets the dimensions for dataset
@@ -1890,13 +2029,13 @@ export class GpSmartEchartWidgetComponent implements OnInit {
     let result = '';
     stackData.forEach((value, x) => {
       const values = stackData[x].stackValues.split(',');
-      for (const i in values) {
+      values.forEach((element, i) => {
         if (values[i] === dimensionName) {
           result = stackData[x].stackName;
-          return result;
         }
-      }
+      });
     }); // end of for loop of stackdata
+    return result;
   }
   // Get the dimensions and method array for aggregation
   // List comes from aggregate config and conatins both method and dimension name
@@ -1928,11 +2067,24 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           show: true,
           height: 20,
           top: '90%',
+           
         }
       ]
     } else {
       return [];
     }
+  }
+
+  hexToRgb(hex) {
+    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+      return r + r + g + g + b + b;
+    });
+  
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    
+    return result ? "rgba(" + parseInt(result[1], 16) + ", " + parseInt(result[2], 16) + ", " + parseInt(result[3], 16) + ", " + 0.8 + ")" : null;
   }
   // Get data for horizontal Bar chart
   getHorizontalSeriesData(userInput) {
@@ -1943,6 +2095,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           const val = extractValueFromJSON(userInput.xAxisDimension, item);
           return val;
         }),
+        itemStyle: {
+          color: this.getChartItemColor(0)
+        },
         label: {
           show: userInput.showLabel
         },
@@ -1975,6 +2130,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             const val = extractValueFromJSON(xAxisDimensions[i], item);
             return val;
           }),
+          itemStyle: {
+            color: this.getChartItemColor(i)
+          },
           type: userInput.type,
           smooth: userInput.smoothLine,
           areaStyle: userInput.area
@@ -1983,12 +2141,21 @@ export class GpSmartEchartWidgetComponent implements OnInit {
       return xAxisData;
     }
   }
+  //  @HostListener('window:resize')
+  //  onResize() {
+  //    console.log(this.dataChart)
+  //    if (this.dataChart) {
+  //      this.dataChart.resize();
+  //    }
+  //  }
 
-  @HostListener('window:resize')
-  onResize() {
-    console.log(this.dataChart)
-    if (this.dataChart) {
-      this.dataChart.resize();
-    }
+  onResized(event: ResizedEvent) {
+    this.width = event.newWidth;
+    this.height = event.newHeight;
+    console.log('resize called',this.width,this.height);
+    this.dataChart.resize({
+      width: this.width,
+      height:this.height
+    });
   }
 }

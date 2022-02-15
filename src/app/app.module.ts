@@ -26,7 +26,8 @@ import { FormsModule } from '@angular/forms';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from '@c8y/ngx-components';
-
+// Import the library module
+import { AngularResizedEventModule } from 'angular-resize-event';
 const auth = new BasicAuth({
   user: '###', /*username for your tenant */
   password: '###' , /*password for your tenant */
@@ -47,7 +48,8 @@ const fetchClient = client.core;
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
-    GpSmartEchartWidgetModule
+    GpSmartEchartWidgetModule,
+    AngularResizedEventModule
   ],
   providers: [
     {

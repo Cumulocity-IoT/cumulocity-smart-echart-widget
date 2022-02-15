@@ -23,6 +23,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { SmartChartConfigComponent } from './smart-chart-config/smart-chart-config.component';
 import { GpSmartEchartWidgetService } from './gp-smart-echart-widget.service';
 import * as echarts from 'echarts';
+import { AngularResizedEventModule } from 'angular-resize-event';
 
 
 
@@ -33,6 +34,7 @@ import * as echarts from 'echarts';
     NgxEchartsModule.forRoot({
       echarts
     }),
+    AngularResizedEventModule
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   providers: [

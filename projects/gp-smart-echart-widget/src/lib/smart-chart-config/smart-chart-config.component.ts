@@ -258,6 +258,9 @@ export class SmartChartConfigComponent implements OnInit {
     yAxis: '',
     smoothLine: false,
     apiUrl: '',
+    fontSize:12,
+    xAxisRotateLabels:0,
+    yAxisRotateLabels:0,
     area: false,
     yAxisDimension: '',
     radarDimensions: '',
@@ -420,7 +423,15 @@ console.log(val,this.config.yAxisDimension)
       }
     });
     if (this.config.area === true) {
-      this.config.area = {};
+      if(this.config.areaOpacity == null){
+        this.config.area = {};
+      } else {
+        this.config.area = {
+          'opacity': this.config.areaOpacity
+        };
+      }
+      
+
     }else {
       this.config.area = null;
     }

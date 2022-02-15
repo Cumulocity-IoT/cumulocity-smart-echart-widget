@@ -59,6 +59,12 @@ export interface ChartConfig {
     scatterSymbolSize?: string;
     pieBorderWidth?: number | 0;
     pieBorderRadius?: number | 0;
+    colors?: string | '';
+    areaOpacity?: string | '';
+    radarChartRadius?: number | '';
+    fontSize?: number | '';
+    xAxisRotateLabels?: number;
+    yAxisRotateLabels?: number;
 }
 export declare class Emphasis {
     label?: Label;

@@ -7,3 +7,15 @@
 .alertInput{
     border: 2px solid red;
 }
+
+.configSection {
+    display: grid;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    margin: 0.25em;
+    padding: 0.25em;
+}
+
+.row {
+    padding: 0.5em;
+}

@@ -19,10 +19,10 @@ import { ElementRef, OnInit } from '@angular/core';
 import { EChartsOption } from 'echarts';
 import { ChartConfig } from './model/config.modal';
 import { GpSmartEchartWidgetService } from './gp-smart-echart-widget.service';
-import { FetchClient, Realtime } from '@c8y/client';
+import { FetchClient } from '@c8y/client';
+import { ResizedEvent } from 'angular-resize-event';
 export declare class GpSmartEchartWidgetComponent implements OnInit {
     private chartService;
-    private realTimeService;
     private fetchClient;
     protected mapDivRef: ElementRef;
     config: ChartConfig;
@@ -30,13 +30,17 @@ export declare class GpSmartEchartWidgetComponent implements OnInit {
     seriesData: any;
     chartData: any;
     userInput: any;
+    width: number;
+    height: number;
     chartOption: EChartsOption;
     protected allSubscriptions: any;
     realtime: boolean;
     deviceId: string;
     protected chartDiv: HTMLDivElement;
     isDatahubPostCall: boolean;
-    constructor(chartService: GpSmartEchartWidgetService, realTimeService: Realtime, fetchClient: FetchClient);
+    dataChart: any;
+    colorsForChart: any;
+    constructor(chartService: GpSmartEchartWidgetService, fetchClient: FetchClient);
     ngOnInit(): void;
     dataFromUser(userInput: ChartConfig): void;
     reloadData(userInput: ChartConfig): void;
@@ -56,6 +60,9 @@ export declare class GpSmartEchartWidgetComponent implements OnInit {
         label: {
             show: any;
         };
+        itemStyle: {
+            color: any;
+        };
         emphasis: {
             label: {
                 show: boolean;
@@ -65,12 +72,14 @@ export declare class GpSmartEchartWidgetComponent implements OnInit {
     getRadarSeriesData(userInput: any): {
         name: any;
         type: string;
+        color: any;
         data: {
             name: string;
             value: any;
         }[];
     }[] | {
         type: string;
+        color: any;
         data: {
             name: string;
             value: any;
@@ -98,11 +107,13 @@ export declare class GpSmartEchartWidgetComponent implements OnInit {
                 shadowColor: string;
             };
         };
+        color: any;
         data: any;
     }[];
     getSeriesData(userInput: any): any[];
+    getChartItemColor(index: any): any;
     getDatasetDimensions(userInput: any): any[];
-    getStackName(stackData: any, dimensionName: any): void;
+    getStackName(stackData: any, dimensionName: any): string;
     getResultDimesions(list: any, groupby: any): any;
     showZoomFeature(val: any): ({
         type: string;
@@ -119,5 +130,7 @@ export declare class GpSmartEchartWidgetComponent implements OnInit {
         height: number;
         top: string;
     })[];
+    hexToRgb(hex: any): string;
     getHorizontalSeriesData(userInput: any): any[];
+    onResized(event: ResizedEvent): void;
 }
