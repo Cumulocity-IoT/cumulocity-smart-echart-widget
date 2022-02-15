@@ -246,6 +246,11 @@
     <h4 translate>Line Chart Settings</h4>
     <div class="row form-group">
         <div class="col-xs-3 col-md-3">
+            <label title="Area Opacity" for="lineAreaOpacity">Area Opacity</label>
+            <input class="form-control" type="number" name="lineAreaOpacity" [(ngModel)]="config.areaOpacity" min="0"
+                max="1" step="0.1">
+        </div>
+        <div class="col-xs-3 col-md-3">
             <br />
             <label title="Area" class="c8y-checkbox" style="height: 35px;">
                 <input type="checkbox" value="true" [(ngModel)]="config.area">
@@ -261,11 +266,7 @@
                 <span>Smooth Line</span>
             </label>
         </div>
-        <div class="col-xs-3 col-md-3">
-            <label title="Area Opacity" for="lineAreaOpacity">Area Opacity</label>
-            <input class="form-control" type="number" name="lineAreaOpacity" [(ngModel)]="config.areaOpacity" min="0"
-                max="1" step="0.1">
-        </div>
+       
     </div>
 </div>
 <!-- End of Line Chart Config Section -->
