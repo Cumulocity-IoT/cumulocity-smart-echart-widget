@@ -470,10 +470,7 @@
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            // const chartDom = document.getElementById('chart-container');
-                            // const myChart = echarts.init(chartDom);
                             this.dataChart = echarts__namespace.init(this.chartDiv);
-                            // const myChart = echarts.init(this.chartDiv);
                             this.dataChart.showLoading();
                             if (!userInput.colors) {
                                 if (i0.isDevMode()) {
@@ -497,7 +494,7 @@
                                 limit: userInput.sqlLimit,
                                 format: 'PANDAS'
                             };
-                            return [4 /*yield*/, this.fetchClient.fetch(userInput.apiUrl, {
+                            return [4 /*yield*/, this.fetchClient.fetch(userInput.datahubUrl, {
                                     body: JSON.stringify(sqlReqObject),
                                     method: 'POST'
                                 })];
@@ -3001,8 +2998,12 @@
             this.config.aggrList = [];
             this.config.legend = {};
             // Default value for datahub sql query
-            this.config.datahubUrl = "service/datahub/sql?version=v1";
-            this.config.sqlLimit = 100;
+            if (this.config.datahubUrl === null || this.config.datahubUrl === undefined) {
+                this.config.datahubUrl = "service/datahub/sql?version=v1";
+            }
+            if (this.config.sqlLimit === null || this.config.sqlLimit === undefined) {
+                this.config.sqlLimit = 100;
+            }
             // To initialize the chart layout dropdown
             this.onSelection(this.config.type);
         };
@@ -3020,7 +3021,7 @@
             }
         };
         SmartChartConfigComponent.prototype.yAxisDimensionUpdate = function (val) {
-            console.log(val, this.config.yAxisDimension);
+            // console.log(val, this.config.yAxisDimension)
         };
         SmartChartConfigComponent.prototype.deleteStackValue = function (stack, index) {
             this.config.stackList.splice(index, 1);

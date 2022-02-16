@@ -125,18 +125,18 @@ const chartValues = {
     {
       id: 'value',
       value: 'Value',
-      disabled:false
+      disabled: false
     },
     {
       id: 'category',
       value: 'Category',
-      disabled:false
+      disabled: false
 
     },
     {
       id: 'time',
       value: 'Time',
-      disabled:false
+      disabled: false
     },
     // {
     //   id: 'log',
@@ -149,18 +149,18 @@ const chartValues = {
     {
       id: 'value',
       value: 'Value',
-      disabled:false
+      disabled: false
     },
     {
       id: 'category',
       value: 'Category',
-      disabled:false
+      disabled: false
 
     },
     {
       id: 'time',
       value: 'Time',
-      disabled:false
+      disabled: false
     },
     // {
     //   id: 'log',
@@ -244,7 +244,7 @@ const chartValues = {
 export class SmartChartConfigComponent implements OnInit {
   constructor() { }
   flag = false;
-  userSelectedColor=[];
+  userSelectedColor = [];
   @Input() config: ChartConfig = {
     listName: '',
     title: '',
@@ -258,9 +258,9 @@ export class SmartChartConfigComponent implements OnInit {
     yAxis: '',
     smoothLine: false,
     apiUrl: '',
-    fontSize:12,
-    xAxisRotateLabels:0,
-    yAxisRotateLabels:0,
+    fontSize: 12,
+    xAxisRotateLabels: 0,
+    yAxisRotateLabels: 0,
     area: false,
     yAxisDimension: '',
     radarDimensions: '',
@@ -287,10 +287,14 @@ export class SmartChartConfigComponent implements OnInit {
   ngOnInit(): void {
     this.aggregationMethods = chartValues.aggregateMethod;
     this.config.aggrList = [];
-    this.config.legend={};
-     // Default value for datahub sql query
-     this.config.datahubUrl = "service/datahub/sql?version=v1";
-     this.config.sqlLimit = 100;
+    this.config.legend = {};
+    // Default value for datahub sql query
+    if (this.config.datahubUrl === null || this.config.datahubUrl === undefined) {
+      this.config.datahubUrl = "service/datahub/sql?version=v1";
+    }
+    if (this.config.sqlLimit === null || this.config.sqlLimit === undefined) {
+      this.config.sqlLimit = 100;
+    }
     // To initialize the chart layout dropdown
     this.onSelection(this.config.type);
   }
@@ -308,42 +312,14 @@ export class SmartChartConfigComponent implements OnInit {
       this.config.stackList.length = 0;
     }
   }
-  yAxisDimensionUpdate(val){
-console.log(val,this.config.yAxisDimension)
+  yAxisDimensionUpdate(val) {
+    // console.log(val, this.config.yAxisDimension)
   }
   deleteStackValue(stack, index) {
     this.config.stackList.splice(index, 1);
   }
 
-  // updateStack is called when the user changes the type of chart
-  // updateStack is called when the user changes the layout of the chart
-  // updateStack is called when the user changes the data source of the chart
-  updateStack() {
-    if (this.config.apiUrl) {
-      if (this.config.type === 'bar') {
-        if (this.config.layout === 'stackedBar') {
-          if (this.config.stackList.length === 0) {
-            this.config.stack = 'total';
-          } else if (this.config.stackList.length > 0) {
-            this.config.stack = this.config.stackList;
-          } else {
-            this.config.stack = '';
-          }
-        }
-      }
-      if (this.config.type === 'line') {
-        if (this.config.layout === 'stackedLine') {
-          if (this.config.stackList.length === 0) {
-            this.config.stack = 'total';
-          } else if (this.config.stackList.length > 0) {
-            this.config.stack = this.config.stackList;
-          } else {
-            this.config.stack = '';
-          }
-        }
-      }
-    }
-  }
+  
 
   addAnotherStack() {
     this.config.stackList.push(new Stack());
@@ -359,14 +335,14 @@ console.log(val,this.config.yAxisDimension)
       this.isAggrAdded = false;
     }
   }
-  colorUpdate(colorSelected){
-    this.userSelectedColor = [...this.userSelectedColor,colorSelected];
+  colorUpdate(colorSelected) {
+    this.userSelectedColor = [...this.userSelectedColor, colorSelected];
     this.config.colors = this.userSelectedColor.join(',')
   }
-  colorUpdateByTyping(colorTyped){
-    let joinedArr = [...this.userSelectedColor,...colorTyped.split(',')];
+  colorUpdateByTyping(colorTyped) {
+    let joinedArr = [...this.userSelectedColor, ...colorTyped.split(',')];
     this.userSelectedColor = [...new Set([...joinedArr])]
-    
+
   }
   onSelection(value) {
     this.chartData.chartLayout.filter(val => {
@@ -378,26 +354,26 @@ console.log(val,this.config.yAxisDimension)
 
   }
   onLayoutSelection(value) {
-    if(value==='simpleBar' || value==='stackedBar'|| value==='simple'||value==='stacked' ||value==='simpleScatter'){
-      for(const val of this.chartData.yAxisType){
-        if(val.id==='category'){
-          val.disabled=true;
+    if (value === 'simpleBar' || value === 'stackedBar' || value === 'simple' || value === 'stacked' || value === 'simpleScatter') {
+      for (const val of this.chartData.yAxisType) {
+        if (val.id === 'category') {
+          val.disabled = true;
         }
       }
-      for(const val of this.chartData.xAxisType){
-        if(val.id==='category'){
-          val.disabled=false;
+      for (const val of this.chartData.xAxisType) {
+        if (val.id === 'category') {
+          val.disabled = false;
         }
       }
-    }else if(value==='simpleHorizontalBar' || value==='stackedHorizontalBar' || value ==='horizontalScatter'){
-      for(const val of this.chartData.yAxisType){
-        if(val.id==='category'){
-          val.disabled=false;
+    } else if (value === 'simpleHorizontalBar' || value === 'stackedHorizontalBar' || value === 'horizontalScatter') {
+      for (const val of this.chartData.yAxisType) {
+        if (val.id === 'category') {
+          val.disabled = false;
         }
       }
-      for(const val of this.chartData.xAxisType){
-        if(val.id==='category'){
-          val.disabled=true;
+      for (const val of this.chartData.xAxisType) {
+        if (val.id === 'category') {
+          val.disabled = true;
         }
       }
     }
@@ -419,31 +395,31 @@ console.log(val,this.config.yAxisDimension)
   }
 
   // if onSelection, onLayoutSelection, dataSourceSelection is called, then submit data and emit config
-  SubmitData() {
-    this.config.aggrList.filter(element => {
-      if (element.aggrDimesnion === this.config.groupBy) {
-        this.isGroupByInAggregate = true;
-      } else {
-        this.isGroupByInAggregate = false;
-      }
-    });
-    if (this.config.area === true) {
-      if(this.config.areaOpacity == null){
-        this.config.area = {};
-      } else {
-        this.config.area = {
-          'opacity': this.config.areaOpacity
-        };
-      }
-      
+  // SubmitData() {
+  //   this.config.aggrList.filter(element => {
+  //     if (element.aggrDimesnion === this.config.groupBy) {
+  //       this.isGroupByInAggregate = true;
+  //     } else {
+  //       this.isGroupByInAggregate = false;
+  //     }
+  //   });
+  //   if (this.config.area === true) {
+  //     if (this.config.areaOpacity == null) {
+  //       this.config.area = {};
+  //     } else {
+  //       this.config.area = {
+  //         'opacity': this.config.areaOpacity
+  //       };
+  //     }
 
-    }else {
-      this.config.area = null;
-    }
-    if (!this.isGroupByInAggregate) {
-      this.configData.emit(this.config);
-    }
 
-  }
+  //   } else {
+  //     this.config.area = null;
+  //   }
+  //   if (!this.isGroupByInAggregate) {
+  //     this.configData.emit(this.config);
+  //   }
+
+  // }
 
 }

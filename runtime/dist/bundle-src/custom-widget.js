@@ -120,10 +120,7 @@ class GpSmartEchartWidgetComponent {
     // createChart function is used to create chart with the help of echart library
     createChart(userInput) {
         return __awaiter(this, void 0, void 0, function* () {
-            // const chartDom = document.getElementById('chart-container');
-            // const myChart = echarts.init(chartDom);
             this.dataChart = echarts.init(this.chartDiv);
-            // const myChart = echarts.init(this.chartDiv);
             this.dataChart.showLoading();
             if (!userInput.colors) {
                 if (isDevMode()) {
@@ -143,7 +140,7 @@ class GpSmartEchartWidgetComponent {
                     limit: userInput.sqlLimit,
                     format: 'PANDAS'
                 };
-                const response = yield this.fetchClient.fetch(userInput.apiUrl, {
+                const response = yield this.fetchClient.fetch(userInput.datahubUrl, {
                     body: JSON.stringify(sqlReqObject),
                     method: 'POST'
                 });
@@ -2614,8 +2611,12 @@ class SmartChartConfigComponent {
         this.config.aggrList = [];
         this.config.legend = {};
         // Default value for datahub sql query
-        this.config.datahubUrl = "service/datahub/sql?version=v1";
-        this.config.sqlLimit = 100;
+        if (this.config.datahubUrl === null || this.config.datahubUrl === undefined) {
+            this.config.datahubUrl = "service/datahub/sql?version=v1";
+        }
+        if (this.config.sqlLimit === null || this.config.sqlLimit === undefined) {
+            this.config.sqlLimit = 100;
+        }
         // To initialize the chart layout dropdown
         this.onSelection(this.config.type);
     }
@@ -2633,7 +2634,7 @@ class SmartChartConfigComponent {
         }
     }
     yAxisDimensionUpdate(val) {
-        console.log(val, this.config.yAxisDimension);
+        // console.log(val, this.config.yAxisDimension)
     }
     deleteStackValue(stack, index) {
         this.config.stackList.splice(index, 1);

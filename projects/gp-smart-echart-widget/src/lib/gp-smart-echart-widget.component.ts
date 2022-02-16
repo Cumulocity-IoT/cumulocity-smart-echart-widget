@@ -66,10 +66,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   }
   // createChart function is used to create chart with the help of echart library
   async createChart(userInput?: ChartConfig) {
-    // const chartDom = document.getElementById('chart-container');
-    // const myChart = echarts.init(chartDom);
     this.dataChart = echarts.init(this.chartDiv);
-    // const myChart = echarts.init(this.chartDiv);
     this.dataChart.showLoading();
     if (!userInput.colors) {
       if (isDevMode()) { console.log('No colors Specified'); }
@@ -85,7 +82,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         limit: userInput.sqlLimit,
         format: 'PANDAS'
       };
-      const response = await this.fetchClient.fetch(userInput.apiUrl, {
+      const response = await this.fetchClient.fetch(userInput.datahubUrl, {
         body: JSON.stringify(sqlReqObject),
         method: 'POST'
       })
