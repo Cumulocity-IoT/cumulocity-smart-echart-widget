@@ -1,27 +1,25 @@
 
-  
-
-# Smart E Chart Widget for Cumulocity[<img width="35" src="https://user-images.githubusercontent.com/67993842/97668428-f360cc80-1aa7-11eb-8801-da578bda4334.png"/>](https://github.com/SoftwareAG/cumulocity-smart-echart-widget/blob/main/runtime/dist/smart-echart-runtime-widget-1.0.0.zip)
 
   
-The Data Points Map widget help you to display measurements and device locations on map.
+
+# Smart E Chart Widget for Cumulocity [<img width="35" src="https://user-images.githubusercontent.com/67993842/97668428-f360cc80-1aa7-11eb-8801-da578bda4334.png"/>](https://github.com/SoftwareAG/cumulocity-smart-echart-widget/blob/main/runtime/dist/smart-echart-runtime-widget-1.0.0.zip)
+
+  
+The Smart E chart widget help you to display API and datahub response on a chart with color configurations.
   
 
-![](https://user-images.githubusercontent.com/32765455/102481039-2cb8c000-4087-11eb-8000-8fb956bd9294.jpg)
+![Picture1](https://user-images.githubusercontent.com/85675121/154234664-5840f68e-33b8-4e49-89fa-b9b854773c75.png)
 
 ## Features
 
   
-*  **Charts Supported:** Line , Bar , Polar, Radar, Pie, alonwith Horizontal Orientation
+*  **Charts Supported:** Line , Bar , Polar, Radar, Pie, alongwith Horizontal Orientation
 
-*  **Supports Datahub:** Configurable switch to show cluster map for large set of devices.
+*  **Supports Datahub:** Datahub can be chosen as a source and results from datahub can be configured with LIMIT option.
 
-*  **Configurable Color:** Select custom color for your device markers on map.
+*  **Configurable Color:** Select custom color for your chart.
 
-*  **Configurable Zoom:**  Select and configurable zoom which is best fit for your map.  
-
-*  **Support single device and group devices:** Based on configuration during widget configuration. 
-
+*  **Configurable Zoom:**  Select the zoom which is best fit for your chart.  
   
 
 ## Installation
@@ -153,7 +151,7 @@ The Data Points Map widget help you to display measurements and device locations
 
     ```  
 
-    git clone https://github.com/SoftwareAG/cumulocity-data-points-map-widget.git
+    git clone https://github.com/SoftwareAG/cumulocity-smart-echart-widget.git
 
     ```
 
@@ -161,7 +159,7 @@ The Data Points Map widget help you to display measurements and device locations
 
     ```
 
-    cd cumulocity-data-points-map-widget
+    cd cumulocity-smart-echart-widget
 
     ```
 

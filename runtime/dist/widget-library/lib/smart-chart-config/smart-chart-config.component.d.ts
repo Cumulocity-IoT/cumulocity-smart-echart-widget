@@ -63,7 +63,6 @@ export declare class SmartChartConfigComponent implements OnInit {
     stackAdded(stack: any): void;
     yAxisDimensionUpdate(val: any): void;
     deleteStackValue(stack: any, index: any): void;
-    updateStack(): void;
     addAnotherStack(): void;
     addAnotherAggregate(): void;
     deleteAggrValue(aggr: any, index: any): void;
@@ -72,5 +71,4 @@ export declare class SmartChartConfigComponent implements OnInit {
     onSelection(value: any): void;
     onLayoutSelection(value: any): void;
     dataSourceSelection(value: any): void;
-    SubmitData(): void;
 }
