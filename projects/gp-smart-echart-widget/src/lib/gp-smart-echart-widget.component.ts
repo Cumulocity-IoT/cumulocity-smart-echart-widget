@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
 import { ChartConfig } from './model/config.modal';
@@ -28,6 +28,7 @@ import {
 } from '@c8y/client';
 import { extractValueFromJSON } from './util/extractValueFromJSON.util';
 import { ResizedEvent } from 'angular-resize-event';
+import { element } from 'protractor';
 @Component({
   selector: 'lib-gp-smart-echart-widget',
   templateUrl: './gp-smart-echart-widget.component.html',
@@ -51,63 +52,173 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   dataChart;
   colorsForChart;
   constructor(private chartService: GpSmartEchartWidgetService,
-     private fetchClient: FetchClient) { }
+    private fetchClient: FetchClient,) { }
   ngOnInit(): void {
     this.chartDiv = this.mapDivRef.nativeElement;
-    this.createChart(this.config);
+    const sessionStorageData = this.getDataFromSessionStorage('Chartsession');
+    if (sessionStorageData && sessionStorageData !== 'true') {
+      this.dataChart = echarts.init(this.chartDiv);
+      this.dataChart.showLoading();
+      this.createChart(this.config);
+    } else if (sessionStorageData === 'true') {
+      this.dataChart = echarts.init(this.chartDiv);
+      this.dataChart.showLoading();
+      this.waitForServiceToComplete();
+    } else {
+      this.dataChart = echarts.init(this.chartDiv);
+      this.dataChart.showLoading();
+      this.createChart(this.config);
+    }
   }
   dataFromUser(userInput: ChartConfig) {
+    this.dataChart = echarts.init(this.chartDiv);
+    this.dataChart.showLoading();
     this.createChart(userInput);
   }// end of dataFromUser()
   // create variables for all ChartConfig like value type, apidata from url etc to store the data from user
   // create chart
   reloadData(userInput: ChartConfig) {
-    this.createChart(userInput);
-  }
-  // createChart function is used to create chart with the help of echart library
-  async createChart(userInput?: ChartConfig) {
     this.dataChart = echarts.init(this.chartDiv);
     this.dataChart.showLoading();
+    this.createChart(userInput);
+  }
+
+  // createChart function is used to create chart with the help of echart library
+  async createChart(userInput?: ChartConfig) {
+    // this.dataChart = echarts.init(this.chartDiv);
+    // this.dataChart.showLoading();
+    if (userInput.showApiInput || userInput.showDatahubInput) {
+      let chartsessionData = [];
+      if (this.getDataFromSessionStorage('Chartsession')) {
+
+        chartsessionData = JSON.parse(sessionStorage.getItem('Chartsession'));
+
+        let matchingURL = false;
+        chartsessionData.forEach((element, index) => {
+          if ((userInput.apiUrl === element.url) || (userInput.datahubUrl === element.url)) {
+            matchingURL = true;
+            this.serviceData = element.response;
+          }
+        });
+        if (!matchingURL) {
+          if (this.getDataFromSessionStorage('serviceRunning') === 'false') {
+            this.setDataInSessionStorage('serviceRunning', 'true');
+            // tslint:disable-next-line: prefer-const
+            let getDataFromSession = JSON.parse(sessionStorage.getItem('Chartsession'));
+            //  Service call for E chart
+            if (userInput.showApiInput) {
+              this.serviceData = await this.chartService.getAPIData(userInput.apiUrl).toPromise();
+
+              if (this.serviceData != null) {
+
+
+                getDataFromSession.push({ response: this.serviceData, url: this.config.apiUrl });
+                sessionStorage.setItem('Chartsession', JSON.stringify(getDataFromSession));
+                sessionStorage.setItem('serviceRunning', JSON.stringify('false'));
+              }
+            } else if (userInput.showDatahubInput) {
+              const sqlReqObject = {
+                sql: userInput.sqlQuery,
+                limit: userInput.sqlLimit,
+                format: 'PANDAS'
+              };
+              const response = await this.fetchClient.fetch(userInput.datahubUrl, {
+                body: JSON.stringify(sqlReqObject),
+                method: 'POST'
+              })
+              this.serviceData = await response.json();
+
+              if (this.serviceData != null) {
+
+                getDataFromSession.push({ response: this.serviceData, url: this.config.datahubUrl });
+                sessionStorage.setItem('Chartsession', JSON.stringify(getDataFromSession));
+                sessionStorage.setItem('serviceRunning', JSON.stringify('false'));
+              }
+              this.isDatahubPostCall = true;
+            } else {
+              if (isDevMode()) { console.log('No Datasource selected'); }
+            }
+          } else {
+            this.waitForServiceToComplete();
+          }
+        }
+      }
+      // if there is no key as ChartSession in sessionStroage
+      else {
+        this.setDataInSessionStorage('Chartsession', 'true');
+        const temp = [];
+        //  Service call for E chart
+        if (userInput.showApiInput) {
+          this.serviceData = await this.chartService.getAPIData(userInput.apiUrl).toPromise();
+          if (this.serviceData !== null) {
+            temp.push({ response: this.serviceData, url: this.config.apiUrl });
+            this.setDataInSessionStorage('Chartsession', temp);
+            this.setDataInSessionStorage('serviceRunning', 'false');
+          }
+        } else if (userInput.showDatahubInput) {
+          const sqlReqObject = {
+            sql: userInput.sqlQuery,
+            limit: userInput.sqlLimit,
+            format: 'PANDAS'
+          };
+          const response = await this.fetchClient.fetch(userInput.datahubUrl, {
+            body: JSON.stringify(sqlReqObject),
+            method: 'POST'
+          })
+          this.serviceData = await response.json();
+
+          if (this.serviceData !== null) {
+
+            temp.push({ response: this.serviceData, url: this.config.apiUrl });
+            this.setDataInSessionStorage('Chartsession', temp);
+            this.setDataInSessionStorage('serviceRunning', 'false');
+          }
+          this.isDatahubPostCall = true;
+        } else {
+          if (isDevMode()) { console.log('No Datasource selected'); }
+        }
+      }
+    }
     if (!userInput.colors) {
       if (isDevMode()) { console.log('No colors Specified'); }
       this.colorsForChart = [];
     } else {
       this.colorsForChart = [...userInput.colors.split(',')]
     }
-    if (userInput.showApiInput) {
-      this.serviceData = await this.chartService.getAPIData(userInput.apiUrl).toPromise();
-    } else if (userInput.showDatahubInput) {
-      const sqlReqObject = {
-        sql: userInput.sqlQuery,
-        limit: userInput.sqlLimit,
-        format: 'PANDAS'
-      };
-      const response = await this.fetchClient.fetch(userInput.datahubUrl, {
-        body: JSON.stringify(sqlReqObject),
-        method: 'POST'
-      })
-      this.serviceData = await response.json();
-      this.isDatahubPostCall = true;
-    } else {
-      if (isDevMode()) { console.log('No Datasource selected'); }
-    }
+    // if (userInput.showApiInput) {
+    //   this.serviceData = await this.chartService.getAPIData(userInput.apiUrl).toPromise();
+    // } else if (userInput.showDatahubInput) {
+    //   const sqlReqObject = {
+    //     sql: userInput.sqlQuery,
+    //     limit: userInput.sqlLimit,
+    //     format: 'PANDAS'
+    //   };
+    //   const response = await this.fetchClient.fetch(userInput.datahubUrl, {
+    //     body: JSON.stringify(sqlReqObject),
+    //     method: 'POST'
+    //   })
+    //   this.serviceData = await response.json();
+    //   this.isDatahubPostCall = true;
+    // } else {
+    //   if (isDevMode()) { console.log('No Datasource selected'); }
+    // }
     if (this.serviceData) {
       this.dataChart.hideLoading();
       let axisFontSize = 0;
-      if(userInput.fontSize === 0 || userInput.fontSize === '' || userInput.fontSize === null || userInput.fontSize === undefined){
+      if (userInput.fontSize === 0 || userInput.fontSize === '' || userInput.fontSize === null || userInput.fontSize === undefined) {
         axisFontSize = 12;
-      }else {
+      } else {
         axisFontSize = userInput.fontSize;
       }
       if (userInput.area === true) {
-        if(userInput.areaOpacity == null){
+        if (userInput.areaOpacity == null) {
           userInput.area = {};
         } else {
           userInput.area = {
             'opacity': userInput.areaOpacity
           };
         }
-      }else {
+      } else {
         userInput.area = null;
       }
       if (userInput.aggrList.length === 0 && !this.isDatahubPostCall) {
@@ -220,10 +331,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               nameGap: 30,
               type: this.getXAxisType(userInput),
               boundaryGap: false,
-              axisLabel:{
-                interval:0,
-                fontSize:axisFontSize,
-                rotate:userInput.xAxisRotateLabels
+              axisLabel: {
+                interval: 0,
+                fontSize: axisFontSize,
+                rotate: userInput.xAxisRotateLabels
               }
             };
             yAxisObject = {
@@ -234,10 +345,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
                 return item[userInput.yAxisDimension];
               }),
               type: this.getYAxisType(userInput),
-              axisLabel:{
-                interval:0,
-                fontSize:axisFontSize,
-                rotate:userInput.yAxisRotateLabels
+              axisLabel: {
+                interval: 0,
+                fontSize: axisFontSize,
+                rotate: userInput.yAxisRotateLabels
               }
             };
           } else {
@@ -250,9 +361,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               }),
               type: this.getXAxisType(userInput),
               boundaryGap: false,
-              axisLabel:{
-                fontSize:axisFontSize,
-                rotate:userInput.xAxisRotateLabels
+              axisLabel: {
+                fontSize: axisFontSize,
+                rotate: userInput.xAxisRotateLabels
               }
             };
             yAxisObject = {
@@ -260,9 +371,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               nameLocation: 'middle',
               nameGap: 70,
               type: this.getYAxisType(userInput),
-              axisLabel:{
-                fontSize:axisFontSize,
-                rotate:userInput.yAxisRotateLabels
+              axisLabel: {
+                fontSize: axisFontSize,
+                rotate: userInput.yAxisRotateLabels
               }
             };
           }
@@ -421,20 +532,20 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               }),
               type: this.getXAxisType(userInput),
               boundaryGap: false,
-              axisLabel:{
-                interval:0,
-                fontSize:axisFontSize,
-                rotate:userInput.xAxisRotateLabels
+              axisLabel: {
+                interval: 0,
+                fontSize: axisFontSize,
+                rotate: userInput.xAxisRotateLabels
               }
               // name: xAxisName
             },
             yAxis: {
               type: this.getYAxisType(userInput),
               // name: yAxisName
-              axisLabel:{
-                interval:0,
-                fontSize:axisFontSize,
-                rotate:userInput.yAxisRotateLabels
+              axisLabel: {
+                interval: 0,
+                fontSize: axisFontSize,
+                rotate: userInput.yAxisRotateLabels
               }
             },
             series: this.seriesData,
@@ -501,10 +612,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               // name: xAxisName,
               type: this.getXAxisType(userInput),
               boundaryGap: false,
-              axisLabel:{
-                interval:0,
-                fontSize:axisFontSize,
-                rotate:userInput.xAxisRotateLabels
+              axisLabel: {
+                interval: 0,
+                fontSize: axisFontSize,
+                rotate: userInput.xAxisRotateLabels
               }
             },
             yAxis: {
@@ -514,10 +625,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
                 const val = extractValueFromJSON(userInput.yAxisDimension, item);
                 return val;
               }),
-              axisLabel:{
-                interval:0,
-                fontSize:axisFontSize,
-                rotate:userInput.yAxisRotateLabels
+              axisLabel: {
+                interval: 0,
+                fontSize: axisFontSize,
+                rotate: userInput.yAxisRotateLabels
               }
             },
             series: this.seriesData,
@@ -606,18 +717,18 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               scale: true,
               type: this.getXAxisType(userInput),
               boundaryGap: false,
-              axisLabel:{
-                interval:0,
-                fontSize:axisFontSize,
-                rotate:userInput.xAxisRotateLabels
+              axisLabel: {
+                interval: 0,
+                fontSize: axisFontSize,
+                rotate: userInput.xAxisRotateLabels
               }
             },
             yAxis: {
               type: this.getYAxisType(userInput),
-              axisLabel:{
-                interval:0,
-                fontSize:axisFontSize,
-                rotate:userInput.yAxisRotateLabels
+              axisLabel: {
+                interval: 0,
+                fontSize: axisFontSize,
+                rotate: userInput.yAxisRotateLabels
               }
             },
             grid: {
@@ -712,10 +823,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               nameGap: 50,
               type: this.getXAxisType(userInput),
               boundaryGap: false,
-              axisLabel:{
-                interval:0,
-                fontSize:axisFontSize,
-                rotate:userInput.xAxisRotateLabels
+              axisLabel: {
+                interval: 0,
+                fontSize: axisFontSize,
+                rotate: userInput.xAxisRotateLabels
               }
             },
             yAxis: {
@@ -723,10 +834,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               nameLocation: 'middle',
               nameGap: 70,
               type: this.getYAxisType(userInput),
-              axisLabel:{
-                interval:0,
-                fontSize:axisFontSize,
-                rotate:userInput.yAxisRotateLabels
+              axisLabel: {
+                interval: 0,
+                fontSize: axisFontSize,
+                rotate: userInput.yAxisRotateLabels
               }
             },
             tooltip: {
@@ -1031,19 +1142,19 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               scale: true,
               type: this.getXAxisType(userInput),
               boundaryGap: false,
-              axisLabel:{
-                interval:0,
-                fontSize:axisFontSize,
-                rotate:userInput.xAxisRotateLabels
+              axisLabel: {
+                interval: 0,
+                fontSize: axisFontSize,
+                rotate: userInput.xAxisRotateLabels
               }
             },
             yAxis: {
               type: this.getYAxisType(userInput),
               name: yAxisName,
-              axisLabel:{
-                interval:0,
-                fontSize:axisFontSize,
-                rotate:userInput.yAxisRotateLabels
+              axisLabel: {
+                interval: 0,
+                fontSize: axisFontSize,
+                rotate: userInput.yAxisRotateLabels
               }
             },
             grid: {
@@ -1142,10 +1253,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               nameGap: 50,
               type: this.getXAxisType(userInput),
               boundaryGap: false,
-              axisLabel:{
-                interval:0,
-                fontSize:axisFontSize,
-                rotate:userInput.xAxisRotateLabels
+              axisLabel: {
+                interval: 0,
+                fontSize: axisFontSize,
+                rotate: userInput.xAxisRotateLabels
               }
             },
             yAxis: {
@@ -1153,10 +1264,10 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               nameLocation: 'middle',
               nameGap: 70,
               type: this.getYAxisType(userInput),
-              axisLabel:{
-                interval:0,
-                fontSize:axisFontSize,
-                rotate:userInput.yAxisRotateLabels
+              axisLabel: {
+                interval: 0,
+                fontSize: axisFontSize,
+                rotate: userInput.yAxisRotateLabels
               }
             },
             tooltip: {
@@ -2076,7 +2187,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   hexToRgb(hex) {
     // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
     var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+    hex = hex.replace(shorthandRegex, function (m, r, g, b) {
       return r + r + g + g + b + b;
     });
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -2137,19 +2248,43 @@ export class GpSmartEchartWidgetComponent implements OnInit {
       return xAxisData;
     }
   }
-  //  @HostListener('window:resize')
-  //  onResize() {
-  //    console.log(this.dataChart)
-  //    if (this.dataChart) {
-  //      this.dataChart.resize();
-  //    }
-  //  }
+  getDataFromSessionStorage(key) {
+    let data = sessionStorage.getItem(key);
+    if (data) {
+      data = JSON.parse(data);
+    }
+    return data;
+  }
+  setDataInSessionStorage(key, data) {
+    sessionStorage.setItem(key, JSON.stringify(data));
+  }
+  waitForServiceToComplete() {
+    setTimeout(() => {
+      const sessionStorageData = this.getDataFromSessionStorage('Chartsession');
+      if (sessionStorageData && sessionStorageData !== 'true' && this.getDataFromSessionStorage('serviceRunning') === 'false') {
+         this.createChart(this.config);
+      } else {
+        this.waitForServiceToComplete();
+      }
+    }, 2000);
+  }
+  ngOnDestroy() {
+    if (sessionStorage.getItem('Chartsession')) {
+      sessionStorage.removeItem('Chartsession');
+    }
+    if (sessionStorage.getItem('serviceRunning')) {
+      sessionStorage.removeItem('serviceRunning');
+    }
+  }
   onResized(event: ResizedEvent) {
     this.width = event.newWidth;
     this.height = event.newHeight;
-    this.dataChart.resize({
-      width: this.width,
-      height:this.height
-    });
+    if (this.dataChart) {
+      this.dataChart.resize({
+        width: this.width,
+        height: this.height
+      });
+    }
+
   }
 }

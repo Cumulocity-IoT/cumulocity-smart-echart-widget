@@ -132,5 +132,9 @@ export declare class GpSmartEchartWidgetComponent implements OnInit {
     })[];
     hexToRgb(hex: any): string;
     getHorizontalSeriesData(userInput: any): any[];
+    getDataFromSessionStorage(key: any): string;
+    setDataInSessionStorage(key: any, data: any): void;
+    waitForServiceToComplete(): void;
+    ngOnDestroy(): void;
     onResized(event: ResizedEvent): void;
 }
