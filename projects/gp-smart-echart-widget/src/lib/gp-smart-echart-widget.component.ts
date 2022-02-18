@@ -718,9 +718,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               confine: true
             },
             xAxis: {
-              name: userInput.xAxisDimension,
-              nameLocation: 'middle',
-              nameGap: 30,
+              // name: userInput.xAxisDimension,
+              // nameLocation: 'middle',
+              // nameGap: 30,
               scale: true,
               type: this.getXAxisType(userInput),
               boundaryGap: false,
