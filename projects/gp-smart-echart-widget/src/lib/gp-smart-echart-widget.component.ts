@@ -96,6 +96,12 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         let matchingURL = false;
         chartsessionData.forEach((element, index) => {
           if ((userInput.apiUrl === element.url) || (userInput.datahubUrl === element.url)) {
+            if(userInput.apiUrl){
+              this.isDatahubPostCall = false;
+            }
+            if(userInput.datahubUrl){
+              this.isDatahubPostCall = true;
+            }
             matchingURL = true;
             this.serviceData = element.response;
           }
@@ -112,7 +118,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               if (this.serviceData != null) {
 
 
-                getDataFromSession.push({ response: this.serviceData, url: this.config.apiUrl });
+                getDataFromSession.push({ response: this.serviceData, url: userInput.apiUrl });
                 sessionStorage.setItem('Chartsession', JSON.stringify(getDataFromSession));
                 sessionStorage.setItem('serviceRunning', JSON.stringify('false'));
               }
@@ -127,14 +133,13 @@ export class GpSmartEchartWidgetComponent implements OnInit {
                 method: 'POST'
               })
               this.serviceData = await response.json();
+              this.isDatahubPostCall = true;
 
               if (this.serviceData != null) {
-
-                getDataFromSession.push({ response: this.serviceData, url: this.config.datahubUrl });
+                getDataFromSession.push({ response: this.serviceData, url: userInput.datahubUrl });
                 sessionStorage.setItem('Chartsession', JSON.stringify(getDataFromSession));
                 sessionStorage.setItem('serviceRunning', JSON.stringify('false'));
               }
-              this.isDatahubPostCall = true;
             } else {
               if (isDevMode()) { console.log('No Datasource selected'); }
             }
@@ -166,14 +171,14 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             method: 'POST'
           })
           this.serviceData = await response.json();
+          this.isDatahubPostCall = true;
 
           if (this.serviceData !== null) {
 
-            temp.push({ response: this.serviceData, url: this.config.apiUrl });
+            temp.push({ response: this.serviceData, url: this.config.datahubUrl });
             this.setDataInSessionStorage('Chartsession', temp);
             this.setDataInSessionStorage('serviceRunning', 'false');
           }
-          this.isDatahubPostCall = true;
         } else {
           if (isDevMode()) { console.log('No Datasource selected'); }
         }
@@ -205,6 +210,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
     if (this.serviceData) {
       this.dataChart.hideLoading();
       let axisFontSize = 0;
+      
       if (userInput.fontSize === 0 || userInput.fontSize === '' || userInput.fontSize === null || userInput.fontSize === undefined) {
         axisFontSize = 12;
       } else {
@@ -221,7 +227,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
       } else {
         userInput.area = null;
       }
-      if (userInput.aggrList.length === 0 && !this.isDatahubPostCall) {
+     if (userInput.aggrList.length === 0 && !this.isDatahubPostCall) {
         // calls for API without Aggregation
         if (userInput.type === 'pie') {
           this.seriesData = this.getPieChartSeriesData(userInput);
@@ -561,6 +567,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             }
           };
           if (isDevMode()) { console.log('Simple bar or line chart for API', this.chartOption); }
+          console.log('Simple bar or line chart for API', this.chartOption);
         }
         // End of Simple Line,Simple Bar,Stacked Line And Stacked Bar for API
         else if (userInput.type === 'bar' && (userInput.layout === 'simpleHorizontalBar' || userInput.layout === 'stackedHorizontalBar')) {
@@ -766,6 +773,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             series: encodeData
           };
           if (isDevMode()) { console.log('Bar or Line chart for Datahub without aggregation', this.chartOption); }
+          console.log('Bar or Line chart for Datahub without aggregation', this.chartOption);
         } // End of Bar,Line Chart without Aggregation for Datahub
         else if (userInput.type === 'scatter') {
           dimensions = this.getDatasetDimensions(userInput);
@@ -1192,6 +1200,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             series: encodeData
           };
           if (isDevMode()) { console.log('Aggregate Bar or Line chart', this.chartOption); }
+          console.log('Aggregate Bar or Line chart', this.chartOption);
         } // End of Bar,Line Chart with Aggregation for datahub and API
         else if (userInput.type === 'scatter') {
           if (this.isDatahubPostCall) {
@@ -2262,7 +2271,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
     setTimeout(() => {
       const sessionStorageData = this.getDataFromSessionStorage('Chartsession');
       if (sessionStorageData && sessionStorageData !== 'true' && this.getDataFromSessionStorage('serviceRunning') === 'false') {
-         this.createChart(this.config);
+        this.createChart(this.config);
       } else {
         this.waitForServiceToComplete();
       }

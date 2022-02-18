@@ -497,6 +497,12 @@
                             matchingURL_1 = false;
                             chartsessionData.forEach(function (element, index) {
                                 if ((userInput.apiUrl === element.url) || (userInput.datahubUrl === element.url)) {
+                                    if (userInput.apiUrl) {
+                                        _this.isDatahubPostCall = false;
+                                    }
+                                    if (userInput.datahubUrl) {
+                                        _this.isDatahubPostCall = true;
+                                    }
                                     matchingURL_1 = true;
                                     _this.serviceData = element.response;
                                 }
@@ -511,7 +517,7 @@
                         case 1:
                             _a.serviceData = _e.sent();
                             if (this.serviceData != null) {
-                                getDataFromSession.push({ response: this.serviceData, url: this.config.apiUrl });
+                                getDataFromSession.push({ response: this.serviceData, url: userInput.apiUrl });
                                 sessionStorage.setItem('Chartsession', JSON.stringify(getDataFromSession));
                                 sessionStorage.setItem('serviceRunning', JSON.stringify('false'));
                             }
@@ -533,12 +539,12 @@
                             return [4 /*yield*/, response.json()];
                         case 4:
                             _b.serviceData = _e.sent();
+                            this.isDatahubPostCall = true;
                             if (this.serviceData != null) {
-                                getDataFromSession.push({ response: this.serviceData, url: this.config.datahubUrl });
+                                getDataFromSession.push({ response: this.serviceData, url: userInput.datahubUrl });
                                 sessionStorage.setItem('Chartsession', JSON.stringify(getDataFromSession));
                                 sessionStorage.setItem('serviceRunning', JSON.stringify('false'));
                             }
-                            this.isDatahubPostCall = true;
                             return [3 /*break*/, 6];
                         case 5:
                             if (i0.isDevMode()) {
@@ -581,12 +587,12 @@
                             return [4 /*yield*/, response.json()];
                         case 13:
                             _d.serviceData = _e.sent();
+                            this.isDatahubPostCall = true;
                             if (this.serviceData !== null) {
-                                temp.push({ response: this.serviceData, url: this.config.apiUrl });
+                                temp.push({ response: this.serviceData, url: this.config.datahubUrl });
                                 this.setDataInSessionStorage('Chartsession', temp);
                                 this.setDataInSessionStorage('serviceRunning', 'false');
                             }
-                            this.isDatahubPostCall = true;
                             return [3 /*break*/, 15];
                         case 14:
                             if (i0.isDevMode()) {
@@ -993,6 +999,7 @@
                                         if (i0.isDevMode()) {
                                             console.log('Simple bar or line chart for API', this.chartOption);
                                         }
+                                        console.log('Simple bar or line chart for API', this.chartOption);
                                     }
                                     // End of Simple Line,Simple Bar,Stacked Line And Stacked Bar for API
                                     else if (userInput.type === 'bar' && (userInput.layout === 'simpleHorizontalBar' || userInput.layout === 'stackedHorizontalBar')) {
@@ -1206,6 +1213,7 @@
                                         if (i0.isDevMode()) {
                                             console.log('Bar or Line chart for Datahub without aggregation', this.chartOption);
                                         }
+                                        console.log('Bar or Line chart for Datahub without aggregation', this.chartOption);
                                     } // End of Bar,Line Chart without Aggregation for Datahub
                                     else if (userInput.type === 'scatter') {
                                         dimensions = this.getDatasetDimensions(userInput);
@@ -1648,6 +1656,7 @@
                                         if (i0.isDevMode()) {
                                             console.log('Aggregate Bar or Line chart', this.chartOption);
                                         }
+                                        console.log('Aggregate Bar or Line chart', this.chartOption);
                                     } // End of Bar,Line Chart with Aggregation for datahub and API
                                     else if (userInput.type === 'scatter') {
                                         if (this.isDatahubPostCall) {
