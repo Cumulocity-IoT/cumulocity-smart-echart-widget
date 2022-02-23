@@ -290,7 +290,7 @@ export class SmartChartConfigComponent implements OnInit {
     this.config.legend = {};
     // Default value for datahub sql query
     if (this.config.datahubUrl === null || this.config.datahubUrl === undefined) {
-      this.config.datahubUrl = "service/datahub/sql?version=v1";
+      this.config.datahubUrl = 'service/datahub/sql?version=v1';
     }
     if (this.config.sqlLimit === null || this.config.sqlLimit === undefined) {
       this.config.sqlLimit = 100;
@@ -319,8 +319,6 @@ export class SmartChartConfigComponent implements OnInit {
     this.config.stackList.splice(index, 1);
   }
 
-  
-
   addAnotherStack() {
     this.config.stackList.push(new Stack());
   }
@@ -340,7 +338,7 @@ export class SmartChartConfigComponent implements OnInit {
     this.config.colors = this.userSelectedColor.join(',')
   }
   colorUpdateByTyping(colorTyped) {
-    let joinedArr = [...this.userSelectedColor, ...colorTyped.split(',')];
+    const joinedArr = [...this.userSelectedColor, ...colorTyped.split(',')];
     this.userSelectedColor = [...new Set([...joinedArr])]
 
   }

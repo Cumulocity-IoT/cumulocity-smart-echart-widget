@@ -1,5 +1,5 @@
 {
-  "name": "gp-smart-echart",
+  "name": "gp-smart-echart-widget",
   "version": "1.0.0",
   "description": "This is an Angular 11 widget, which is designed to display the chart based on the REST data.",
   "author": "Neeru Arora - Software AG, Global Presales",

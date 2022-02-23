@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
 import { ChartConfig } from './model/config.modal';
@@ -34,7 +34,7 @@ import { element } from 'protractor';
   templateUrl: './gp-smart-echart-widget.component.html',
   styles: ['gp-smart-echart-widget.component.css']
 })
-export class GpSmartEchartWidgetComponent implements OnInit {
+export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
   @ViewChild('chartBox', { static: true }) protected mapDivRef: ElementRef;
   @Input() config: ChartConfig;
   serviceData;
@@ -94,8 +94,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         chartsessionData = JSON.parse(sessionStorage.getItem('Chartsession'));
 
         let matchingURL = false;
-        chartsessionData.forEach((element, index) => {
-          if ((userInput.apiUrl === element.url) || (userInput.datahubUrl === element.url)) {
+        chartsessionData.forEach((dataElement, index) => {
+          if ((userInput.apiUrl === dataElement.url) || (userInput.datahubUrl === dataElement.url)) {
             if(userInput.apiUrl){
               this.isDatahubPostCall = false;
             }
@@ -103,7 +103,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               this.isDatahubPostCall = true;
             }
             matchingURL = true;
-            this.serviceData = element.response;
+            this.serviceData = dataElement.response;
           }
         });
         if (!matchingURL) {
@@ -210,7 +210,6 @@ export class GpSmartEchartWidgetComponent implements OnInit {
     if (this.serviceData) {
       this.dataChart.hideLoading();
       let axisFontSize = 0;
-      
       if (userInput.fontSize === 0 || userInput.fontSize === '' || userInput.fontSize === null || userInput.fontSize === undefined) {
         axisFontSize = 12;
       } else {
@@ -221,7 +220,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           userInput.area = {};
         } else {
           userInput.area = {
-            'opacity': userInput.areaOpacity
+            opacity : userInput.areaOpacity
           };
         }
       } else {
@@ -898,7 +897,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             legend: {
               icon: userInput.legend.icon,
               width: 330,
-              // top: '10%', 
+              // top: '10%',
               left: 'left',
               type: 'scroll',
               formatter(name) {
@@ -1968,8 +1967,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         return { key: val, value: this.serviceData[0].indexOf(v) };
       });
       for (let i = 1; i < this.serviceData.length; i++) {
-        indexes.forEach(element => {
-          dimensionRecord[element.key].push(this.serviceData[i][element.value]);
+        indexes.forEach(dataElement => {
+          dimensionRecord[dataElement.key].push(this.serviceData[i][dataElement.value]);
         });
       }
     }
@@ -2003,8 +2002,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
       return { key: val, value: dataDim.indexOf(v) };
     });
     arr.map((item, index) => {
-      indexes.keys.forEach(element => {
-        dimensionRecord[element.key].push(item[element.value]);
+      indexes.keys.forEach(dataElement => {
+        dimensionRecord[dataElement.key].push(item[dataElement.value]);
       });
     });
   }
@@ -2093,7 +2092,6 @@ export class GpSmartEchartWidgetComponent implements OnInit {
       const yAxisDimensions = userInput.yAxisDimension.split(',');
       const yAxisData = [];
       yAxisDimensions.forEach((value, i) => {
-        let ab = this.getStackName(userInput.stackList, yAxisDimensions[i]);
         yAxisData[i] = {
           name: yAxisDimensions[i],
           stack: this.getStackName(userInput.stackList, yAxisDimensions[i]),
@@ -2149,7 +2147,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
     let result = '';
     stackData.forEach((value, x) => {
       const values = stackData[x].stackValues.split(',');
-      values.forEach((element, i) => {
+      values.forEach((data, i) => {
         if (values[i] === dimensionName) {
           result = stackData[x].stackName;
         }
@@ -2195,12 +2193,13 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   }
   hexToRgb(hex) {
     // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex,  (m, r, g, b)=> {
       return r + r + g + g + b + b;
     });
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? "rgba(" + parseInt(result[1], 16) + ", " + parseInt(result[2], 16) + ", " + parseInt(result[3], 16) + ", " + 0.8 + ")" : null;
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    // tslint:disable-next-line:max-line-length
+    return result ? 'rgba(' + parseInt(result[1], 16) + ', ' + parseInt(result[2], 16) + ', ' + parseInt(result[3], 16) + ', ' + 0.8 + ')' : null;
   }
   // Get data for horizontal Bar chart
   getHorizontalSeriesData(userInput) {
