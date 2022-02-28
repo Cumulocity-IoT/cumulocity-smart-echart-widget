@@ -313,7 +313,6 @@ export class SmartChartConfigComponent implements OnInit {
     }
   }
   yAxisDimensionUpdate(val) {
-    // console.log(val, this.config.yAxisDimension)
   }
   deleteStackValue(stack, index) {
     this.config.stackList.splice(index, 1);

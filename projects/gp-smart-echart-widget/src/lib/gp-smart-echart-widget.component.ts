@@ -190,23 +190,6 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
     } else {
       this.colorsForChart = [...userInput.colors.split(',')]
     }
-    // if (userInput.showApiInput) {
-    //   this.serviceData = await this.chartService.getAPIData(userInput.apiUrl).toPromise();
-    // } else if (userInput.showDatahubInput) {
-    //   const sqlReqObject = {
-    //     sql: userInput.sqlQuery,
-    //     limit: userInput.sqlLimit,
-    //     format: 'PANDAS'
-    //   };
-    //   const response = await this.fetchClient.fetch(userInput.datahubUrl, {
-    //     body: JSON.stringify(sqlReqObject),
-    //     method: 'POST'
-    //   })
-    //   this.serviceData = await response.json();
-    //   this.isDatahubPostCall = true;
-    // } else {
-    //   if (isDevMode()) { console.log('No Datasource selected'); }
-    // }
     if (this.serviceData) {
       this.dataChart.hideLoading();
       let axisFontSize = 0;
@@ -270,7 +253,6 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
             }
           }
           if (isDevMode()) { console.log('Pie Chart For API', this.chartOption); }
-          console.log('Pie Chart For API', this.chartOption);
         }
         // End of piechart for API
         else if (userInput.type === 'polar') {
@@ -480,7 +462,6 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
             }
           }
           if (isDevMode()) { console.log('Radar chart for API', this.chartOption) }
-          console.log('Radar chart for API', this.chartOption);
         } // End of Radar CHart for API
         else if ((userInput.type === 'line' || userInput.type === 'bar')
           && (userInput.layout !== 'simpleHorizontalBar' && userInput.layout !== 'stackedHorizontalBar')) {
@@ -566,7 +547,6 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
             }
           };
           if (isDevMode()) { console.log('Simple bar or line chart for API', this.chartOption); }
-          console.log('Simple bar or line chart for API', this.chartOption);
         }
         // End of Simple Line,Simple Bar,Stacked Line And Stacked Bar for API
         else if (userInput.type === 'bar' && (userInput.layout === 'simpleHorizontalBar' || userInput.layout === 'stackedHorizontalBar')) {
@@ -772,7 +752,6 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
             series: encodeData
           };
           if (isDevMode()) { console.log('Bar or Line chart for Datahub without aggregation', this.chartOption); }
-          console.log('Bar or Line chart for Datahub without aggregation', this.chartOption);
         } // End of Bar,Line Chart without Aggregation for Datahub
         else if (userInput.type === 'scatter') {
           dimensions = this.getDatasetDimensions(userInput);
@@ -918,7 +897,6 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
             series: encodeData
           };
           if (isDevMode()) { console.log('Pie chart without Aggregation for Datahub', this.chartOption); }
-          console.log('Pie chart without Aggregation for Datahub', this.chartOption);
         } // End of Pie chart without Aggregation for Datahub
         else if (userInput.type === 'polar') {
           let yDimensions; let xDimensions;
@@ -1041,7 +1019,6 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
             }
           }
           if (isDevMode()) { console.log('Radar Chart without Aggregation for Datahub', this.chartOption); }
-          console.log('Radar Chart without Aggregation for Datahub', this.chartOption);
         } // End of Radar Chart without Aggregation for Datahub
       } // ENd of Datahub Calls Response without Aggregation
       else if (userInput.aggrList.length > 0) {
@@ -1199,7 +1176,6 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
             series: encodeData
           };
           if (isDevMode()) { console.log('Aggregate Bar or Line chart', this.chartOption); }
-          console.log('Aggregate Bar or Line chart', this.chartOption);
         } // End of Bar,Line Chart with Aggregation for datahub and API
         else if (userInput.type === 'scatter') {
           if (this.isDatahubPostCall) {
@@ -1384,7 +1360,6 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
             series: encodeData
           };
           if (isDevMode()) { console.log('Aggregate Pie chart', this.chartOption); }
-          console.log('Aggregate Pie chart', this.chartOption);
         } // End of Pie Chart with Aggregation for datahub and API
         else if (userInput.type === 'polar') {
           let yDimensions; let xDimensions;
