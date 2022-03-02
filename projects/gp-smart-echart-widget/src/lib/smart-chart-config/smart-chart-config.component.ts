@@ -137,12 +137,7 @@ const chartValues = {
       id: 'time',
       value: 'Time',
       disabled: false
-    },
-    // {
-    //   id: 'log',
-    //   value: 'Log',
-    //   disabled:false
-    // },
+    }
   ],
 
   xAxisType: [
@@ -162,11 +157,6 @@ const chartValues = {
       value: 'Time',
       disabled: false
     },
-    // {
-    //   id: 'log',
-    //   value: 'Log',
-    //   disabled:false
-    // },
   ],
   legendType: [
     {
@@ -312,35 +302,46 @@ export class SmartChartConfigComponent implements OnInit {
       this.config.stackList.length = 0;
     }
   }
+  // called when Y Axis Dimension is updated
   yAxisDimensionUpdate(val) {
   }
+
+  // Delete a stack entry for stack data chart
   deleteStackValue(stack, index) {
     this.config.stackList.splice(index, 1);
   }
 
+  // Add a stack entry for stack data chart
   addAnotherStack() {
     this.config.stackList.push(new Stack());
   }
+
+  // Add an aggregate method
   addAnotherAggregate() {
     this.isAggrAdded = true;
     this.config.aggrList.push(new AggregateData());
   }
 
+  // Delete Aggregate Method
   deleteAggrValue(aggr, index) {
     this.config.aggrList.splice(index, 1);
     if (this.config.aggrList.length === 0) {
       this.isAggrAdded = false;
     }
   }
+
+  // Update the colors input from color picker
   colorUpdate(colorSelected) {
     this.userSelectedColor = [...this.userSelectedColor, colorSelected];
     this.config.colors = this.userSelectedColor.join(',')
   }
+
+  // Update the colors input from color input box
   colorUpdateByTyping(colorTyped) {
     const joinedArr = [...this.userSelectedColor, ...colorTyped.split(',')];
     this.userSelectedColor = [...new Set([...joinedArr])]
-
   }
+  // On selection of a chart type, bind the corresponding layout values to input dropdown on UI
   onSelection(value) {
     this.chartData.chartLayout.filter(val => {
       if (value === val.id) {
@@ -350,6 +351,7 @@ export class SmartChartConfigComponent implements OnInit {
     this.config.addStack = false;
 
   }
+  // On selection of a chart layout,enable/disable certain dimension type
   onLayoutSelection(value) {
     if (value === 'simpleBar' || value === 'stackedBar' || value === 'simple' || value === 'stacked' || value === 'simpleScatter') {
       for (const val of this.chartData.yAxisType) {
@@ -376,6 +378,7 @@ export class SmartChartConfigComponent implements OnInit {
     }
   }
 
+  // Set the flag based on datasource
   dataSourceSelection(value) {
     if (value === 'API') {
       this.config.showApiInput = true;
