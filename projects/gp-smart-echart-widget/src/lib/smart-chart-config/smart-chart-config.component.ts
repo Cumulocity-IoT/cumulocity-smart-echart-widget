@@ -394,6 +394,7 @@ export class SmartChartConfigComponent implements OnInit {
     }
   }
 
+  // This code is commented as it is needed for localhost testing.
   // if onSelection, onLayoutSelection, dataSourceSelection is called, then submit data and emit config
   // SubmitData() {
   //   this.config.aggrList.filter(element => {
