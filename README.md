@@ -298,11 +298,19 @@ NOTE : In Simple charts, X-Axis can be category or value type and Y-Axis can be 
     6.1 **Value** : For numerical axis. Example fields like productSales : 2000,3000,1290 etc. 
     6.2 **Category** : For categorized data. Example fields like: Date: ‘Mar-2021’,’Feb-2020’ etc.
     6.3 **Time**: For time axis where you want to show continuous time data.
-  **9.Y-Axis Dimension**: This should be the fieldname of value you want to show on chart. It should be exactly same as it is in response of API.    
+  **9.Y-Axis Dimension**: This should be the fieldname of value you want to show on chart. It should be exactly same as it is in response of API.
   
- **10.Legend**: User can select the shape of legend from here.
-  **11.Slider Zoom**: This is like pinch zoom we have in phones. User can zoom in to see large datasets in detail.
-   **12.Box Zoom**: This is available in top-right corner if selected. User has to select the zoom button and it would be highlighted in blue color and then user can make the selection on chart and that area will be zoomed in. To go back to previous stage user needs to click on ‘Zoom Reset’ Button(available in top-right corner).
+  **10. X-Axis Rotate Labels**: In case the labels for x axis are lengthy , you can specify an input from -90 to 90.
+  
+  **11. Y-Axis Rotate Labels**: In case the labels for y axis are lengthy , you can specify an input from -90 to 90.
+  
+  **12. Legend**: User can select the shape of legend from here.
+  
+  **13. Slider Zoom**: This is like pinch zoom we have in phones. User can zoom in to see large datasets in detail.
+  
+  **14. Box Zoom**: This is available in top-right corner if selected. User has to select the zoom button and it would be highlighted in blue color and then user can make the selection on chart and that area will be zoomed in. To go back to previous stage user needs to click on ‘Zoom Reset’ Button(available in top-right corner).
+  
+  **15. Chart Color**: You can specify color in input box or you can use color picker.
 
 ------------------------------
 
