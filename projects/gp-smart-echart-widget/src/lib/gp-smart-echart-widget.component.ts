@@ -94,10 +94,9 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
         let matchingURL = false;
         chartsessionData.forEach((dataElement, index) => {
           if ((userInput.apiUrl === dataElement.url) || (userInput.datahubUrl === dataElement.url)) {
-            if(userInput.apiUrl){
+            if(userInput.showApiInput){
               this.isDatahubPostCall = false;
-            }
-            if(userInput.datahubUrl){
+            } else {
               this.isDatahubPostCall = true;
             }
             matchingURL = true;
