@@ -36,14 +36,14 @@ The Smart E chart widget help you to display API and datahub response on a chart
 **Supported Cumulocity Environments:**
   
 
-*  **App Builder:** Tested with Cumulocity App Builder version 1.3.0-Dev-10.  
+*  **App Builder:** Tested with Cumulocity App Builder version 1.3.0  
 
   
 **Requirements:**
 
 * Git
 
-* NodeJS (release builds are currently built with `v12.19.0`)
+* NodeJS (release builds are currently built with `v14.15.0`)
 
 * NPM (Included with NodeJS)
 
