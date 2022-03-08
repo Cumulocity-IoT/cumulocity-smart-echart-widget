@@ -10,6 +10,14 @@ The Smart E chart widget help you to display API and datahub response on a chart
 
 ![Picture1](https://user-images.githubusercontent.com/85675121/154234664-5840f68e-33b8-4e49-89fa-b9b854773c75.png)
 
+### Please verify that you are using below Application builder version:
+
+|APPLICATION BUILDER | CUMULOCITY | SMART ECHART WIDGET    |
+|--------------------|------------|------------------------|
+| 1.3.x              | >= 1011.x.x| 1.x.x                  |
+
+
+
 ## Features
 
   
@@ -320,6 +328,7 @@ NOTE : In Simple charts, X-Axis can be category or value type and Y-Axis can be 
 ##**Aggregation Utility**
 
 Widget also provides aggregation functions as below:
+
 **Dimension**: Specify the numerical dimension name.
 
 **Method** : Select one of the method from dropdown.
