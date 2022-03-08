@@ -255,62 +255,65 @@ Options Available in Chart Config :
 
 **2. List Name** : Name of the response field which holds JSON object. For example: API response comes as output:{…..JSON…}.Then List Name = output.
 
-**3. Data Source(API / Datahub)**:  Either API or Datahub.
+**3. Data Source(API / Datahub)** :  Either API or Datahub.
 
-    3.1. API: Provide the API url.
-    3.2. Datahub: Provide the Datahub Url and SQL query to access the data.
+    3.1. API : Provide the API url.
+    3.2. Datahub : Provide the Datahub Url and SQL query to access the data.
     NOTE: Datahub should be on the same tenant and user must have permission to access datahub.
 
 
 
-**4. Chart Type**: At present, we have Bar, Line, Radar, Polar, Pie and Scatter chart.
+**4. Chart Type** : At present, we have Bar, Line, Radar, Polar, Pie and Scatter chart.
 
-**5. Chart Layout**: This has diff values based on the Chart type selected by User.
+**5. Chart Layout** : This has diff values based on the Chart type selected by User.
             ```
 NOTE : In Simple charts, X-Axis can be category or value type and Y-Axis can be value only whereas in Horizontal charts, Y-Axis can be category or value type and X-Axis can be value only.
             ```
 
-    5.1 Line Chart: For Simple Line, Only single value in Y-Axis Dimension.For Stacked Line, Comma separated values in Y-Axis Dimension.
-    5.2 Bar Chart: For Simple Bar, Only single value in Y-Axis Dimension.
+    5.1 Line Chart : For Simple Line, Only single value in Y-Axis Dimension.For Stacked Line, Comma separated values in Y-Axis Dimension.
+    5.2 Bar Chart : For Simple Bar, Only single value in Y-Axis Dimension.
     For Stacked Bar, Comma separated values in Y-Axis Dimension.For Simple Horizontal Bar, Only single value in X-Axis Dimension.For Stacked Horizontal Bar, Comma separated values in X-Axis Dimension.
-    5.3 Pie Chart: It can be a simple pie chart or a rose pie chart.Some value of pie chart are:
-	    **PieSliceValue**: The numerical axis
-		**PieSliceName**: Can be same as PieSliceValue or can be a category axis.
-		**Pie Radius**: Mandatory. should be in <num>%,<num>% format.
-		**Border radius**: optional. Specifies the radius of pie slice.
-		**Border width**: optional. Specifies the width of pie slice.
-    5.4 Scatter Chart: It can be simple scatter chart or horizontal scatter chart with category on Y-Axis.
-		**Bubble Size**: Mandatory.Specifies the size of scatter bubble.
-	5.5 Polar Chart: It can be a Line polar or Bar Polar chart.
+    5.3 Pie Chart : It can be a simple pie chart or a rose pie chart.Some value of pie chart are:
+	    PieSliceValue : The numerical axis
+		  PieSliceName : Can be same as PieSliceValue or can be a category axis.
+		  Pie Radius : Mandatory. should be in <num>%,<num>% format.
+		  Border radius : optional. Specifies the radius of pie slice.
+		  Border width : optional. Specifies the width of pie slice.
+    5.4 Scatter Chart : It can be simple scatter chart or horizontal scatter chart with category on Y-Axis.
+		Bubble Size : Mandatory.Specifies the size of scatter bubble.
+	5.5 Polar Chart : It can be a Line polar or Bar Polar chart.
 		NOTE: X and Y axis dimension both are value types.Therefore, the fields should be numerical data.
-	5.6 Radar Chart: Here the 
-		**X Axis dimension** can be numerical or category.Example: Sales or Name.This basically plots the box of radar.
-		**Radar Dimensions** : are the numerical fields which are plotted inside the radar box.
+	5.6 Radar Chart : Here the 
+		  X Axis dimension : can be numerical or category.Example: Sales or Name.This basically plots the box of radar.
+		  Radar Dimensions : are the numerical fields which are plotted inside the radar box.
 
-**6.X-Axis Type**: This has three options :
+**6. X-Axis Type** : This has three options :
 
-    6.1 **Value** : For numerical axis. Example fields like productSales : 2000,3000,1290 etc. 
-    6.2 **Category** : For categorized data. Example fields like: Date: ‘Mar-2021’,’Feb-2020’ etc.
-    6.3 **Time**: For time axis where you want to show continuous time data.
-   **7.X-Axis Dimension**: This should be the fieldname of value you want to show on chart. It should be exactly same as it is in response of API.
-    **8.Y-Axis Type**: This has three options :
+    6.1 Value : For numerical axis. Example fields like productSales : 2000,3000,1290 etc. 
+    6.2 Category : For categorized data. Example fields like: Date: ‘Mar-2021’,’Feb-2020’ etc.
+    6.3 Time : For time axis where you want to show continuous time data.
+    
+   **7. X-Axis Dimension** : This should be the fieldname of value you want to show on chart. It should be exactly same as it is in response of API.
+   
+   **8. Y-Axis Type** : This has three options :
 
-    6.1 **Value** : For numerical axis. Example fields like productSales : 2000,3000,1290 etc. 
-    6.2 **Category** : For categorized data. Example fields like: Date: ‘Mar-2021’,’Feb-2020’ etc.
-    6.3 **Time**: For time axis where you want to show continuous time data.
-  **9.Y-Axis Dimension**: This should be the fieldname of value you want to show on chart. It should be exactly same as it is in response of API.
+    8.1 Value : For numerical axis. Example fields like productSales : 2000,3000,1290 etc. 
+    8.2 Category : For categorized data. Example fields like: Date: ‘Mar-2021’,’Feb-2020’ etc.
+    8.3 Time : For time axis where you want to show continuous time data.
+    
+  **9. Y-Axis Dimension** : This should be the fieldname of value you want to show on chart. It should be exactly same as it is in response of API.
   
-  **10. X-Axis Rotate Labels**: In case the labels for x axis are lengthy , you can specify an input from -90 to 90.
+  **10. X-Axis Rotate Labels** : In case the labels for x axis are lengthy , you can specify an input from -90 to 90.
   
-  **11. Y-Axis Rotate Labels**: In case the labels for y axis are lengthy , you can specify an input from -90 to 90.
+  **11. Y-Axis Rotate Labels** : In case the labels for y axis are lengthy , you can specify an input from -90 to 90.
   
-  **12. Legend**: User can select the shape of legend from here.
+  **12. Legend** : User can select the shape of legend from here.
   
-  **13. Slider Zoom**: This is like pinch zoom we have in phones. User can zoom in to see large datasets in detail.
+  **13. Slider Zoom** : This is like pinch zoom we have in phones. User can zoom in to see large datasets in detail.
   
-  **14. Box Zoom**: This is available in top-right corner if selected. User has to select the zoom button and it would be highlighted in blue color and then user can make the selection on chart and that area will be zoomed in. To go back to previous stage user needs to click on ‘Zoom Reset’ Button(available in top-right corner).
+  **14. Box Zoom** : This is available in top-right corner if selected. User has to select the zoom button and it would be highlighted in blue color and then user can make the selection on chart and that area will be zoomed in. To go back to previous stage user needs to click on ‘Zoom Reset’ Button(available in top-right corner).
   
-  **15. Chart Color**: You can specify color in input box or you can use color picker.
+  **15. Chart Color** : You can specify color in input box or you can use color picker.
 
 ------------------------------
 
