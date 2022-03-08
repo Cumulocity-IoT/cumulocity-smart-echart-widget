@@ -2,13 +2,21 @@
 
   
 
-# Smart E Chart Widget for Cumulocity [<img width="35" src="https://user-images.githubusercontent.com/67993842/97668428-f360cc80-1aa7-11eb-8801-da578bda4334.png"/>](https://github.com/SoftwareAG/cumulocity-smart-echart-widget/blob/main/runtime/dist/smart-echart-runtime-widget-1.0.0.zip)
+# Smart E Chart Widget for Cumulocity [<img width="35" src="https://user-images.githubusercontent.com/67993842/97668428-f360cc80-1aa7-11eb-8801-da578bda4334.png"/>](https://github.com/SoftwareAG/cumulocity-smart-echart-widget/releases/download/v1.0.0/smart-echart-runtime-widget-1.0.0.zip)
 
   
 The Smart E chart widget help you to display API and datahub response on a chart with color configurations.
   
 
 ![Picture1](https://user-images.githubusercontent.com/85675121/154234664-5840f68e-33b8-4e49-89fa-b9b854773c75.png)
+
+### Please verify that you are using below Application builder version:
+
+|APPLICATION BUILDER | CUMULOCITY | SMART ECHART WIDGET    |
+|--------------------|------------|------------------------|
+| 1.3.x              | >= 1011.x.x| 1.x.x                  |
+
+
 
 ## Features
 
@@ -27,7 +35,7 @@ The Smart E chart widget help you to display API and datahub response on a chart
   
 ### Runtime Widget Deployment?
 
-* This widget support runtime deployment. Download [Runtime Binary](https://github.com/SoftwareAG/cumulocity-smart-echart-widget/blob/main/runtime/dist/smart-echart-runtime-widget-2.0.0.zip) and use Application-builder to install your widget.
+* This widget support runtime deployment. Download [Runtime Binary](https://github.com/SoftwareAG/cumulocity-smart-echart-widget/releases/download/v1.0.0/smart-echart-runtime-widget-1.0.0.zip) and use Application-builder to install your widget.
   
 
 ### Installation of widget through Appbuilder
@@ -36,14 +44,14 @@ The Smart E chart widget help you to display API and datahub response on a chart
 **Supported Cumulocity Environments:**
   
 
-*  **App Builder:** Tested with Cumulocity App Builder version 1.3.0-Dev-10.  
+*  **App Builder:** Tested with Cumulocity App Builder version 1.3.0  
 
   
 **Requirements:**
 
 * Git
 
-* NodeJS (release builds are currently built with `v12.19.0`)
+* NodeJS (release builds are currently built with `v14.15.0`)
 
 * NPM (Included with NodeJS)
 
@@ -77,14 +85,14 @@ The Smart E chart widget help you to display API and datahub response on a chart
     npm i echarts@^5.2.1 echarts-simple-transform@^1.0.0 juggle/resize-observer@^3.3.1 ngx-bootstrap@6.2.0 ngx-echarts@^7.1.0 
 
     ```
-2. Grab the Smart E Chart **[Latest Release Binary](https://github.com/SoftwareAG/cumulocity-data-points-map-widget/releases/download/1.0.0/gp-data-points-map-1.0.0.tgz)**.
+2. Grab the Smart E Chart **[Latest Release Binary](https://github.com/SoftwareAG/cumulocity-smart-echart-widget/releases/download/v1.0.0/gp-smart-echart-widget-1.0.0.tgz)**.
 
 
 3. Install the Binary file in app builder.
 
     ```
     
-    npm i <binary file path>/gp-data-points-map-x.x.x.tgz
+    npm i <binary file path>/gp-smart-echart-widget-1.0.0.tgz
 
     ```
 
@@ -255,60 +263,72 @@ Options Available in Chart Config :
 
 **2. List Name** : Name of the response field which holds JSON object. For example: API response comes as output:{…..JSON…}.Then List Name = output.
 
-**3. Data Source(API / Datahub)**:  Either API or Datahub.
+**3. Data Source(API / Datahub)** :  Either API or Datahub.
 
-    3.1. API: Provide the API url.
-    3.2. Datahub: Provide the Datahub Url and SQL query to access the data.
+    3.1. API : Provide the API url.
+    3.2. Datahub : Provide the Datahub Url and SQL query to access the data.
     NOTE: Datahub should be on the same tenant and user must have permission to access datahub.
 
 
 
-**4. Chart Type**: At present, we have Bar, Line, Radar, Polar, Pie and Scatter chart.
+**4. Chart Type** : At present, we have Bar, Line, Radar, Polar, Pie and Scatter chart.
 
-**5. Chart Layout**: This has diff values based on the Chart type selected by User.
+**5. Chart Layout** : This has diff values based on the Chart type selected by User.
             ```
 NOTE : In Simple charts, X-Axis can be category or value type and Y-Axis can be value only whereas in Horizontal charts, Y-Axis can be category or value type and X-Axis can be value only.
             ```
 
-    5.1 Line Chart: For Simple Line, Only single value in Y-Axis Dimension.For Stacked Line, Comma separated values in Y-Axis Dimension.
-    5.2 Bar Chart: For Simple Bar, Only single value in Y-Axis Dimension.
+    5.1 Line Chart : For Simple Line, Only single value in Y-Axis Dimension.For Stacked Line, Comma separated values in Y-Axis Dimension.
+    5.2 Bar Chart : For Simple Bar, Only single value in Y-Axis Dimension.
     For Stacked Bar, Comma separated values in Y-Axis Dimension.For Simple Horizontal Bar, Only single value in X-Axis Dimension.For Stacked Horizontal Bar, Comma separated values in X-Axis Dimension.
-    5.3 Pie Chart: It can be a simple pie chart or a rose pie chart.Some value of pie chart are:
-	    **PieSliceValue**: The numerical axis
-		**PieSliceName**: Can be same as PieSliceValue or can be a category axis.
-		**Pie Radius**: Mandatory. should be in <num>%,<num>% format.
-		**Border radius**: optional. Specifies the radius of pie slice.
-		**Border width**: optional. Specifies the width of pie slice.
-    5.4 Scatter Chart: It can be simple scatter chart or horizontal scatter chart with category on Y-Axis.
-		**Bubble Size**: Mandatory.Specifies the size of scatter bubble.
-	5.5 Polar Chart: It can be a Line polar or Bar Polar chart.
+    5.3 Pie Chart : It can be a simple pie chart or a rose pie chart.Some value of pie chart are:
+	    PieSliceValue : The numerical axis
+		  PieSliceName : Can be same as PieSliceValue or can be a category axis.
+		  Pie Radius : Mandatory. should be in <num>%,<num>% format.
+		  Border radius : optional. Specifies the radius of pie slice.
+		  Border width : optional. Specifies the width of pie slice.
+    5.4 Scatter Chart : It can be simple scatter chart or horizontal scatter chart with category on Y-Axis.
+		Bubble Size : Mandatory.Specifies the size of scatter bubble.
+	5.5 Polar Chart : It can be a Line polar or Bar Polar chart.
 		NOTE: X and Y axis dimension both are value types.Therefore, the fields should be numerical data.
-	5.6 Radar Chart: Here the 
-		**X Axis dimension** can be numerical or category.Example: Sales or Name.This basically plots the box of radar.
-		**Radar Dimensions** : are the numerical fields which are plotted inside the radar box.
+	5.6 Radar Chart : Here the 
+		  X Axis dimension : can be numerical or category.Example: Sales or Name.This basically plots the box of radar.
+		  Radar Dimensions : are the numerical fields which are plotted inside the radar box.
 
-**6.X-Axis Type**: This has three options :
+**6. X-Axis Type** : This has three options :
 
-    6.1 **Value** : For numerical axis. Example fields like productSales : 2000,3000,1290 etc. 
-    6.2 **Category** : For categorized data. Example fields like: Date: ‘Mar-2021’,’Feb-2020’ etc.
-    6.3 **Time**: For time axis where you want to show continuous time data.
-   **7.X-Axis Dimension**: This should be the fieldname of value you want to show on chart. It should be exactly same as it is in response of API.
-    **8.Y-Axis Type**: This has three options :
+    6.1 Value : For numerical axis. Example fields like productSales : 2000,3000,1290 etc. 
+    6.2 Category : For categorized data. Example fields like: Date: ‘Mar-2021’,’Feb-2020’ etc.
+    6.3 Time : For time axis where you want to show continuous time data.
+    
+   **7. X-Axis Dimension** : This should be the fieldname of value you want to show on chart. It should be exactly same as it is in response of API.
+   
+   **8. Y-Axis Type** : This has three options :
 
-    6.1 **Value** : For numerical axis. Example fields like productSales : 2000,3000,1290 etc. 
-    6.2 **Category** : For categorized data. Example fields like: Date: ‘Mar-2021’,’Feb-2020’ etc.
-    6.3 **Time**: For time axis where you want to show continuous time data.
-  **9.Y-Axis Dimension**: This should be the fieldname of value you want to show on chart. It should be exactly same as it is in response of API.    
+    8.1 Value : For numerical axis. Example fields like productSales : 2000,3000,1290 etc. 
+    8.2 Category : For categorized data. Example fields like: Date: ‘Mar-2021’,’Feb-2020’ etc.
+    8.3 Time : For time axis where you want to show continuous time data.
+    
+  **9. Y-Axis Dimension** : This should be the fieldname of value you want to show on chart. It should be exactly same as it is in response of API.
   
- **10.Legend**: User can select the shape of legend from here.
-  **11.Slider Zoom**: This is like pinch zoom we have in phones. User can zoom in to see large datasets in detail.
-   **12.Box Zoom**: This is available in top-right corner if selected. User has to select the zoom button and it would be highlighted in blue color and then user can make the selection on chart and that area will be zoomed in. To go back to previous stage user needs to click on ‘Zoom Reset’ Button(available in top-right corner).
+  **10. X-Axis Rotate Labels** : In case the labels for x axis are lengthy , you can specify an input from -90 to 90.
+  
+  **11. Y-Axis Rotate Labels** : In case the labels for y axis are lengthy , you can specify an input from -90 to 90.
+  
+  **12. Legend** : User can select the shape of legend from here.
+  
+  **13. Slider Zoom** : This is like pinch zoom we have in phones. User can zoom in to see large datasets in detail.
+  
+  **14. Box Zoom** : This is available in top-right corner if selected. User has to select the zoom button and it would be highlighted in blue color and then user can make the selection on chart and that area will be zoomed in. To go back to previous stage user needs to click on ‘Zoom Reset’ Button(available in top-right corner).
+  
+  **15. Chart Color** : You can specify color in input box or you can use color picker.
 
 ------------------------------
 
 ##**Aggregation Utility**
 
 Widget also provides aggregation functions as below:
+
 **Dimension**: Specify the numerical dimension name.
 
 **Method** : Select one of the method from dropdown.
