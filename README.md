@@ -35,7 +35,7 @@ The Smart E chart widget help you to display API and datahub response on a chart
   
 ### Runtime Widget Deployment?
 
-* This widget support runtime deployment. Download [Runtime Binary](https://github.com/SoftwareAG/cumulocity-smart-echart-widget/blob/main/runtime/dist/smart-echart-runtime-widget-2.0.0.zip) and use Application-builder to install your widget.
+* This widget support runtime deployment. Download [Runtime Binary](https://github.com/SoftwareAG/cumulocity-smart-echart-widget/releases/download/v1.0.0/smart-echart-runtime-widget-1.0.0.zip) and use Application-builder to install your widget.
   
 
 ### Installation of widget through Appbuilder
@@ -85,14 +85,14 @@ The Smart E chart widget help you to display API and datahub response on a chart
     npm i echarts@^5.2.1 echarts-simple-transform@^1.0.0 juggle/resize-observer@^3.3.1 ngx-bootstrap@6.2.0 ngx-echarts@^7.1.0 
 
     ```
-2. Grab the Smart E Chart **[Latest Release Binary](https://github.com/SoftwareAG/cumulocity-data-points-map-widget/releases/download/1.0.0/gp-data-points-map-1.0.0.tgz)**.
+2. Grab the Smart E Chart **[Latest Release Binary](https://github.com/SoftwareAG/cumulocity-smart-echart-widget/releases/download/v1.0.0/gp-smart-echart-widget-1.0.0.tgz)**.
 
 
 3. Install the Binary file in app builder.
 
     ```
     
-    npm i <binary file path>/gp-data-points-map-x.x.x.tgz
+    npm i <binary file path>/gp-smart-echart-widget-1.0.0.tgz
 
     ```
 
