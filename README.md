@@ -1,4 +1,4 @@
-
+  
 
   
 
@@ -282,18 +282,23 @@ NOTE : In Simple charts, X-Axis can be category or value type and Y-Axis can be 
     5.2 Bar Chart : For Simple Bar, Only single value in Y-Axis Dimension.
     For Stacked Bar, Comma separated values in Y-Axis Dimension.For Simple Horizontal Bar, Only single value in X-Axis Dimension.For Stacked Horizontal Bar, Comma separated values in X-Axis Dimension.
     5.3 Pie Chart : It can be a simple pie chart or a rose pie chart.Some value of pie chart are:
-	    PieSliceValue : The numerical axis
+		  PieSliceValue : The numerical axis
 		  PieSliceName : Can be same as PieSliceValue or can be a category axis.
-		  Pie Radius : Mandatory. should be in <num>%,<num>% format.
+		  Pie Radius : Mandatory.Should be in <num> or <num>% or <num><num> or <num>%<num>% format.
 		  Border radius : optional. Specifies the radius of pie slice.
 		  Border width : optional. Specifies the width of pie slice.
     5.4 Scatter Chart : It can be simple scatter chart or horizontal scatter chart with category on Y-Axis.
-		Bubble Size : Mandatory.Specifies the size of scatter bubble.
-	5.5 Polar Chart : It can be a Line polar or Bar Polar chart.
-		NOTE: X and Y axis dimension both are value types.Therefore, the fields should be numerical data.
+		  Bubble Size : Mandatory.Specifies the size of scatter bubble.
+	5.5 Polar Chart : It can be a Line polar or Bar Polar chart or Angle Axis or Radius Axis Polar chart.
+		  Angle Axis and Radius axis is usually used when x axis is of category type like date,days etc.
+		  PolarChartRadius : Mandatory. Should be in <num> or <num>% or <num><num> or <num>%<num>% format.
+		NOTE: X axis dimension type can be either category or value.
 	5.6 Radar Chart : Here the 
 		  X Axis dimension : can be numerical or category.Example: Sales or Name.This basically plots the box of radar.
 		  Radar Dimensions : are the numerical fields which are plotted inside the radar box.
+		  Radar Chart Radius : Mandatory. Should be in <num> or <num>% or <num><num> or <num>%<num>% format.
+	NOTE : Radius can be a double numbers or single.In double number first number specifies the inside circle and second specifies the ourside radius.
+	If you specify radius in percentage then it will be with respect to viewport size of chart container.
 
 **6. X-Axis Type** : This has three options :
 
