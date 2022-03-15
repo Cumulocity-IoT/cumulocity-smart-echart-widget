@@ -16,11 +16,9 @@
  * limitations under the License.
  */
 import { Component, EventEmitter, Input, OnInit, Output, Pipe } from '@angular/core';
-import { config } from 'process';
 import { AggregateData, ChartConfig, Stack } from '../model/config.modal';
 const chartValues = {
   chartType: [
-
     {
       id: 'bar',
       value: 'Bar Chart'
@@ -70,6 +68,14 @@ const chartValues = {
         {
           id: 'bar',
           value: 'Bar'
+        },
+        {
+          id: 'angleAxisBar',
+          value: 'Angle Axis Polar'
+        },
+        {
+          id: 'radiusAxisBar',
+          value: 'Radius Axis Bar'
         }
       ]
     },
@@ -131,7 +137,6 @@ const chartValues = {
       id: 'category',
       value: 'Category',
       disabled: false
-
     },
     {
       id: 'time',
@@ -139,7 +144,6 @@ const chartValues = {
       disabled: false
     }
   ],
-
   xAxisType: [
     {
       id: 'value',
@@ -150,7 +154,6 @@ const chartValues = {
       id: 'category',
       value: 'Category',
       disabled: false
-
     },
     {
       id: 'time',
@@ -229,8 +232,6 @@ const chartValues = {
   templateUrl: './smart-chart-config.component.html',
   styleUrls: ['./smart-chart-config.component.css']
 })
-
-
 export class SmartChartConfigComponent implements OnInit {
   constructor() { }
   flag = false;
@@ -251,7 +252,6 @@ export class SmartChartConfigComponent implements OnInit {
     fontSize: 12,
     xAxisRotateLabels: 0,
     yAxisRotateLabels: 0,
-    area: false,
     yAxisDimension: '',
     radarDimensions: '',
     addStack: false,
@@ -270,13 +270,16 @@ export class SmartChartConfigComponent implements OnInit {
   chartData = chartValues;
   chartLayoutData;
   aggregationMethods;
-
   isGroupByInAggregate = false;
   isAggrAdded = false;
   @Output() configData: EventEmitter<any> = new EventEmitter();
   ngOnInit(): void {
     this.aggregationMethods = chartValues.aggregateMethod;
-    this.config.aggrList = [];
+    if(this.config.aggrList.length===0){
+      this.config.aggrList = [];
+    }else {
+      this.isAggrAdded = true;
+    }
     this.config.legend = {};
     // Default value for datahub sql query
     if (this.config.datahubUrl === null || this.config.datahubUrl === undefined) {
@@ -287,9 +290,10 @@ export class SmartChartConfigComponent implements OnInit {
     }
     // To initialize the chart layout dropdown
     this.onSelection(this.config.type);
+    if (this.config.hasArea !== '') {
+      this.config.area = false;
+    }
   }
-
-
   // add another stack to the stackList
   // if stackList is empty, add total to the stackList
   // if stackList is not empty, add another stack to the stackList
@@ -305,23 +309,19 @@ export class SmartChartConfigComponent implements OnInit {
   // called when Y Axis Dimension is updated
   yAxisDimensionUpdate(val) {
   }
-
   // Delete a stack entry for stack data chart
   deleteStackValue(stack, index) {
     this.config.stackList.splice(index, 1);
   }
-
   // Add a stack entry for stack data chart
   addAnotherStack() {
     this.config.stackList.push(new Stack());
   }
-
   // Add an aggregate method
   addAnotherAggregate() {
     this.isAggrAdded = true;
     this.config.aggrList.push(new AggregateData());
   }
-
   // Delete Aggregate Method
   deleteAggrValue(aggr, index) {
     this.config.aggrList.splice(index, 1);
@@ -329,13 +329,11 @@ export class SmartChartConfigComponent implements OnInit {
       this.isAggrAdded = false;
     }
   }
-
   // Update the colors input from color picker
   colorUpdate(colorSelected) {
     this.userSelectedColor = [...this.userSelectedColor, colorSelected];
     this.config.colors = this.userSelectedColor.join(',')
   }
-
   // Update the colors input from color input box
   colorUpdateByTyping(colorTyped) {
     const joinedArr = [...this.userSelectedColor, ...colorTyped.split(',')];
@@ -349,7 +347,13 @@ export class SmartChartConfigComponent implements OnInit {
       }
     })
     this.config.addStack = false;
-
+    if (value === 'polar') {
+      for (const val of this.chartData.xAxisType) {
+        if (val.id === 'time') {
+          val.disabled = true;
+        }
+      }
+    }
   }
   // On selection of a chart layout,enable/disable certain dimension type
   onLayoutSelection(value) {
@@ -377,23 +381,19 @@ export class SmartChartConfigComponent implements OnInit {
       }
     }
   }
-
   // Set the flag based on datasource
   dataSourceSelection(value) {
     if (value === 'API') {
       this.config.showApiInput = true;
       this.config.showDatahubInput = false;
-
     } else if (value === 'datahub') {
       this.config.showDatahubInput = true;
       this.config.showApiInput = false;
-
     } else {
       this.config.showApiInput = false;
       this.config.showDatahubInput = false;
     }
   }
-
   // This code is commented as it is needed for localhost testing.
   // if onSelection, onLayoutSelection, dataSourceSelection is called, then submit data and emit config
   // SubmitData() {
@@ -409,18 +409,14 @@ export class SmartChartConfigComponent implements OnInit {
   //       this.config.area = {};
   //     } else {
   //       this.config.area = {
-  //         'opacity': this.config.areaOpacity
+  //         opacity: this.config.areaOpacity
   //       };
   //     }
-
-
   //   } else {
   //     this.config.area = null;
   //   }
   //   if (!this.isGroupByInAggregate) {
   //     this.configData.emit(this.config);
   //   }
-
   // }
-
 }

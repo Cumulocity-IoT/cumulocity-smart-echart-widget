@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef,  Input, OnDestroy, OnInit,  ViewChild } from '@angular/core';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
 import { ChartConfig } from './model/config.modal';
@@ -34,7 +34,7 @@ import { element } from 'protractor';
   templateUrl: './gp-smart-echart-widget.component.html',
   styles: ['gp-smart-echart-widget.component.css']
 })
-export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
+export class GpSmartEchartWidgetComponent implements OnInit, OnDestroy {
   @ViewChild('chartBox', { static: true }) protected mapDivRef: ElementRef;
   @Input() config: ChartConfig;
   serviceData;
@@ -82,19 +82,16 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
     this.dataChart.showLoading();
     this.createChart(userInput);
   }
-
   // createChart function is used to create chart with the help of echart library
   async createChart(userInput?: ChartConfig) {
     if (userInput.showApiInput || userInput.showDatahubInput) {
       let chartsessionData = [];
       if (this.getDataFromSessionStorage('Chartsession')) {
-
         chartsessionData = JSON.parse(sessionStorage.getItem('Chartsession'));
-
         let matchingURL = false;
         chartsessionData.forEach((dataElement, index) => {
           if ((userInput.apiUrl === dataElement.url) || (userInput.datahubUrl === dataElement.url)) {
-            if(userInput.showApiInput){
+            if (userInput.showApiInput) {
               this.isDatahubPostCall = false;
             } else {
               this.isDatahubPostCall = true;
@@ -111,10 +108,7 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
             //  Service call for E chart
             if (userInput.showApiInput) {
               this.serviceData = await this.chartService.getAPIData(userInput.apiUrl).toPromise();
-
               if (this.serviceData != null) {
-
-
                 getDataFromSession.push({ response: this.serviceData, url: userInput.apiUrl });
                 sessionStorage.setItem('Chartsession', JSON.stringify(getDataFromSession));
                 sessionStorage.setItem('serviceRunning', JSON.stringify('false'));
@@ -131,7 +125,6 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
               })
               this.serviceData = await response.json();
               this.isDatahubPostCall = true;
-
               if (this.serviceData != null) {
                 getDataFromSession.push({ response: this.serviceData, url: userInput.datahubUrl });
                 sessionStorage.setItem('Chartsession', JSON.stringify(getDataFromSession));
@@ -153,7 +146,7 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
         if (userInput.showApiInput) {
           this.serviceData = await this.chartService.getAPIData(userInput.apiUrl).toPromise();
           if (this.serviceData !== null) {
-            temp.push({ response: this.serviceData, url: this.config.apiUrl });
+            temp.push({ response: this.serviceData, url: userInput.apiUrl });
             this.setDataInSessionStorage('Chartsession', temp);
             this.setDataInSessionStorage('serviceRunning', 'false');
           }
@@ -169,10 +162,8 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
           })
           this.serviceData = await response.json();
           this.isDatahubPostCall = true;
-
           if (this.serviceData !== null) {
-
-            temp.push({ response: this.serviceData, url: this.config.datahubUrl });
+            temp.push({ response: this.serviceData, url: userInput.datahubUrl });
             this.setDataInSessionStorage('Chartsession', temp);
             this.setDataInSessionStorage('serviceRunning', 'false');
           }
@@ -195,18 +186,18 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
       } else {
         axisFontSize = userInput.fontSize;
       }
-      if (userInput.area === true) {
+      if (userInput.hasArea === true) {
         if (userInput.areaOpacity == null) {
           userInput.area = {};
         } else {
           userInput.area = {
-            opacity : userInput.areaOpacity
+            opacity: userInput.areaOpacity
           };
         }
       } else {
         userInput.area = null;
       }
-     if (userInput.aggrList.length === 0 && !this.isDatahubPostCall) {
+      if (userInput.aggrList.length === 0 && !this.isDatahubPostCall) {
         // calls for API without Aggregation
         if (userInput.type === 'pie') {
           this.seriesData = this.getPieChartSeriesData(userInput);
@@ -248,7 +239,49 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
         }
         // End of piechart for API
         else if (userInput.type === 'polar') {
-          this.seriesData = this.getPolarChartSeriesData(userInput);
+          const convradius = this.getRadius(userInput.polarChartRadius);
+          let chartType = '';
+          let angleAxisObject;
+          let radiusAxisObject;
+          if (userInput.layout === 'bar' || userInput.layout === 'line') {
+            if (userInput.layout === 'bar') {
+              chartType = 'bar';
+            }
+            if (userInput.layout === 'line') {
+              chartType = 'line';
+            }
+            angleAxisObject = {
+              type: 'value',
+              startAngle: 0
+            };
+            radiusAxisObject = {
+              min: 0
+            };
+          } else if (userInput.layout === 'angleAxisBar') {
+            chartType = 'bar';
+            angleAxisObject = {
+              type: 'category',
+              data: this.serviceData[userInput.listName].map((item) => {
+                return item[userInput.xAxisDimension];
+              })
+            };
+            radiusAxisObject = {
+              min: 0
+            };
+          } else {
+            chartType = 'bar';
+            angleAxisObject = {
+            };
+            radiusAxisObject = {
+              min: 0,
+              type: 'category',
+              data: this.serviceData[userInput.listName].map((item) => {
+                return item[userInput.xAxisDimension];
+              }),
+              z: 10
+            };
+          }
+          this.seriesData = this.getPolarChartSeriesData(userInput, chartType);
           this.chartOption = {
             legend: {
               icon: userInput.legend.icon,
@@ -271,21 +304,19 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
               bottom: '15%',
               containLabel: true
             },
-            polar: {},
+            polar: {
+              radius: convradius
+            },
             tooltip: {
               trigger: 'axis',
               axisPointer: {
                 type: 'cross'
               },
-              confine: true
+              confine: true,
+              show: true,
             },
-            angleAxis: {
-              type: 'value',
-              startAngle: 0
-            },
-            radiusAxis: {
-              min: 0
-            },
+            angleAxis: angleAxisObject,
+            radiusAxis: radiusAxisObject,
             series: this.seriesData,
             toolbox: {
               feature: {
@@ -398,6 +429,7 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
           if (isDevMode()) { console.log('Scatter chart for API', this.chartOption) }
         } // End of Scatter Chart for API
         else if (userInput.type === 'radar') {
+          const convradius = this.getRadius(userInput.radarChartRadius);
           this.seriesData = this.getRadarSeriesData(userInput);
           this.chartOption = {
             legend: {
@@ -429,7 +461,7 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
               indicator: this.serviceData[userInput.listName].map((item) => {
                 return { name: item[userInput.xAxisDimension] };
               }),
-              radius: userInput.radarChartRadius
+              radius: convradius
             },
             series: this.seriesData,
             toolbox: {
@@ -860,7 +892,43 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
           if (dimensions.indexOf(userInput.groupBy) === -1) {
             dimensions.push(userInput.groupBy)
           }
-          encodeData = this.getEncodeData(userInput, datasetId, xDimensions, yDimensions);
+          let angleAxisObject;
+          let radiusAxisObject;
+          let chartType;
+          if (userInput.layout === 'bar' || userInput.layout === 'line') {
+            if (userInput.layout === 'bar') {
+              chartType = 'bar';
+            }
+            if (userInput.layout === 'line') {
+              chartType = 'line';
+            }
+            angleAxisObject = {
+              type: 'value',
+              startAngle: 0
+            };
+            radiusAxisObject = {
+              min: 0
+            };
+          } else if (userInput.layout === 'angleAxisBar') {
+            chartType = 'bar';
+            angleAxisObject = {
+              type: 'category',
+            };
+            radiusAxisObject = {
+              min: 0
+            };
+          } else {
+            chartType = 'bar';
+            angleAxisObject = {
+            };
+            radiusAxisObject = {
+              min: 0,
+              type: 'category',
+              z: 10
+            };
+          }
+          encodeData = this.getEncodeData(userInput, datasetId, xDimensions, yDimensions, chartType);
+          const convradius = this.getRadius(userInput.polarChartRadius);
           this.chartOption = {
             dataset: [
               {
@@ -881,14 +949,11 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
               bottom: '15%',
               containLabel: true
             },
-            angleAxis: {
-              type: 'value',
-              startAngle: 0
+            angleAxis: angleAxisObject,
+            radiusAxis: radiusAxisObject,
+            polar: {
+              radius: convradius
             },
-            radiusAxis: {
-              min: 0
-            },
-            polar: {},
             legend: {
               icon: userInput.legend.icon,
               width: 330,
@@ -914,6 +979,7 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
           if (isDevMode()) { console.log('Polar chart without Aggregation for Datahub', this.chartOption); }
         }  // End of Polar Chart Without Aggregation for Datahub
         else if (userInput.type === 'radar') {
+          const convradius = this.getRadius(userInput.radarChartRadius);
           dimensions = [...userInput.radarDimensions];
           this.seriesData = this.getRadarSeriesData(userInput);
           const indexOfXDimension = this.serviceData[0].indexOf(userInput.xAxisDimension);
@@ -942,7 +1008,7 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
             },
             radar: {
               indicator: indicatorData,
-              radius: userInput.radarChartRadius
+              radius: convradius
             },
             series: this.seriesData,
             toolbox: {
@@ -1301,7 +1367,43 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
               dimensions.push(userInput.groupBy)
             }
           }
-          encodeData = this.getEncodeData(userInput, datasetId, xDimensions, yDimensions);
+          let angleAxisObject;
+          let radiusAxisObject;
+          let chartType;
+          if (userInput.layout === 'bar' || userInput.layout === 'line') {
+            if (userInput.layout === 'bar') {
+              chartType = 'bar';
+            }
+            if (userInput.layout === 'line') {
+              chartType = 'line';
+            }
+            angleAxisObject = {
+              type: 'value',
+              startAngle: 0
+            };
+            radiusAxisObject = {
+              min: 0
+            };
+          } else if (userInput.layout === 'angleAxisBar') {
+            chartType = 'bar';
+            angleAxisObject = {
+              type: 'category',
+            };
+            radiusAxisObject = {
+              min: 0
+            };
+          } else {
+            chartType = 'bar';
+            angleAxisObject = {
+            };
+            radiusAxisObject = {
+              min: 0,
+              type: 'category',
+              z: 10
+            };
+          }
+          encodeData = this.getEncodeData(userInput, datasetId, xDimensions, yDimensions, chartType);
+          const convradius = this.getRadius(userInput.polarChartRadius);
           this.chartOption = {
             dataset: [
               {
@@ -1338,14 +1440,11 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
               bottom: '15%',
               containLabel: true
             },
-            angleAxis: {
-              type: 'value',
-              startAngle: 0
+            angleAxis: angleAxisObject,
+            radiusAxis: radiusAxisObject,
+            polar: {
+              radius: convradius
             },
-            radiusAxis: {
-              min: 0
-            },
-            polar: {},
             legend: {
               selected: { detail: false },
               type: 'scroll',
@@ -1395,18 +1494,39 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
     return a.trim();
   }
   // Get the Object structure for encode property of chart
-  getEncodeData(userInput, datasetId?, xDimensions?, yDimensions?) {
+  getEncodeData(userInput, datasetId?, xDimensions?, yDimensions?, chartType?) {
     if (userInput.type === 'polar') {
-      return [{
-        coordinateSystem: 'polar',
-        name: userInput.xAxisDimension,
-        type: userInput.layout,
-        showSymbol: true,
-        encode: {
+      let encodeObject; let objName;
+      if (userInput.xAxis === 'value') {
+        objName = userInput.xAxisDimension;
+        encodeObject = {
           radius: userInput.yAxisDimension,
           angle: userInput.xAxisDimension,
           tooltip: [userInput.yAxisDimension, userInput.xAxisDimension]
-        },
+        }
+      } else {
+        if (userInput.layout === 'angleAxisBar') {
+          objName = userInput.xAxisDimension;
+          encodeObject = {
+            radius: userInput.yAxisDimension,
+            angle: userInput.xAxisDimension,
+            tooltip: [userInput.yAxisDimension, userInput.xAxisDimension]
+          }
+        } else {
+          objName = userInput.yAxisDimension;
+          encodeObject = {
+            radius: userInput.xAxisDimension,
+            angle: userInput.yAxisDimension,
+            tooltip: [userInput.xAxisDimension, userInput.yAxisDimension]
+          }
+        }
+      }
+      return [{
+        coordinateSystem: 'polar',
+        name: objName,
+        type: chartType,
+        showSymbol: true,
+        encode: encodeObject,
         label: {
           show: userInput.showLabel
         },
@@ -1811,26 +1931,38 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
     }
   }
   // getPolarChartSeriesData function is used to create series data for polar chart
-  getPolarChartSeriesData(userInput) {
+  getPolarChartSeriesData(userInput, chartType) {
     const result = [];
-    this.serviceData[userInput.listName].map((item) => {
-      const currentResult = [];
-      currentResult.push(item[userInput.xAxisDimension]);
-      currentResult.push(item[userInput.yAxisDimension]);
-      result.push(currentResult);
-    });
+    let itemStyleObject = {};
+    if (userInput.xAxis === 'value') {
+      this.serviceData[userInput.listName].map((item) => {
+        const currentResult = [];
+        currentResult.push(item[userInput.xAxisDimension]);
+        currentResult.push(item[userInput.yAxisDimension]);
+        result.push(currentResult);
+      });
+      itemStyleObject = {
+        color: this.getChartItemColor(0)
+      }
+    } else {
+      this.serviceData[userInput.listName].map((item, index) => {
+        if (this.getChartItemColor(index) === '') {
+          result.push(item[userInput.yAxisDimension]);
+        } else {
+          result.push({ value: item[userInput.yAxisDimension], itemStyle: { color: this.getChartItemColor(index) } });
+        }
+      });
+    }
     return [{
       coordinateSystem: 'polar',
-      name: userInput.xAxisDimension,
-      type: userInput.layout,
+      name: userInput.yAxisDimension,
+      type: chartType,
       showSymbol: true,
       data: result,
       label: {
         show: userInput.showLabel
       },
-      itemStyle: {
-        color: this.getChartItemColor(0)
-      },
+      itemStyle: itemStyleObject,
       emphasis: {
         label: {
           show: true
@@ -1902,7 +2034,7 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
   // getPieChartSeriesData function is used to create series data for pie chart
   getPieChartSeriesData(userInput) {
     // convert comma separated string userInput.radius to array
-    const convradius = userInput.radius.split(',');
+    const convradius = this.getRadius(userInput.radius);
     let roseValue = ''; let sliceStyle;
     if (userInput.layout === 'roseMode') {
       roseValue = 'rose';
@@ -1963,6 +2095,13 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
         }
       }),
     }]
+  }
+  getRadius(radiusInput) {
+    if (radiusInput.split(',').length > 1) {
+      return radiusInput.split(',');
+    } else {
+      return radiusInput;
+    }
   }
   // getseriesdata recieves userinput and returns seriesdata
   // seriesdata is an array of objects
@@ -2087,7 +2226,7 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
   hexToRgb(hex) {
     // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
     const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    hex = hex.replace(shorthandRegex,  (m, r, g, b)=> {
+    hex = hex.replace(shorthandRegex, (m, r, g, b) => {
       return r + r + g + g + b + b;
     });
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -2182,7 +2321,6 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
       sessionStorage.removeItem('serviceRunning');
     }
   }
-
   // Event called on resize of chart box
   onResized(event: ResizedEvent) {
     this.width = event.newWidth;
@@ -2193,6 +2331,5 @@ export class GpSmartEchartWidgetComponent implements OnInit,OnDestroy {
         height: this.height
       });
     }
-
   }
 }

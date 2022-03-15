@@ -19,7 +19,7 @@
             </label>
         </div>
         <div class="col-xs-2 col-md-2"></div>
-        <div class="col-xs-4 col-md-4 ">
+        <div class="col-xs-4 col-md-4 " *ngIf="config.showApiInput">
             <label for="listname">List Name</label>
             <input type="text" class="form-control" name="listname" [(ngModel)]="config.listName">
         </div>
@@ -104,9 +104,14 @@
             <input class="form-control" name="yAxisDimension" type="text" [(ngModel)]="config.yAxisDimension"
                 (change)="yAxisDimensionUpdate(config.yAxisDimension)">
         </div>
-    </div>
-    <div class="row " *ngIf="config.type!=='pie' && config.type!=='polar'">
         <div class="col-xs-3 col-md-3">
+            <label for="PolarRadius">Polar Chart radius</label>
+            <input class="form-control" name="PolarRadius" type="text" [(ngModel)]="config.polarChartRadius"
+                placeholder="40% or 10%,40%">
+        </div>
+    </div>
+    <div class="row " *ngIf="config.type!=='pie'">
+        <div class="col-xs-3 col-md-3" >
             <label for="xAxisType">X-Axis Type</label>
             <div class="c8y-select-wrapper">
                 <select id="selectExample" class="form-control" name="xAxisType" [(ngModel)]="config.xAxis">
@@ -116,7 +121,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-xs-3 col-md-3">
+        <div class="col-xs-3 col-md-3" *ngIf="config.type!=='polar'">
             <label for="xAxisDimension">X-Axis Dimension</label>
             <input class="form-control" name="url" type="text" [(ngModel)]="config.xAxisDimension">
         </div>
@@ -164,7 +169,8 @@
         </div>
         <div class="col-xs-3 col-md-3">
             <label for="RadarRadius">Radar Chart radius</label>
-            <input class="form-control" name="RadarRadius" type="text" [(ngModel)]="config.radarChartRadius">
+            <input class="form-control" name="RadarRadius" type="text" [(ngModel)]="config.radarChartRadius"
+                placeholder="40% or 10%,40%">
         </div>
     </div>
     <!-- End of Radar config -->
@@ -176,7 +182,8 @@
     <div class="row form-group">
         <div class="col-xs-3 col-md-3">
             <label for="radius">Pie Radius</label>
-            <input class="form-control" name="radius" type="text" placeholder="0%,100%" [(ngModel)]="config.radius">
+            <input class="form-control" name="radius" type="text" placeholder="40% or 10%,40%"
+                [(ngModel)]="config.radius">
         </div>
         <div class="col-xs-3 col-md-3">
             <label for="pieBorderRadius">Border Radius</label>
@@ -260,7 +267,7 @@
         <div class="col-xs-3 col-md-3">
             <br />
             <label title="Area" class="c8y-checkbox" style="height: 35px;">
-                <input type="checkbox" value="true" [(ngModel)]="config.area">
+                <input type="checkbox" value="true" [(ngModel)]="config.hasArea">
                 <span></span>
                 <span>Area</span>
             </label>
@@ -283,7 +290,8 @@
     <h4 translate>Aggregate Config</h4>
     <div class="col-xs-3 col-md-3">
         <label for="aggregation">Aggregate Method</label>
-        <button style="margin-left: 10px;" type="button" class="btn btn-primary btn-xs" (click)="addAnotherAggregate()">+</button>
+        <button style="margin-left: 10px;" type="button" class="btn btn-primary btn-xs"
+            (click)="addAnotherAggregate()">+</button>
     </div>
     <div class="col-xs-12 col-md-12 col-lg-12">
         <ng-container *ngFor="let item of config.aggrList;let i = index">

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export interface ChartConfig {
+ export interface ChartConfig {
     radius: string[];
     tooltip?: Tooltip;
     legend?: Legend;
@@ -61,7 +61,9 @@ export interface ChartConfig {
     pieBorderRadius?:number|0;
     colors?:string | '';
     areaOpacity?: string | '';
+    hasArea?: any | '';
     radarChartRadius?:number|'';
+    polarChartRadius?:number|'';
     fontSize?:number|'';
     xAxisRotateLabels?:number;
     yAxisRotateLabels?:number;
