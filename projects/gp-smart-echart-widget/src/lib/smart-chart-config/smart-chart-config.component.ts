@@ -275,7 +275,7 @@ export class SmartChartConfigComponent implements OnInit {
   @Output() configData: EventEmitter<any> = new EventEmitter();
   ngOnInit(): void {
     this.aggregationMethods = chartValues.aggregateMethod;
-    if(this.config.aggrList.length===0){
+    if(!this.config.aggrList){
       this.config.aggrList = [];
     }else {
       this.isAggrAdded = true;
