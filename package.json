@@ -1,6 +1,6 @@
 {
   "name": "gp-smart-echart-widget",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "This is an Angular 11 widget, which is designed to display the chart based on the REST data or Datahub.",
   "author": "Neeru Arora - Software AG, Global Presales",
   "license": "Apache 2.0",
@@ -35,7 +35,7 @@
     "@juggle/resize-observer": "^3.3.1",
     "angular-resize-event": "^2.1.0",
     "echarts-simple-transform": "^1.0.0",
-    "echarts522": "npm:echarts@^5.2.2",
+    "echarts": "^5.2.2",
     "ngx-bootstrap": "6.2.0",
     "ngx-echarts": "^7.1.0",
     "rxjs": "~6.6.3",

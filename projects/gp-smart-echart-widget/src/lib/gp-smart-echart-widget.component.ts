@@ -16,8 +16,8 @@
  * limitations under the License.
  */
 import { Component, ElementRef,  Input, OnDestroy, OnInit,  ViewChild } from '@angular/core';
-import * as echarts from 'echarts522';
-import { EChartsOption } from 'echarts522';
+import * as echarts from 'echarts';
+import { EChartsOption } from 'echarts';
 import { ChartConfig } from './model/config.modal';
 import { GpSmartEchartWidgetService } from './gp-smart-echart-widget.service';
 import { isDevMode } from '@angular/core';
@@ -236,7 +236,6 @@ export class GpSmartEchartWidgetComponent implements OnInit, OnDestroy {
             }
           }
           if (isDevMode()) { console.log('Pie Chart For API', this.chartOption); }
-          console.log('Pie Chart For API', this.chartOption);
         }
         // End of piechart for API
         else if (userInput.type === 'polar') {
@@ -556,7 +555,6 @@ export class GpSmartEchartWidgetComponent implements OnInit, OnDestroy {
             }
           };
           if (isDevMode()) { console.log('Simple bar or line chart for API', this.chartOption); }
-          console.log('Simple bar or line chart for API', this.chartOption);
         }
         // End of Simple Line,Simple Bar,Stacked Line And Stacked Bar for API
         else if (userInput.type === 'bar' && (userInput.layout === 'simpleHorizontalBar' || userInput.layout === 'stackedHorizontalBar')) {
@@ -1190,7 +1188,6 @@ export class GpSmartEchartWidgetComponent implements OnInit, OnDestroy {
             series: encodeData
           };
           if (isDevMode()) { console.log('Aggregate Bar or Line chart', this.chartOption); }
-          console.log('Aggregate Bar or Line chart', this.chartOption);
         } // End of Bar,Line Chart with Aggregation for datahub and API
         else if (userInput.type === 'scatter') {
           if (this.isDatahubPostCall) {
@@ -1364,7 +1361,6 @@ export class GpSmartEchartWidgetComponent implements OnInit, OnDestroy {
             series: encodeData
           };
           if (isDevMode()) { console.log('Aggregate Pie chart', this.chartOption); }
-          console.log('Aggregate Pie chart', this.chartOption);
         } // End of Pie Chart with Aggregation for datahub and API
         else if (userInput.type === 'polar') {
           let yDimensions; let xDimensions;

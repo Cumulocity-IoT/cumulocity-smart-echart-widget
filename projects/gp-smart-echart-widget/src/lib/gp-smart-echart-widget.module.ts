@@ -22,7 +22,7 @@ import * as preview from './preview-image';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { SmartChartConfigComponent } from './smart-chart-config/smart-chart-config.component';
 import { GpSmartEchartWidgetService } from './gp-smart-echart-widget.service';
-import * as echarts from 'echarts522';
+import * as echarts from 'echarts';
 import { AngularResizedEventModule } from 'angular-resize-event';
 
 
