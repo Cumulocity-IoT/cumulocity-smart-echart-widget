@@ -475,6 +475,12 @@ export class GpSmartEchartWidgetComponent implements OnInit, OnDestroy {
         else if ((userInput.type === 'line' || userInput.type === 'bar')
           && (userInput.layout !== 'simpleHorizontalBar' && userInput.layout !== 'stackedHorizontalBar')) {
           this.seriesData = this.getSeriesData(userInput);
+          let boundaryGapValue;
+          if(userInput.type==='line'){
+            boundaryGapValue = false;
+          }else {
+            boundaryGapValue = true;
+          }
           let xAxisName; let yAxisName;
           if (userInput.xAxisDimension.split(',').length > 1) {
             xAxisName = ''
@@ -521,7 +527,7 @@ export class GpSmartEchartWidgetComponent implements OnInit, OnDestroy {
                 return item[userInput.xAxisDimension];
               }),
               type: this.getXAxisType(userInput),
-              boundaryGap: false,
+              boundaryGap: boundaryGapValue,
               axisLabel: {
                 interval: 0,
                 fontSize: axisFontSize,
@@ -671,6 +677,12 @@ export class GpSmartEchartWidgetComponent implements OnInit, OnDestroy {
             dimensions.push(userInput.groupBy)
           }
           encodeData = this.getEncodeData(userInput, datasetId, xDimensions, yDimensions);
+          let boundaryGapValue;
+          if(userInput.type==='line'){
+            boundaryGapValue = false;
+          }else {
+            boundaryGapValue = true;
+          }
           this.chartOption = {
             dataset: [
               {
@@ -688,7 +700,7 @@ export class GpSmartEchartWidgetComponent implements OnInit, OnDestroy {
             xAxis: {
               scale: true,
               type: this.getXAxisType(userInput),
-              boundaryGap: false,
+              boundaryGap: boundaryGapValue,
               axisLabel: {
                 interval: 0,
                 fontSize: axisFontSize,
@@ -1084,6 +1096,12 @@ export class GpSmartEchartWidgetComponent implements OnInit, OnDestroy {
             }
           }
           encodeData = this.getEncodeData(userInput, datasetId, xDimensions, yDimensions);
+          let boundaryGapValue;
+          if(userInput.type==='line'){
+            boundaryGapValue = false;
+          }else {
+            boundaryGapValue = true;
+          }
           this.chartOption = {
             dataset: [
               {
@@ -1120,7 +1138,7 @@ export class GpSmartEchartWidgetComponent implements OnInit, OnDestroy {
               nameGap: 30,
               scale: true,
               type: this.getXAxisType(userInput),
-              boundaryGap: false,
+              boundaryGap: boundaryGapValue,
               axisLabel: {
                 interval: 0,
                 fontSize: axisFontSize,
