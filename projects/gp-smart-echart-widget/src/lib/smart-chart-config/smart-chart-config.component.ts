@@ -346,16 +346,32 @@ export class SmartChartConfigComponent implements OnInit {
   }
   // On selection of a chart type, bind the corresponding layout values to input dropdown on UI
   onSelection(value) {
-    this.chartData.chartLayout.filter(val => {
-      if (value === val.id) {
-        this.chartLayoutData = val.layout;
+    if (sessionStorage.getItem('chartType')) {
+      if (this.config.type !== sessionStorage.getItem('chartType')) {
+        sessionStorage.setItem('chartType', this.config.type);
+        this.chartData.chartLayout.filter(val => {
+          if (value === val.id) {
+            this.chartLayoutData = val.layout;
+            console.log(val);
+            this.config.layout = val.layout[0].id;
+          }
+        });
+      }else {
+        this.chartData.chartLayout.filter(val => {
+          console.log(val);
+          if (value === val.id) {
+            this.chartLayoutData = val.layout;
+            return;
+          }
+        });
       }
-    });
+    }else {
+      sessionStorage.setItem('chartType', this.config.type);
+    }
     if (this.config.type === 'bar' || this.config.type === 'line') {
     } else {
       this.config.addStack = false;
       this.config.stackList.length = 0;
-
     }
     if (value === 'polar') {
       for (const val of this.chartData.xAxisType) {
@@ -368,13 +384,11 @@ export class SmartChartConfigComponent implements OnInit {
   // On selection of a chart layout,enable/disable certain dimension type
   onLayoutSelection(value) {
     if (value === 'stackedBar' || value === 'stacked') {
-
     } else {
       this.config.addStack = false;
       this.config.stackList.length = 0;
     }
     if (value === 'simpleBar' || value === 'stackedBar' || value === 'simple' || value === 'stacked' || value === 'simpleScatter') {
-
       for (const val of this.chartData.yAxisType) {
         if (val.id === 'category') {
           val.disabled = true;
