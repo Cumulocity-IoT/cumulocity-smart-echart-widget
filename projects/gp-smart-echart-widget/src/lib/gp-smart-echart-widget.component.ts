@@ -178,6 +178,9 @@ export class GpSmartEchartWidgetComponent implements OnInit, OnDestroy {
     } else {
       this.colorsForChart = [...userInput.colors.split(',')]
     }
+    if (!userInput.aggrList) {
+      userInput.aggrList = [];
+    } 
     if (this.serviceData) {
       this.dataChart.hideLoading();
       let axisFontSize = 0;
@@ -1032,7 +1035,7 @@ export class GpSmartEchartWidgetComponent implements OnInit, OnDestroy {
           if (isDevMode()) { console.log('Radar Chart without Aggregation for Datahub', this.chartOption); }
         } // End of Radar Chart without Aggregation for Datahub
       } // ENd of Datahub Calls Response without Aggregation
-      else if (userInput.aggrList.length > 0) {
+      else if (userInput.aggrList && userInput.aggrList.length > 0) {
         // calls for API & Datahub with Aggregation
         echarts.registerTransform(simpleTransform.aggregate);
         const resultDimension = this.getResultDimesions(userInput.aggrList, userInput.groupBy);

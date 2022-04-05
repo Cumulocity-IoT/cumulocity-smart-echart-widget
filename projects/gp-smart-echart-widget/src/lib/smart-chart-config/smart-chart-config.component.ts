@@ -352,13 +352,11 @@ export class SmartChartConfigComponent implements OnInit {
         this.chartData.chartLayout.filter(val => {
           if (value === val.id) {
             this.chartLayoutData = val.layout;
-            console.log(val);
             this.config.layout = val.layout[0].id;
           }
         });
       }else {
         this.chartData.chartLayout.filter(val => {
-          console.log(val);
           if (value === val.id) {
             this.chartLayoutData = val.layout;
             return;
