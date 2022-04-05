@@ -9,7 +9,7 @@
   "manifest": {
     "noAppSwitcher": true,
     "requiredPlatformVersion": ">=1011.0.0",
-    "version":"1.2.0",
+    "version":"1.2.1",
     "author":"Software AG, Global Presales",
     "description": "This is an Angular 11 widget, which is designed to display the chart based on the REST data or Datahub.",
     "license": "Apache 2.0"

@@ -254,7 +254,7 @@ export class SmartChartConfigComponent implements OnInit {
     yAxisRotateLabels: 0,
     yAxisDimension: '',
     radarDimensions: '',
-    addStack: false,
+    // addStack: false,
     showApiInput: false,
     stack: [],
     stackList: Stack[''],
@@ -275,9 +275,9 @@ export class SmartChartConfigComponent implements OnInit {
   @Output() configData: EventEmitter<any> = new EventEmitter();
   ngOnInit(): void {
     this.aggregationMethods = chartValues.aggregateMethod;
-    if(!this.config.aggrList){
+    if (!this.config.aggrList) {
       this.config.aggrList = [];
-    }else {
+    } else {
       this.isAggrAdded = true;
     }
     this.config.legend = {};
@@ -298,11 +298,13 @@ export class SmartChartConfigComponent implements OnInit {
   // if stackList is empty, add total to the stackList
   // if stackList is not empty, add another stack to the stackList
   stackAdded(stack) {
-    this.config.stackList = [];
     if (stack) {
+      this.config.addStack = stack;
+      this.config.stackList = [];
       this.config.stackList.push(new Stack());
       this.config.stackList.push(new Stack());
     } else {
+      this.config.addStack = stack;
       this.config.stackList.length = 0;
     }
   }
@@ -312,6 +314,9 @@ export class SmartChartConfigComponent implements OnInit {
   // Delete a stack entry for stack data chart
   deleteStackValue(stack, index) {
     this.config.stackList.splice(index, 1);
+    if (this.config.stackList.length === 0) {
+      this.config.addStack = false;
+    }
   }
   // Add a stack entry for stack data chart
   addAnotherStack() {
@@ -341,12 +346,31 @@ export class SmartChartConfigComponent implements OnInit {
   }
   // On selection of a chart type, bind the corresponding layout values to input dropdown on UI
   onSelection(value) {
-    this.chartData.chartLayout.filter(val => {
-      if (value === val.id) {
-        this.chartLayoutData = val.layout;
+    if (sessionStorage.getItem('chartType')) {
+      if (this.config.type !== sessionStorage.getItem('chartType')) {
+        sessionStorage.setItem('chartType', this.config.type);
+        this.chartData.chartLayout.filter(val => {
+          if (value === val.id) {
+            this.chartLayoutData = val.layout;
+            this.config.layout = val.layout[0].id;
+          }
+        });
+      }else {
+        this.chartData.chartLayout.filter(val => {
+          if (value === val.id) {
+            this.chartLayoutData = val.layout;
+            return;
+          }
+        });
       }
-    })
-    this.config.addStack = false;
+    }else {
+      sessionStorage.setItem('chartType', this.config.type);
+    }
+    if (this.config.type === 'bar' || this.config.type === 'line') {
+    } else {
+      this.config.addStack = false;
+      this.config.stackList.length = 0;
+    }
     if (value === 'polar') {
       for (const val of this.chartData.xAxisType) {
         if (val.id === 'time') {
@@ -357,6 +381,11 @@ export class SmartChartConfigComponent implements OnInit {
   }
   // On selection of a chart layout,enable/disable certain dimension type
   onLayoutSelection(value) {
+    if (value === 'stackedBar' || value === 'stacked') {
+    } else {
+      this.config.addStack = false;
+      this.config.stackList.length = 0;
+    }
     if (value === 'simpleBar' || value === 'stackedBar' || value === 'simple' || value === 'stacked' || value === 'simpleScatter') {
       for (const val of this.chartData.yAxisType) {
         if (val.id === 'category') {

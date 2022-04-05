@@ -51,7 +51,7 @@
     radarDimensions?:string | '';
     showApiInput?: boolean;
     showDatahubInput?:boolean;
-    addStack: boolean,
+    addStack?: boolean,
     listName:string|'';
     groupBy?:string | '';
     xAxisName?:string | '';
