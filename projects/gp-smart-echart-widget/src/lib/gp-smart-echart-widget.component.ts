@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, ElementRef,  Input, OnDestroy, OnInit,  ViewChild } from '@angular/core';
+import { Component, ElementRef,  Input, OnInit,  ViewChild } from '@angular/core';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
 import { ChartConfig } from './model/config.modal';
@@ -28,13 +28,12 @@ import {
 } from '@c8y/client';
 import { extractValueFromJSON } from './util/extractValueFromJSON.util';
 import { ResizedEvent } from 'angular-resize-event';
-import { element } from 'protractor';
 @Component({
   selector: 'lib-gp-smart-echart-widget',
   templateUrl: './gp-smart-echart-widget.component.html',
   styles: ['gp-smart-echart-widget.component.css']
 })
-export class GpSmartEchartWidgetComponent implements OnInit, OnDestroy {
+export class GpSmartEchartWidgetComponent implements OnInit {
   @ViewChild('chartBox', { static: true }) protected mapDivRef: ElementRef;
   @Input() config: ChartConfig;
   serviceData;
@@ -180,7 +179,7 @@ export class GpSmartEchartWidgetComponent implements OnInit, OnDestroy {
     }
     if (!userInput.aggrList) {
       userInput.aggrList = [];
-    } 
+    }
     if (this.serviceData) {
       this.dataChart.hideLoading();
       let axisFontSize = 0;
@@ -2332,15 +2331,6 @@ export class GpSmartEchartWidgetComponent implements OnInit, OnDestroy {
         this.waitForServiceToComplete();
       }
     }, 2000);
-  }
-  // Clear the session storage items
-  ngOnDestroy() {
-    if (sessionStorage.getItem('Chartsession')) {
-      sessionStorage.removeItem('Chartsession');
-    }
-    if (sessionStorage.getItem('serviceRunning')) {
-      sessionStorage.removeItem('serviceRunning');
-    }
   }
   // Event called on resize of chart box
   onResized(event: ResizedEvent) {
