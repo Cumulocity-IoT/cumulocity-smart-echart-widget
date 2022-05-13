@@ -180,6 +180,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
     if (!userInput.aggrList) {
       userInput.aggrList = [];
     }
+    if (!userInput.stackList) {
+      userInput.stackList = [];
+    }
     if (this.serviceData) {
       this.dataChart.hideLoading();
       let axisFontSize = 0;

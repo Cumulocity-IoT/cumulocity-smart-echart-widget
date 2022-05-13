@@ -280,6 +280,11 @@ export class SmartChartConfigComponent implements OnInit {
     } else {
       this.isAggrAdded = true;
     }
+    if (!this.config.stackList) {
+      this.config.stackList = [];
+    } else {
+      this.config.addStack = true;
+    }
     this.config.legend = {};
     // Default value for datahub sql query
     if (this.config.datahubUrl === null || this.config.datahubUrl === undefined) {
@@ -355,7 +360,7 @@ export class SmartChartConfigComponent implements OnInit {
             this.config.layout = val.layout[0].id;
           }
         });
-      }else {
+      } else {
         this.chartData.chartLayout.filter(val => {
           if (value === val.id) {
             this.chartLayoutData = val.layout;
@@ -363,7 +368,7 @@ export class SmartChartConfigComponent implements OnInit {
           }
         });
       }
-    }else {
+    } else {
       sessionStorage.setItem('chartType', this.config.type);
     }
     if (this.config.type === 'bar' || this.config.type === 'line') {
