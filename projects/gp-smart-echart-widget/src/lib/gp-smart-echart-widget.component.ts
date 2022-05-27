@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, ElementRef,  Input, OnInit,  ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import * as echarts from 'echarts';
 import { EChartsOption } from 'echarts';
 import { ChartConfig } from './model/config.modal';
@@ -50,22 +50,128 @@ export class GpSmartEchartWidgetComponent implements OnInit {
   isDatahubPostCall = false;
   dataChart;
   colorsForChart;
+  // for dark mode
+  contrastColor = '#eee';
+  colorPalette = ['#dd6b66', '#759aa0', '#e69d87', '#8dc1a9', '#ea7e53', '#eedd78', '#73a373', '#73b9bc', '#7289ab', '#91ca8c', '#f49f42'];
+  darkTheme = {
+    color: this.colorPalette,
+    backgroundColor: '#333',
+    tooltip: {
+      axisPointer: {
+        lineStyle: {
+          color: this.contrastColor
+        },
+        crossStyle: {
+          color: this.contrastColor
+        }
+      }
+    },
+    legend: {
+      textStyle: {
+        color: this.contrastColor
+      }
+    },
+    textStyle: {
+      color: this.contrastColor
+    },
+    title: {
+      textStyle: {
+        color: this.contrastColor
+      }
+    },
+    toolbox: {
+      iconStyle: {
+        normal: {
+          borderColor: this.contrastColor
+        }
+      }
+    },
+    dataZoom: {
+      textStyle: {
+        color: this.contrastColor
+      }
+    },
+    timeline: {
+      lineStyle: {
+        color: this.contrastColor
+      },
+      itemStyle: {
+        normal: {
+          color: this.colorPalette[1]
+        }
+      },
+      label: {
+        normal: {
+          textStyle: {
+            color: this.contrastColor
+          }
+        }
+      },
+      controlStyle: {
+        normal: {
+          color: this.contrastColor,
+          borderColor: this.contrastColor
+        }
+      }
+    },
+    timeAxis: this.axisCommon(),
+    logAxis: this.axisCommon(),
+    valueAxis: this.axisCommon(),
+    categoryAxis: this.axisCommon(),
+    line: {
+      symbol: 'circle'
+    },
+    graph: {
+      color: this.colorPalette
+    },
+    gauge: {
+      title: {
+        textStyle: {
+          color: this.contrastColor
+        }
+      }
+    },
+    candlestick: {
+      itemStyle: {
+        normal: {
+          color: '#FD1050',
+          color0: '#0CF49B',
+          borderColor: '#FD1050',
+          borderColor0: '#0CF49B'
+        }
+      }
+    }
+  };
+  // end of variable for dark mode
   constructor(private chartService: GpSmartEchartWidgetService,
     private fetchClient: FetchClient,) { }
   ngOnInit(): void {
     this.chartDiv = this.mapDivRef.nativeElement;
     const sessionStorageData = this.getDataFromSessionStorage('Chartsession');
+    this.extractColorsForChart(this.config);
     if (sessionStorageData && sessionStorageData !== 'true') {
-      this.dataChart = echarts.init(this.chartDiv);
-      this.dataChart.showLoading();
+      if (!this.config.darkMode) {
+        this.dataChart = echarts.init(this.chartDiv);
+      } else {
+        this.dataChart = echarts.init(this.chartDiv, this.darkTheme);
+      }
+      this.dataChart.showLoading({ color: this.colorsForChart[0] });
       this.createChart(this.config);
     } else if (sessionStorageData === 'true') {
-      this.dataChart = echarts.init(this.chartDiv);
-      this.dataChart.showLoading();
+      if (!this.config.darkMode) {
+        this.dataChart = echarts.init(this.chartDiv);
+      } else {
+        this.dataChart = echarts.init(this.chartDiv, this.darkTheme);
+      }
+      this.dataChart.showLoading({ color: this.colorsForChart[0] });
       this.waitForServiceToComplete();
     } else {
-      this.dataChart = echarts.init(this.chartDiv);
-      this.dataChart.showLoading();
+      if (!this.config.darkMode) {
+        this.dataChart = echarts.init(this.chartDiv);
+      } else {
+        this.dataChart = echarts.init(this.chartDiv, this.darkTheme);
+      }
+      this.dataChart.showLoading({ color: this.colorsForChart[0] });
       this.createChart(this.config);
     }
   }
@@ -170,12 +276,6 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           if (isDevMode()) { console.log('No Datasource selected'); }
         }
       }
-    }
-    if (!userInput.colors) {
-      if (isDevMode()) { console.log('No colors Specified'); }
-      this.colorsForChart = [];
-    } else {
-      this.colorsForChart = [...userInput.colors.split(',')]
     }
     if (!userInput.aggrList) {
       userInput.aggrList = [];
@@ -481,9 +581,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           && (userInput.layout !== 'simpleHorizontalBar' && userInput.layout !== 'stackedHorizontalBar')) {
           this.seriesData = this.getSeriesData(userInput);
           let boundaryGapValue;
-          if(userInput.type==='line'){
+          if (userInput.type === 'line') {
             boundaryGapValue = false;
-          }else {
+          } else {
             boundaryGapValue = true;
           }
           let xAxisName; let yAxisName;
@@ -683,9 +783,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           }
           encodeData = this.getEncodeData(userInput, datasetId, xDimensions, yDimensions);
           let boundaryGapValue;
-          if(userInput.type==='line'){
+          if (userInput.type === 'line') {
             boundaryGapValue = false;
-          }else {
+          } else {
             boundaryGapValue = true;
           }
           this.chartOption = {
@@ -1102,9 +1202,9 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           }
           encodeData = this.getEncodeData(userInput, datasetId, xDimensions, yDimensions);
           let boundaryGapValue;
-          if(userInput.type==='line'){
+          if (userInput.type === 'line') {
             boundaryGapValue = false;
-          }else {
+          } else {
             boundaryGapValue = true;
           }
           this.chartOption = {
@@ -2345,5 +2445,53 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         height: this.height
       });
     }
+  }
+  extractColorsForChart(userInput) {
+    if (!userInput.colors) {
+      if (isDevMode()) { console.log('No colors Specified'); }
+      this.colorsForChart = [];
+    } else {
+      this.colorsForChart = [...userInput.colors.split(',')]
+    }
+  }
+  // For Dark Mode
+  axisCommon() {
+    return {
+      axisLine: {
+        lineStyle: {
+          color: this.contrastColor
+        }
+      },
+      axisTick: {
+        lineStyle: {
+          color: this.contrastColor
+        }
+      },
+      axisLabel: {
+        textStyle: {
+          color: this.contrastColor
+        }
+      },
+      splitLine: {
+        lineStyle: {
+          type: 'dashed',
+          color: '#aaa'
+        }
+      },
+      splitArea: {
+        areaStyle: {
+          color: this.contrastColor
+        }
+      }
+    };
+  };
+  toggleTheme() {
+    this.dataChart.dispose();
+    if (this.config.darkMode) {
+      this.dataChart = echarts.init(this.chartDiv);
+    } else {
+      this.dataChart = echarts.init(this.chartDiv, this.darkTheme);
+    }
+    this.dataChart.setOption(this.chartOption);
   }
 }

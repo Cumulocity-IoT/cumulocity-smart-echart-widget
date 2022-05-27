@@ -256,6 +256,7 @@ export class SmartChartConfigComponent implements OnInit {
     radarDimensions: '',
     // addStack: false,
     showApiInput: false,
+    darkMode: false,
     stack: [],
     stackList: Stack[''],
     aggrArr: [],
