@@ -2459,7 +2459,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
     return {
       axisLine: {
         lineStyle: {
-          color: this.contrastColor
+          color: '#6a7985'
         }
       },
       axisTick: {
