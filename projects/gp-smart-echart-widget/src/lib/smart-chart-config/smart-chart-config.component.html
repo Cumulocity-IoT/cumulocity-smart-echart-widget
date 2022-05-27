@@ -360,6 +360,7 @@
                 <span>Box Zoom</span>
             </label>
         </div>
+        
     </div>
     <div class="row">
         <div class="col-xs-3 col-md-3">
@@ -371,6 +372,14 @@
             <br />
             <input class="form-control" type="color" placeholder="Enter color HEX"
                 (change)="colorUpdate($event.target.value)">
+        </div>
+        <div class="col-xs-3 col-md-3">
+            <br />
+            <label title="DarkMode" class="c8y-checkbox" style="height: 35px;">
+                <input type="checkbox" value="false" [(ngModel)]="config.darkMode">
+                <span></span>
+                <span>Dark Mode</span>
+            </label>
         </div>
     </div>
 </div>

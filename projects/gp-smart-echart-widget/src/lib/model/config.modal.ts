@@ -69,6 +69,8 @@
     yAxisRotateLabels?:number;
     sqlLimit?:number;
     datahubUrl?:string;
+    darkMode?:boolean;
+
 }
 
 export class Emphasis{
