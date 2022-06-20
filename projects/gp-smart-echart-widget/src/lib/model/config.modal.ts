@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- export interface ChartConfig {
+export interface ChartConfig {
     radius: string[];
     tooltip?: Tooltip;
     legend?: Legend;
@@ -30,7 +30,7 @@
     yAxis?: string | '',
     yAxisDimension: string | '',
     apiUrl?: string | '',
-    sqlQuery?:string |'',
+    sqlQuery?: string | '',
     smoothLine?: boolean,
     area?: any | '',
     stackList: Stack[],
@@ -39,52 +39,53 @@
     aggrArr: AggregateData[],
     roseType?: string | '',
     showLabel?: boolean,
-    dateFormat?:string;
+    dateFormat?: string;
     itemStyle?: ItemStyle,
-    emphasis?:Emphasis;
-    sliderZoom?:boolean|'';
-    boxZoom?:boolean;
-    pieSlicenName?:string | '';
-    pieSliceValue?:string | '';
-    radarShape?:string | '';
-    radarIndicator?:string | '';
-    radarDimensions?:string | '';
+    emphasis?: Emphasis;
+    sliderZoom?: boolean | '';
+    boxZoom?: boolean;
+    pieSlicenName?: string | '';
+    pieSliceValue?: string | '';
+    radarShape?: string | '';
+    radarIndicator?: string | '';
+    radarDimensions?: string | '';
     showApiInput?: boolean;
-    showDatahubInput?:boolean;
+    showDatahubInput?: boolean;
+    showMicroserviceInput?: boolean;
     addStack?: boolean,
-    listName:string|'';
-    groupBy?:string | '';
-    xAxisName?:string | '';
-    yAxisName?:string | '';
-    scatterSymbolSize?:string;
-    pieBorderWidth?:number|0;
-    pieBorderRadius?:number|0;
-    colors?:string | '';
+    listName: string | '';
+    groupBy?: string | '';
+    xAxisName?: string | '';
+    yAxisName?: string | '';
+    scatterSymbolSize?: string;
+    pieBorderWidth?: number | 0;
+    pieBorderRadius?: number | 0;
+    colors?: string | '';
     areaOpacity?: string | '';
     hasArea?: any | '';
-    radarChartRadius?:number|'';
-    polarChartRadius?:number|'';
-    fontSize?:number|'';
-    xAxisRotateLabels?:number;
-    yAxisRotateLabels?:number;
-    sqlLimit?:number;
-    datahubUrl?:string;
-    darkMode?:boolean;
-
+    radarChartRadius?: number | '';
+    polarChartRadius?: number | '';
+    fontSize?: number | '';
+    xAxisRotateLabels?: number;
+    yAxisRotateLabels?: number;
+    sqlLimit?: number;
+    datahubUrl?: string;
+    darkMode?: boolean;
+    microserviceUrl?: string;
 }
 
-export class Emphasis{
-    label?:Label;
+export class Emphasis {
+    label?: Label;
 }
-export class Label{
-    show?:boolean;
+export class Label {
+    show?: boolean;
 }
-export class ItemStyle{
-    borderRadius?:number;
+export class ItemStyle {
+    borderRadius?: number;
 }
-export class YAxis{
+export class YAxis {
     ytype?: string;// 'value','category','time','log'
-    name?:string;// name of axis
+    name?: string;// name of axis
     position?: string;// left or right
 }
 export class Tooltip {
@@ -114,14 +115,14 @@ export class Toolbox {
     feature?: Feature;// 'plain' is default,'scroll' when many options are in legend
 }
 
-export class Stack{
+export class Stack {
     stackName: string;
-    stackValues:string;
+    stackValues: string;
 }
 
-export class AggregateData{
+export class AggregateData {
     aggrDimesnion: string;
-    aggrMethod:string;
+    aggrMethod: string;
 }
 
 export class Feature {

@@ -421,12 +421,19 @@ export class SmartChartConfigComponent implements OnInit {
     if (value === 'API') {
       this.config.showApiInput = true;
       this.config.showDatahubInput = false;
+      this.config.showMicroserviceInput = false;
     } else if (value === 'datahub') {
       this.config.showDatahubInput = true;
       this.config.showApiInput = false;
+      this.config.showMicroserviceInput = false;
+    }else if (value === 'microservice') {
+      this.config.showMicroserviceInput = true;
+      this.config.showApiInput = false;
+      this.config.showDatahubInput = false;
     } else {
       this.config.showApiInput = false;
       this.config.showDatahubInput = false;
+      this.config.showMicroserviceInput = false;
     }
   }
   // This code is commented as it is needed for localhost testing.
