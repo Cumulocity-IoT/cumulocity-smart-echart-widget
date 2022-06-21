@@ -18,6 +18,15 @@
                 <span>DataHub</span>
             </label>
         </div>
+        <div class="col-xs-2 col-md-2">
+            <label for="microservice" title="Microservice" class="c8y-radio radio-inline">
+                <input type="radio" id="microservice" name="dataSource" value="microservice"
+                    (change)="dataSourceSelection($event.target.value)" [(ngModel)]="config.dataSource"
+                    placeholder="Enter Relative URL">
+                <span></span>
+                <span>Microservice</span>
+            </label>
+        </div>
         <div class="col-xs-2 col-md-2"></div>
         <div class="col-xs-4 col-md-4 " *ngIf="config.showApiInput">
             <label for="listname">List Name</label>
@@ -48,6 +57,12 @@
             </div>
 
         </ng-container>
+        <ng-container *ngIf="config.showMicroserviceInput">
+            <div class="col-xs-6 col-md-6">
+                <input class="form-control" type="text" placeholder="API URL" [(ngModel)]="config.microserviceUrl">
+            </div>
+        </ng-container>
+        
     </div>
 </div>
 <div class="configSection">
