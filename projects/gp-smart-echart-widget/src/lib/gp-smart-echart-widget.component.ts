@@ -193,7 +193,8 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         chartsessionData = JSON.parse(sessionStorage.getItem('Chartsession'));
         let matchingURL = false;
         chartsessionData.forEach((dataElement, index) => {
-          if ((userInput.apiUrl === dataElement.url) || (userInput.datahubUrl === dataElement.url) || (userInput.microserviceUrl === dataElement.url)) {
+          if ((userInput.apiUrl === dataElement.url) || (userInput.datahubUrl === dataElement.url)
+           || (userInput.microserviceUrl === dataElement.url)) {
             if (userInput.showApiInput) {
               this.isDatahubPostCall = false;
               this.isExternalAPI = false;
@@ -2051,7 +2052,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
         }]
       } else {
         const xAxisDimensions = userInput.xAxisDimension.split(',');
-        const xAxisData = [];
+        const xAxisDataValue = [];
         xAxisDimensions.forEach((value, i) => {
           let ithXData;
           if (this.isExternalAPI) {
@@ -2063,7 +2064,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               return item[xAxisDimensions[i]];
             });
           }
-          xAxisData[i] = {
+          xAxisDataValue[i] = {
             type: userInput.type,
             symbolSize: userInput.scatterSymbolSize,
             data: ithXData,
@@ -2085,7 +2086,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             },
           }
         }); // end of for loop
-        return xAxisData;
+        return xAxisDataValue;
       }// End of else part of XAxisDimension
     } else {
       if (userInput.yAxisDimension.split(',').length === 1) {
@@ -2398,7 +2399,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
       }];
     } else {
       const yAxisDimensions = userInput.yAxisDimension.split(',');
-      const yAxisData = [];
+      const yAxisDataValue = [];
       let ithYData;
       yAxisDimensions.forEach((value, i) => {
         if (this.isExternalAPI) {
@@ -2410,7 +2411,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
             return item[yAxisDimensions[i]];
           });
         }
-        yAxisData[i] = {
+        yAxisDataValue[i] = {
           name: yAxisDimensions[i],
           stack: this.getStackName(userInput.stackList, yAxisDimensions[i]),
           emphasis: {
@@ -2425,7 +2426,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           }
         }
       }); // end of for block
-      return yAxisData;
+      return yAxisDataValue;
     }
   }
   // Fetch the color for chart
