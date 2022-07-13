@@ -21,7 +21,7 @@ The Smart E chart widget help you to display API and datahub response on a chart
 ## Features
 
   
-*  **Charts Supported:** Line , Bar , Polar, Radar, Pie, alongwith Horizontal Orientation
+*  **Charts Supported:** Line , Bar , Polar, Radar, Pie, along with Horizontal Orientation
 
 *  **Supports Datahub:** Datahub can be chosen as a source and results from datahub can be configured with LIMIT option.
 
@@ -251,7 +251,29 @@ Congratulations! Smart E Chart is configured.
 
  
 
--   **Target API:** User can select an API or Datahub. If Datahub is selected, user needs to provide a relative URL and the SQL query to get data from Datahub. 
+-   **Target API:** User can select an API or Datahub or Microservice. 
+- If API is selected, user needs to give API URL and the listname that would hold the response.Example response of API should be in format:
+`
+{
+	"<listName>":[
+	{
+		<fieldname>:<value>,
+		<fieldname>:<value>,
+		<fieldname>:<value>,
+	},
+	{
+		<fieldname>:<value>,
+		<fieldname>:<value>,
+		<fieldname>:<value>,
+	}
+	]
+}`
+- In UI, the API datasource config would look like 
+![Datasource_API](https://user-images.githubusercontent.com/85675121/178724683-ba0c5032-9159-4279-9def-dd86e67c4eba.PNG)
+- If Datahub is selected, user needs to provide a relative URL and the SQL query to get data from Datahub. 
+![Datasource_DataHub](https://user-images.githubusercontent.com/85675121/178725170-40fbcd1f-4279-4bea-8ac7-b6fd0a11de74.PNG)
+- If Microservice is selected, user needs to provide a relative URL
+![Datasource_Microservice](https://user-images.githubusercontent.com/85675121/178725293-958d3899-bb1f-4766-a2f9-96e7dc88ec53.PNG)
 
 
 -   **Types Of Chart:** User can select a Chart Type and its Layout.Below is the detail of chart types available alongwith the options
@@ -265,9 +287,10 @@ Options Available in Chart Config :
 
 **3. Data Source(API / Datahub)** :  Either API or Datahub.
 
-    3.1. API : Provide the API url.
-    3.2. Datahub : Provide the Datahub Url and SQL query to access the data.
+    3.1. API : Provide the API url and listname.
+    3.2. Datahub : Provide the Datahub Url and SQL query to access the data.If required add the limit to restrict the no. of records fetched.
     NOTE: Datahub should be on the same tenant and user must have permission to access datahub.
+    3.3. Microservice : Provide the relative URL.
 
 
 
