@@ -2,7 +2,7 @@
 
   
 
-# Smart E Chart Widget for Cumulocity [<img width="35" src="https://user-images.githubusercontent.com/67993842/97668428-f360cc80-1aa7-11eb-8801-da578bda4334.png"/>](https://github.com/SoftwareAG/cumulocity-smart-echart-widget/releases/download/v1.2.5/smart-echart-runtime-widget-1.2.5.zip)
+# Smart E Chart Widget for Cumulocity [<img width="35" src="https://user-images.githubusercontent.com/67993842/97668428-f360cc80-1aa7-11eb-8801-da578bda4334.png"/>](https://github.com/SoftwareAG/cumulocity-smart-echart-widget/releases/download/v1.2.6/smart-echart-runtime-widget-1.2.6.zip)
 
   
 The Smart E chart widget help you to display API and datahub response on a chart with color configurations.
@@ -35,7 +35,7 @@ The Smart E chart widget help you to display API and datahub response on a chart
   
 ### Runtime Widget Deployment?
 
-* This widget support runtime deployment. Download [Runtime Binary](https://github.com/SoftwareAG/cumulocity-smart-echart-widget/releases/download/v1.2.5/smart-echart-runtime-widget-1.2.5.zip) and use Application-builder to install your widget.
+* This widget support runtime deployment. Download [Runtime Binary](https://github.com/SoftwareAG/cumulocity-smart-echart-widget/releases/download/v1.2.6/smart-echart-runtime-widget-1.2.6.zip) and use Application-builder to install your widget.
   
 
 ### Installation of widget through Appbuilder
@@ -85,14 +85,14 @@ The Smart E chart widget help you to display API and datahub response on a chart
     npm i echarts@^5.2.2 echarts-simple-transform@^1.0.0 juggle/resize-observer@^3.3.1 ngx-bootstrap@6.2.0 ngx-echarts@^7.1.0 
 
     ```
-2. Grab the Smart E Chart **[Latest Release Binary](https://github.com/SoftwareAG/cumulocity-smart-echart-widget/releases/download/v1.2.5/gp-smart-echart-widget-1.2.5.tgz)**.
+2. Grab the Smart E Chart **[Latest Release Binary](https://github.com/SoftwareAG/cumulocity-smart-echart-widget/releases/download/v1.2.6/gp-smart-echart-widget-1.2.6.tgz)**.
 
 
 3. Install the Binary file in app builder.
 
     ```
     
-    npm i <binary file path>/gp-smart-echart-widget-1.2.5.tgz
+    npm i <binary file path>/gp-smart-echart-widget-1.2.6.tgz
 
     ```
 
@@ -269,7 +269,8 @@ Congratulations! Smart E Chart is configured.
 	]
 }`
 - In UI, the API datasource config would look like 
-![Datasource_API](https://user-images.githubusercontent.com/85675121/178724683-ba0c5032-9159-4279-9def-dd86e67c4eba.PNG)
+![Datasource_API](https://user-images.githubusercontent.com/85675121/178733831-8cf0e257-1255-49e6-aaa6-a58969838cb0.PNG)
+
 - If Datahub is selected, user needs to provide a relative URL and the SQL query to get data from Datahub. 
 ![Datasource_DataHub](https://user-images.githubusercontent.com/85675121/178725170-40fbcd1f-4279-4bea-8ac7-b6fd0a11de74.PNG)
 - If Microservice is selected, user needs to provide a relative URL
