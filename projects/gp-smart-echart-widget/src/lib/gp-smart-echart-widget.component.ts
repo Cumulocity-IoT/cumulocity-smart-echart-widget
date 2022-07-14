@@ -236,7 +236,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
               this.serviceData = await response.json();
               this.isDatahubPostCall = true;
               if (this.serviceData != null) {
-                getDataFromSession.push({ response: this.serviceData, url: userInput.datahubUrl });
+                getDataFromSession.push({ response: this.serviceData, url: userInput.sqlQuery });
                 sessionStorage.setItem('Chartsession', JSON.stringify(getDataFromSession));
                 sessionStorage.setItem('serviceRunning', JSON.stringify('false'));
               }
@@ -286,7 +286,7 @@ export class GpSmartEchartWidgetComponent implements OnInit {
           this.serviceData = await response.json();
           this.isDatahubPostCall = true;
           if (this.serviceData !== null) {
-            temp.push({ response: this.serviceData, url: userInput.datahubUrl });
+            temp.push({ response: this.serviceData, url: userInput.sqlQuery });
             this.setDataInSessionStorage('Chartsession', temp);
             this.setDataInSessionStorage('serviceRunning', 'false');
           }
