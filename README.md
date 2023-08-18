@@ -4,17 +4,18 @@
 
 # Smart E Chart Widget for Cumulocity [<img width="35" src="https://user-images.githubusercontent.com/67993842/97668428-f360cc80-1aa7-11eb-8801-da578bda4334.png"/>](https://github.com/SoftwareAG/cumulocity-smart-echart-widget/releases/download/v1.2.6/smart-echart-runtime-widget-1.2.6.zip)
 
-  
+
 The Smart E chart widget help you to display API and datahub response on a chart with color configurations.
   
-
 ![Picture1](https://user-images.githubusercontent.com/85675121/154234664-5840f68e-33b8-4e49-89fa-b9b854773c75.png)
+
+> ### ⚠️ This project is no longer under development. Please use [Smart Echart Plugin](https://github.com/SoftwareAG/cumulocity-smart-echart-widget-plugin) for Application Builder >=2.x.x and Cumulocity >=1016.x.x⚠️
 
 ### Please verify that you are using below Application builder version:
 
-|APPLICATION BUILDER | CUMULOCITY | SMART ECHART WIDGET    |
-|--------------------|------------|------------------------|
-| 1.3.x              | >= 1011.x.x| 1.x.x                  |
+|APPLICATION BUILDER | CUMULOCITY         | SMART ECHART WIDGET    |
+|--------------------|--------------------|------------------------|
+| 1.3.x              |1011.x.x - 1015.x.x | 1.x.x                  |
 
 
 
